@@ -9,6 +9,9 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
 
+before_script:
+  - cd Airlines_Analyzer
+
 validate-project:
   stage: validate
   script:
