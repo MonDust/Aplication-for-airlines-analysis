@@ -1,4 +1,4 @@
-image: maven:3.3.9-jdk-8
+image: maven:3.9-eclipse-temurin-21
 
 stages:
   - validate
@@ -38,7 +38,7 @@ deploy-to-test-server:
   stage: deploy
   script:
     - 'true'
-    
+
 deploy-to-production:
   stage: deploy
   script:
