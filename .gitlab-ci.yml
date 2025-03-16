@@ -17,7 +17,6 @@ validate-project:
     paths:
       - target
     expire_in: 30 minutes
-  tags: [main, validate]
 
 run-unit-tests:
   stage: test
