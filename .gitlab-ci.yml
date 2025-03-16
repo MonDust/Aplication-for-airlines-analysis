@@ -18,7 +18,7 @@ validate-project:
     - 'mvn $MAVEN_CLI_OPTS compile'
   artifacts:
     paths:
-      - target
+      - Airlines_Analyzer/target
     expire_in: 30 minutes
 
 run-unit-tests:
@@ -32,7 +32,7 @@ build-dist:
     - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
   artifacts:
     paths:
-      - target/*.jar
+      - Airlines_Analyzer/target/*.jar
 
 deploy-to-test-server:
   stage: deploy
