@@ -41,7 +41,6 @@ public  class CsvDataLoader extends FileDataLoader {
         return true;
     };
 
-    // FIX - Change return type
     public List<Aircraft> loadAircrafts(File aircraftFile) {
         try {
             Scanner myReader = new Scanner(aircraftFile);
