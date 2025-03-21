@@ -10,7 +10,7 @@ variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
 
 before_script:
-  - cd Airlines_Analyzer
+  - cd Airline_Analyzer
 
 validate-project:
   stage: validate
@@ -18,7 +18,7 @@ validate-project:
     - 'mvn $MAVEN_CLI_OPTS compile'
   artifacts:
     paths:
-      - Airlines_Analyzer/target
+      - Airline_Analyzer/target
     expire_in: 30 minutes
 
 run-unit-tests:
@@ -32,7 +32,7 @@ build-dist:
     - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
   artifacts:
     paths:
-      - Airlines_Analyzer/target/*.jar
+      - Airline_Analyzer/target/*.jar
 
 deploy-to-test-server:
   stage: deploy
