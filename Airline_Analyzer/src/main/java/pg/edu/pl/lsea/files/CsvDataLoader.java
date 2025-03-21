@@ -1,76 +1,132 @@
 package pg.edu.pl.lsea.files;
 
+import pg.edu.pl.lsea.entities.Aircraft;
+import pg.edu.pl.lsea.entities.Flight;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 
 public  class CsvDataLoader extends FileDataLoader {
+
+    // Returns true if line is valid
+    private boolean ValidateAircratLine(String[] splitLine) {
+
+        if (splitLine.length != 15) {
+            return false;
+        }
+
+        // Checks icao24 length
+        if (splitLine[0].length() != 6) {
+            return false;
+        }
+
+        return true;
+    };
+
+    // Returns true if line is valid
+    private boolean ValidateFlightLine(String[] splitLine) {
+        if (splitLine.length != 9) {
+            return false;
+        }
+
+        // Checks icao24 length
+        if (splitLine[0].length() != 6) {
+            return false;
+        }
+
+        return true;
+    };
+
     // FIX - Change return type
-    public void loadAircrafts(File aircraftFile) {
+    public List<Aircraft> loadAircrafts(File aircraftFile) {
         try {
             Scanner myReader = new Scanner(aircraftFile);
 
-            List<String> result = new ArrayList<>();
-            for (int i = 100; i < 110 ; i++) {
+            List<Aircraft> aircrafts = new ArrayList<>();
+            while (myReader.hasNextLine()) {
                 String line = myReader.nextLine();
-                System.out.println(line);
 
                 String[] splitLine = line.split(",");
 
-                String icao24 = splitLine[0].trim();
-                Integer firstSeen = Integer.parseInt(splitLine[1].trim());
-                Integer lastSeen = Integer.parseInt(splitLine[2].trim());
-                String airportDeparture = splitLine[4].trim();
-                String airportArrival = splitLine[5].trim();
+                if (ValidateAircratLine(splitLine)) {
+                    String icao24 = splitLine[0].trim();
 
-                result.add(icao24);
-                result.add(firstSeen.toString());
-                result.add(lastSeen.toString());
-                result.add(airportDeparture);
-                result.add(airportArrival);
+                    // Checks if first line is not a header
+                    if (!icao24.equals("icao24")) {
+                        String model = splitLine[3].trim();
+                        String operator = splitLine[9].trim();
+                        String owner = splitLine[13].trim();
+
+                        Aircraft aircraft = new Aircraft(icao24, model, operator, owner);
+                        aircrafts.add(aircraft);
+                    }
+                }
             }
 
             myReader.close();
+
+            return aircrafts;
 
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void loadFlights(File flightsFile) {
+    public List<Flight> loadFlights(File flightsFile) {
         try {
             Scanner myReader = new Scanner(flightsFile);
 
-            List<String> result = new ArrayList<>();
-            for (int i = 0; i < 10 ; i++) {
+            List<Flight> flights = new ArrayList<>();
+            while (myReader.hasNextLine()) {
                 String line = myReader.nextLine();
-                System.out.println(line);
 
                 String[] splitLine = line.split(",");
 
-                String icao24 = splitLine[0].trim();
-                Integer firstSeen = Integer.parseInt(splitLine[1].trim());
-                Integer lastSeen = Integer.parseInt(splitLine[2].trim());
-                String airportDeparture = splitLine[4].trim();
-                String airportArrival = splitLine[5].trim();
+                if (ValidateFlightLine(splitLine)) {
+                    String icao24 = splitLine[0].trim();
 
-                result.add(icao24);
-                result.add(firstSeen.toString());
-                result.add(lastSeen.toString());
-                result.add(airportDeparture);
-                result.add(airportArrival);
+                    // Checks if first line is not a header
+                    if (!icao24.equals("icao24")) {
+                        Flight flight = getFlight(splitLine, icao24);
+                        flights.add(flight);
+                    }
+                }
             }
 
             myReader.close();
+
+            return flights;
 
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+        return null;
+    }
+
+    private static Flight getFlight(String[] splitLine, String icao24) {
+        String firstSeenString = splitLine[1].trim();
+        int firstSeen = 0;
+        if (!firstSeenString.isEmpty()) {
+            firstSeen = Math.round(Float.parseFloat(firstSeenString));
+        }
+
+        String lastSeenString = splitLine[2].trim();
+        int lastSeen = 0;
+        if (!lastSeenString.isEmpty()) {
+            lastSeen = Math.round(Float.parseFloat(lastSeenString));
+        }
+
+        String airportDeparture = splitLine[4].trim();
+        String airportArrival = splitLine[5].trim();
+
+        Flight flight = new Flight(icao24, firstSeen, lastSeen, airportDeparture, airportArrival);
+        return flight;
     }
 }
