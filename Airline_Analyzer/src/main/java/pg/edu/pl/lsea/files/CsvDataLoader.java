@@ -13,7 +13,7 @@ import java.util.Scanner;
 public  class CsvDataLoader extends FileDataLoader {
 
     // Returns true if line is valid
-    private boolean ValidateAircratLine(String[] splitLine) {
+    private boolean validateAircratLine(String[] splitLine) {
 
         if (splitLine.length != 15) {
             return false;
@@ -28,7 +28,7 @@ public  class CsvDataLoader extends FileDataLoader {
     };
 
     // Returns true if line is valid
-    private boolean ValidateFlightLine(String[] splitLine) {
+    private boolean validateFlightLine(String[] splitLine) {
         if (splitLine.length != 9) {
             return false;
         }
@@ -51,7 +51,7 @@ public  class CsvDataLoader extends FileDataLoader {
 
                 String[] splitLine = line.split(",");
 
-                if (ValidateAircratLine(splitLine)) {
+                if (validateAircratLine(splitLine)) {
                     String icao24 = splitLine[0].trim();
 
                     // Checks if first line is not a header
@@ -87,7 +87,7 @@ public  class CsvDataLoader extends FileDataLoader {
 
                 String[] splitLine = line.split(",");
 
-                if (ValidateFlightLine(splitLine)) {
+                if (validateFlightLine(splitLine)) {
                     String icao24 = splitLine[0].trim();
 
                     // Checks if first line is not a header
