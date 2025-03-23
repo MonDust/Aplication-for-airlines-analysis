@@ -111,7 +111,7 @@ public  class CsvDataLoader extends FileDataLoader {
 
                     // Checks if first line is not a header
                     if (!icao24.equals("icao24")) {
-                        Flight flight = getFlight(splitLine, icao24);
+                        Flight flight = createFlight(splitLine, icao24);
                         flights.add(flight);
                     }
                 }
@@ -128,7 +128,13 @@ public  class CsvDataLoader extends FileDataLoader {
         return null;
     }
 
-    private static Flight getFlight(String[] splitLine, String icao24) {
+    /**
+     *
+     * @param splitLine Line loaded as array of cell's contents from flights csv file
+     * @param icao24 ICAO24 unique identifier of the flight
+     * @return Flight created based on provided splitLine
+     */
+    private static Flight createFlight(String[] splitLine, String icao24) {
         String firstSeenString = splitLine[1].trim();
         int firstSeen = 0;
         if (!firstSeenString.isEmpty()) {
