@@ -13,8 +13,7 @@ public class MainPanel extends JPanel {
         setBackground(Color.white);
 
 
-//         TODO - uncomment this after implementing Button
-//        LoadDataButton loadDataButton = new LoadDataButton(this);
-//        add(loadDataButton);
+        LoadDataButton loadDataButton = new LoadDataButton(this);
+        add(loadDataButton);
     }
 }

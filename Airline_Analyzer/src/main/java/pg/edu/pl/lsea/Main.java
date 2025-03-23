@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea;
 
+import pg.edu.pl.lsea.gui.AnalysisArea;
 import pg.edu.pl.lsea.gui.MainFrame;
 import pg.edu.pl.lsea.gui.MainPanel;
 
@@ -8,9 +9,8 @@ public class Main {
         System.out.println("Hello world!");
 
         MainPanel mainPanel = new MainPanel();
-//         TODO - uncomment after implementing AnalysisPanel
-//        AnalysisPanel analysisPanel = new AnalysisPanel();
-//        mainPanel.add(analysisPanel);
+        AnalysisArea analysisArea = new AnalysisArea();
+        mainPanel.add(analysisArea);
         MainFrame mainFrame = new MainFrame(mainPanel);
     }
 }
