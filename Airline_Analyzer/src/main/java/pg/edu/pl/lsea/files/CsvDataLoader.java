@@ -3,8 +3,7 @@ package pg.edu.pl.lsea.files;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,14 +19,14 @@ public  class CsvDataLoader extends FileDataLoader {
      * @param splitLine Line loaded as array of cell's contents from aircrafts csv file
      * @return Defines if the line is valid
      */
-    private boolean validateAircratLine(String[] splitLine) {
+    private boolean validateAircraftLine(String[] splitLine) {
 
         if (splitLine.length != 15) {
             return false;
         }
 
         // Checks icao24 length
-        if (splitLine[0].length() != 6) {
+        if (cleanString(splitLine[0]).length() != 6) {
             return false;
         }
 
@@ -45,7 +44,7 @@ public  class CsvDataLoader extends FileDataLoader {
         }
 
         // Checks icao24 length
-        if (splitLine[0].length() != 6) {
+        if (cleanString(splitLine[0]).length() != 6) {
             return false;
         }
 
@@ -66,30 +65,59 @@ public  class CsvDataLoader extends FileDataLoader {
 
                 String[] splitLine = line.split(",");
 
-                if (validateAircratLine(splitLine)) {
-                    String icao24 = splitLine[0].trim();
+                if (validateAircraftLine(splitLine)) {
+                    String icao24 = cleanString(splitLine[0].trim());
 
                     // Checks if first line is not a header
                     if (!icao24.equals("icao24")) {
-                        String model = splitLine[3].trim();
-                        String operator = splitLine[9].trim();
-                        String owner = splitLine[13].trim();
+                        String model = cleanString(splitLine[3].trim());
+                        String operator = cleanString(splitLine[9].trim());
+                        String owner = cleanString(splitLine[13].trim());
 
                         Aircraft aircraft = new Aircraft(icao24, model, operator, owner);
                         aircrafts.add(aircraft);
                     }
                 }
             }
-
-            myReader.close();
-
             return aircrafts;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
 
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
         }
-        return null;
+//        try {
+//            Scanner myReader = new Scanner(aircraftFile);
+//
+//            List<Aircraft> aircrafts = new ArrayList<>();
+//            while (myReader.hasNextLine()) {
+//                String line = myReader.nextLine();
+//
+//                String[] splitLine = line.split(",");
+//
+//                System.out.println(splitLine[0].length());
+//                if (validateAircraftLine(splitLine)) {
+//                    String icao24 = splitLine[0].trim();
+//
+//                    // Checks if first line is not a header
+//                    if (!icao24.equals("icao24")) {
+//                        String model = splitLine[3].trim();
+//                        String operator = splitLine[9].trim();
+//                        String owner = splitLine[13].trim();
+//
+//                        Aircraft aircraft = new Aircraft(icao24, model, operator, owner);
+//                        aircrafts.add(aircraft);
+//                    }
+//                }
+//            }
+//
+//            myReader.close();
+//
+//            return aircrafts;
+//
+//        } catch (FileNotFoundException e) {
+//            System.out.println("An error occurred.");
+//            e.printStackTrace();
+//        }
+//        return null;
     }
 
     /**
@@ -107,11 +135,11 @@ public  class CsvDataLoader extends FileDataLoader {
                 String[] splitLine = line.split(",");
 
                 if (validateFlightLine(splitLine)) {
-                    String icao24 = splitLine[0].trim();
+                    String icao24 = cleanString(splitLine[0]).trim();
 
                     // Checks if first line is not a header
                     if (!icao24.equals("icao24")) {
-                        Flight flight = createFlight(splitLine, icao24);
+                        Flight flight = parseFlightSplitLine(splitLine, icao24);
                         flights.add(flight);
                     }
                 }
@@ -134,7 +162,7 @@ public  class CsvDataLoader extends FileDataLoader {
      * @param icao24 ICAO24 unique identifier of the flight
      * @return Flight created based on provided splitLine
      */
-    private static Flight createFlight(String[] splitLine, String icao24) {
+    private static Flight parseFlightSplitLine(String[] splitLine, String icao24) {
         String firstSeenString = splitLine[1].trim();
         int firstSeen = 0;
         if (!firstSeenString.isEmpty()) {
@@ -152,5 +180,14 @@ public  class CsvDataLoader extends FileDataLoader {
 
         Flight flight = new Flight(icao24, firstSeen, lastSeen, airportDeparture, airportArrival);
         return flight;
+    }
+
+    /**
+     * Removes quotation marks from string
+     * @param text text to be cleaned
+     * @return string without quotation marks
+     */
+    private static String cleanString(String text) {
+        return text.replace("\"", "");
     }
 }
