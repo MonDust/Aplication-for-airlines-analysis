@@ -1,57 +1,99 @@
 package pg.edu.pl.lsea.entities;
 
-public class Flight {
-    private String icao24;
+/**
+ * A class representing a tracked flight of an aircraft
+ */
+public class Flight extends Trackable {
+    /**
+     * Unix timestamp of the first record of the aircraft of the flight in seconds.
+     */
     private int firstseen;
+    /**
+     * Unix timestamp of the last record of the aircraft of the flight in seconds.
+     */
     private int lastseen;
+    /**
+     * IATA code of the airport from which the aircraft is taking off on this flight.
+     */
     private String departureairport;
+    /**
+     * IATA code of the airport where the aircraft lands during this flight.
+     */
     private String arrivalairport;
 
-
+    /**
+     * Creates a flight object.
+     * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.
+     * @param firstseen An integer representing the unix timestamp of the first record of the aircraft of the flight in seconds.
+     * @param lastseen An integer representing the unix timestamp of the last record of the aircraft of the flight in seconds.
+     * @param departureairport A string representing the IATA code of the airport from which the aircraft is taking off on this flight
+     * @param arrivalairport A string representing the IATA code of the airport where the aircraft lands during this flight
+     */
     public Flight(String icao24, int firstseen, int lastseen, String departureairport, String arrivalairport) {
-        this.icao24 = icao24;
+        setIcao24(icao24);
         this.firstseen = firstseen;
         this.lastseen = lastseen;
         this.departureairport = departureairport;
         this.arrivalairport = arrivalairport;
     }
 
-    public String getIcao24() {
-        return icao24;
-    }
-
+    /**
+     * Returns the unix timestamp of the first record of the aircraft during the tracked flight.
+     * @return An integer representing the unix timestamp of the first record of the aircraft of the flight
+     */
     public int getFirstseen() {
         return firstseen;
     }
-
+    /**
+     * Returns the unix timestamp of the last record of the aircraft during the tracked flight.
+     * @return An integer representing the unix timestamp of the last record of the aircraft of the flight
+     */
     public int getLastseen() {
         return lastseen;
     }
 
+    /**
+     * Returns the IATA code of the departure airport of the flight.
+     * @return A string representing the IATA code of the airport from which the aircraft is taking off on this flight
+     */
     public String getDepartureairport() {
         return departureairport;
     }
-
+    /**
+     * Returns the IATA code of the arrival airport of the flight.
+     * @return A string representing the IATA code of the airport where the aircraft lands during this flight
+     */
     public String getArrivalairport() {
         return arrivalairport;
     }
-
-    public void setIcao24(String icao24) {
-        this.icao24 = icao24;
-    }
-
+    /**
+     * Sets the unix timestamp of the first record of the aircraft during the tracked flight.
+     * @param firstseen An integer representing the unix timestamp of the first record of the aircraft of the flight
+     */
     public void setFirstseen(int firstseen) {
         this.firstseen = firstseen;
     }
 
+    /**
+     * Sets the unix timestamp of the last record of the aircraft during the tracked flight.
+     * @param lastseen An integer representing the unix timestamp of the last record of the aircraft of the flight
+     */
     public void setLastseen(int lastseen) {
         this.lastseen = lastseen;
     }
 
+    /**
+     * Sets the departure airport of the flight.
+     * @param departureairport A string representing the IATA code of the airport from which the aircraft is taking off on this flight
+     */
     public void setDepartureairport(String departureairport) {
         this.departureairport = departureairport;
     }
 
+    /**
+     * Sets the arrival airport of the flight.
+     * @param arrivalairport A string representing the IATA code of the airport where the aircraft lands during this flight
+     */
     public void setArrivalairport(String arrivalairport) {
         this.arrivalairport = arrivalairport;
     }
