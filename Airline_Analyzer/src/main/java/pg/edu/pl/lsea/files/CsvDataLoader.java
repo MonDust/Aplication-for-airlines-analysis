@@ -10,9 +10,16 @@ import java.util.List;
 import java.util.Scanner;
 
 
+/**
+ * Class responsible for loading CSV files with aircrafts and flights.
+ */
 public  class CsvDataLoader extends FileDataLoader {
 
-    // Returns true if line is valid
+    /**
+     *
+     * @param splitLine Line loaded as array of cell's contents from aircrafts csv file
+     * @return Defines if the line is valid
+     */
     private boolean validateAircratLine(String[] splitLine) {
 
         if (splitLine.length != 15) {
@@ -27,7 +34,11 @@ public  class CsvDataLoader extends FileDataLoader {
         return true;
     };
 
-    // Returns true if line is valid
+    /**
+     *
+     * @param splitLine Line loaded as array of cell's contents from flights csv file
+     * @return Defines if the line is valid
+     */
     private boolean validateFlightLine(String[] splitLine) {
         if (splitLine.length != 9) {
             return false;
@@ -41,6 +52,10 @@ public  class CsvDataLoader extends FileDataLoader {
         return true;
     };
 
+    /**
+     *
+     * @param aircraftFile Csv file with aircrafts which should be read
+     */
     public List<Aircraft> loadAircrafts(File aircraftFile) {
         try {
             Scanner myReader = new Scanner(aircraftFile);
@@ -77,6 +92,10 @@ public  class CsvDataLoader extends FileDataLoader {
         return null;
     }
 
+    /**
+     *
+     * @param flightsFile Csv file with flights which should be read
+     */
     public List<Flight> loadFlights(File flightsFile) {
         try {
             Scanner myReader = new Scanner(flightsFile);
