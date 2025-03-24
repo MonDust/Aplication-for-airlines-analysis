@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea.utils;
 
+/** Constants needed for GUI **/
 public class Constants {
     public static class DisplayLayout {
         public static final int WINDOW_HEIGHT = 900;

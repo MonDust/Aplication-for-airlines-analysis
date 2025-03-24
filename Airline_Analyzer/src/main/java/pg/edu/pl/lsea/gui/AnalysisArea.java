@@ -6,6 +6,9 @@ import java.awt.*;
 
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 
+/**
+ * Class responsible for showing the analysis area
+ */
 public class AnalysisArea extends JPanel {
     public AnalysisArea() {
         setBounds(ANALYSIS_X, ANALYSIS_Y, ANALYSIS_WIDTH, ANALYSIS_HEIGHT);

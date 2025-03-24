@@ -14,6 +14,7 @@ public class MainPanel extends JPanel {
 
 
         LoadDataButton loadDataButton = new LoadDataButton(this);
-        add(loadDataButton);
+        add(loadDataButton.getFlightDataButton());
+        add(loadDataButton.getAircraftDataButton());
     }
 }

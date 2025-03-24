@@ -8,20 +8,39 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 
 public class LoadDataButton extends JButton implements ActionListener {
     private final MainPanel mainPanel;
+    private final JButton flightDataButton;
+    private final JButton aircraftDataButton;
 
     public LoadDataButton(MainPanel panel) {
         mainPanel = panel;
 
-        setBounds(BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
-        setText("Load Data");
-        setFont(new Font("Arial", Font.BOLD, 14));
-        setFocusable(false);
-        addActionListener(this);
+        flightDataButton = new JButton("Load Flight Data (CSV)");
+        flightDataButton.setBounds(BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        flightDataButton.setFont(new Font("Arial", Font.BOLD, 14));
+        flightDataButton.setFocusable(false);
+        flightDataButton.addActionListener(this);
+
+        aircraftDataButton = new JButton("Load Aircraft Data (CSV)");
+        aircraftDataButton.setBounds(BUTTON_X + BUTTON_WIDTH + 10, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        aircraftDataButton.setFont(new Font("Arial", Font.BOLD, 14));
+        aircraftDataButton.setFocusable(false);
+        aircraftDataButton.addActionListener(this);
     }
 
-    // TODO
+    public JButton getFlightDataButton() {
+        return flightDataButton;
+    }
+
+    public JButton getAircraftDataButton() {
+        return aircraftDataButton;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(mainPanel, "Loading data...");
+        if (e.getSource() == flightDataButton) {
+            JOptionPane.showMessageDialog(mainPanel, "Loading flight data...");
+        } else if (e.getSource() == aircraftDataButton) {
+            JOptionPane.showMessageDialog(mainPanel, "Loading aircraft data...");
+        }
     }
 }
