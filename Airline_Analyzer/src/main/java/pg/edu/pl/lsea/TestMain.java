@@ -1,23 +1,29 @@
 package pg.edu.pl.lsea;
 
-/** Main method for testing **/
+import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
+import pg.edu.pl.lsea.data.engieniering.NullRemover;
+import pg.edu.pl.lsea.files.CsvDataLoader;
+
+/**
+ * Main method for testing
+ **/
 public class TestMain {
     public static void main(String[] args) {
         System.out.println("Hello world");
 
         // Initialize - to uncomment when whole project will be together
-        // CsvDataLoader dataLoader = new CsvDataLoader();
-        // DataAnalyzer dataAnalyzer = new DataAnalyzer();
-        // DataCleaner dataCleaner = new DataCleaner();
-        // FeatureBuilder featureBuilder = new FeatureBuilder();
+        CsvDataLoader dataLoader = new CsvDataLoader();
+        DataEnrichment dataEnrichment = new DataEnrichment();
+        NullRemover nullRemover = new NullRemover();
+        // CorrelationCalculator correlationCalculator = new CorrelationCalculator();
 
         // Load data
-        //Object data = dataLoader.loadFlights();
+        // List<Flight> data = dataLoader.loadFlights();
 
         // Process with data engineering system
-        //Object processedData = featureBuilder.process(dataCleaner.process(data));
+        //Object processedData = dataEnrichment.process(nullRemover.process(data));
 
         // Analyze data
-        //Object analysisResult = dataAnalyzer.analyze(processedData);
+        //Object analysisResult = correlationCalculator.analyze(processedData);
     }
 }
