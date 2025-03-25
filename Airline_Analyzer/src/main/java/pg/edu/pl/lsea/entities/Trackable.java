@@ -3,7 +3,7 @@ package pg.edu.pl.lsea.entities;
 /**
  * Abstract class representing trackable entities such as flight and aircraft.
  */
-public abstract class Trackable {
+public abstract class Trackable implements Comparable<Trackable> {
     /**
      * Unique icao24 code for identifying aircraft using a 24-bit 6-character hexadecimal format.
      */
@@ -23,5 +23,23 @@ public abstract class Trackable {
      */
     public void setIcao24(String icao24) {
         this.icao24 = icao24;
+    }
+
+    /**
+     *  Abstract method for printing trackable objects.
+     * @return Trackable object with all fields in a string format.
+     */
+    public abstract String toString();
+
+    /**
+     *  Compares trackable objects based on icao24.
+     * @param other The object to be compared.
+     * @return Negative integer if first object's icao24 is smaller,
+     * positive integer if first object's icao24 is greater,
+     * zero if both have the same icao24.
+     */
+    @Override
+    public int compareTo(Trackable other) {
+        return this.icao24.compareTo(other.icao24);
     }
 }
