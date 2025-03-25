@@ -1,6 +1,8 @@
 package pg.edu.pl.lsea.entities;
 
-public class EnrichedFlight extends Flight {
+import java.util.Comparator;
+
+public class EnrichedFlight extends Flight implements Comparable<EnrichedFlight>, Comparator<EnrichedFlight> {
 
     int timeInAir;
     /**
@@ -32,4 +34,14 @@ public class EnrichedFlight extends Flight {
         this.timeInAir = firstSeen - lastSeen;
     }
 
+
+    @Override
+    public int compareTo(EnrichedFlight o) {
+        return Integer.compare(this.timeInAir, o.timeInAir);
+    }
+
+    @Override
+    public int compare(EnrichedFlight o1, EnrichedFlight o2) {
+        return Integer.compare(o1.getTimeInAir(), o2.getTimeInAir());
+    }
 }
