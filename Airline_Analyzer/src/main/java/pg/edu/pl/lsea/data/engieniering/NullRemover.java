@@ -21,18 +21,29 @@ public class NullRemover extends DataTransform {
                 aircrafts.remove(i);
         }
 
+
         for(int i = aircrafts.size() - 1; i >= 0; i--){
             if(Objects.equals(aircrafts.get(i).getOwner(), "") || Objects.equals(aircrafts.get(i).getOperator(), "") || Objects.equals(aircrafts.get(i).getModel(), ""))
                 aircrafts.remove(i);
         }
 
+        for(int i = aircrafts.size() - 1; i >= 0; i--){
+            if(Objects.equals(aircrafts.get(i).getOwner(), "NULL") || Objects.equals(aircrafts.get(i).getOperator(), "NULL") || Objects.equals(aircrafts.get(i).getModel(), "NULL"))
+                aircrafts.remove(i);
+        }
+
         for(int i = flights.size() - 1; i >= 0; i--){
-            if(flights.get(i).getIcao24() == null || flights.get(i).getDepartureairport() == null || flights.get(i).getArrivalairport() == null || flights.get(i).getFirstseen() == -1 || flights.get(i).getLastseen() == -1)
+            if(flights.get(i).getIcao24() == null || flights.get(i).getDepartureAirport() == null || flights.get(i).getArrivalAirport() == null || flights.get(i).getFirstSeen() == -1 || flights.get(i).getLastSeen() == -1)
                 flights.remove(i);
         }
 
         for(int i = flights.size() - 1; i >= 0; i--){
-            if(Objects.equals(flights.get(i).getIcao24(), "") || Objects.equals(flights.get(i).getDepartureairport(), "") || Objects.equals(flights.get(i).getArrivalairport(), ""))
+            if(Objects.equals(flights.get(i).getIcao24(), "") || Objects.equals(flights.get(i).getDepartureAirport(), "") || Objects.equals(flights.get(i).getArrivalAirport(), ""))
+                flights.remove(i);
+        }
+
+        for(int i = flights.size() - 1; i >= 0; i--){
+            if(Objects.equals(flights.get(i).getIcao24(), "NULL") || Objects.equals(flights.get(i).getDepartureAirport(), "NULL") || Objects.equals(flights.get(i).getArrivalAirport(), "NULL"))
                 flights.remove(i);
         }
 

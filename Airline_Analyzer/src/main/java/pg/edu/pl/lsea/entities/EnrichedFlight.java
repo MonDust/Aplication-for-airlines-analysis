@@ -2,9 +2,9 @@ package pg.edu.pl.lsea.entities;
 
 import java.util.Comparator;
 
-public class EnrichedFlight extends Flight implements Comparable<EnrichedFlight>, Comparator<EnrichedFlight> {
+public class EnrichedFlight extends Flight {
 
-    int timeInAir;
+    private int timeInAir;
     /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.
@@ -35,13 +35,11 @@ public class EnrichedFlight extends Flight implements Comparable<EnrichedFlight>
     }
 
 
-    @Override
-    public int compareTo(EnrichedFlight o) {
-        return Integer.compare(this.timeInAir, o.timeInAir);
-    }
+    public static class EnrichedFlightComparator implements Comparator<EnrichedFlight> {
 
-    @Override
-    public int compare(EnrichedFlight o1, EnrichedFlight o2) {
-        return Integer.compare(o1.getTimeInAir(), o2.getTimeInAir());
+        @Override
+        public int compare(EnrichedFlight o1, EnrichedFlight o2) {
+            return 0;
+        }
     }
 }

@@ -13,17 +13,28 @@ public class SortingCaluclator extends DataAnalyzer  {
     public void analyzeDataForDashbord(List<Aircraft> aircrafts, List<EnrichedFlight> flights) {
         System.out.println("===== Dashboard =====");
         System.out.println("Sorted Aircraft List:");
-        sortUsingComparable(aircrafts, flights);
-        printAircraftList(aircrafts);
+        sortAircraft(aircrafts);
+
+        Collections.sort(aircrafts, new Aircraft.AircraftComparator());
+
+        for (Aircraft aircraft : aircrafts) {
+            System.out.println(aircraft);
+        }
+
 
         System.out.println("\nSorted Flight List:");
         sortUsingComparator(flights);
-        printFlightList(flights);
+     //  printFlightList(flights);
     }
 
-    private void sortUsingComparable(List<Aircraft> aircrafts, List<EnrichedFlight> flights) {
+    private void sortFlights(List<EnrichedFlight> flights) {
         Collections.sort(flights);
     }
+
+    private void sortAircraft(List<Aircraft> aircrafts) {
+        Collections.sort(aircrafts);
+    }
+
 
     private void sortUsingComparator(List<EnrichedFlight> flights) {
         flights.sort(Comparator.comparingInt(EnrichedFlight::getTimeInAir));
