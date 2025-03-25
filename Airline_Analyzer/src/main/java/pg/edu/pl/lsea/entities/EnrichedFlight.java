@@ -13,7 +13,6 @@ public class EnrichedFlight extends Flight {
      */
     public EnrichedFlight(String icao24, int firstSeen, int lastSeen, String departureAirport, String arrivalAirport) {
         super(icao24, firstSeen, lastSeen, departureAirport, arrivalAirport);
-        setIcao24(icao24);
         updateTimeintheair(lastSeen, firstSeen);
     }
 
