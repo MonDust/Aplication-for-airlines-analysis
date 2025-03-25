@@ -9,7 +9,11 @@ import java.util.Objects;
 
 public class NullRemover extends DataTransform {
 
-
+    /**
+     * Removes entieties with empty fields
+     * @param aircrafts list of aircrafts that will be changed
+     * @param flights list of flights that will be changed
+     */
     public  void TransformAll (List<Aircraft> aircrafts, List<Flight> flights) {
 
         for(int i = aircrafts.size() - 1; i >= 0; i--){
