@@ -1,5 +1,7 @@
 package pg.edu.pl.lsea.entities;
 
+import java.util.Comparator;
+
 /**
  * A class representing an aircraft described by a specific model, operator and owner.
  */
@@ -20,6 +22,34 @@ public class Aircraft extends Trackable{
         this.model = model;
         this.operator = operator;
         this.owner = owner;
+    }
+
+    /**
+     * Class for comparing aircrafts based on model, operator and owner.
+     */
+    public static class AircraftComparator implements Comparator<Aircraft> {
+        /**
+         * Compares aircrafts by model,
+         * if model is the same compares by operator,
+         * if operator is the same compares by owner.
+         * @param a The first aircraft to be compared.
+         * @param b The second aircraft to be compared.
+         * @return Negative integer if first object is smaller by comparison of model, operator and owner,
+         * positive integer if first object is greater,
+         * zero if both have the same model, operator and owner.
+         */
+        @Override
+        public int compare(Aircraft a, Aircraft b) {
+            int modelCompare = a.model.compareTo(b.model);
+            int operatorCompare = a.operator.compareTo(b.operator);
+            int ownerCompare = a.owner.compareTo(b.owner);
+
+            return (modelCompare == 0)
+                ? (operatorCompare == 0)
+                    ? ownerCompare
+                    : operatorCompare
+                : modelCompare;
+        }
     }
 
     /**
@@ -68,5 +98,19 @@ public class Aircraft extends Trackable{
      */
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    /**
+     * Printing aircrafts
+     * @return Aircraft with all fields in a string format.
+     */
+    @Override
+    public String toString() {
+        return "Aircraft{" +
+               "icao24='" + getIcao24() + "'" +
+               ", model='" + model + "'" +
+               ", operator='" + operator + "'" +
+               ", owner='" + owner + "'" +
+               "}";
     }
 }
