@@ -52,7 +52,6 @@ public class AnalysisPanel extends JPanel {
      * Updated the current display, so it shows the available data
      */
     private void updateDisplay() {
-        System.out.println("HELLO");
 
         // Remove any previous component
         if (currentDisplay != null) {
@@ -69,6 +68,16 @@ public class AnalysisPanel extends JPanel {
         }
 
         // Add the appropriate component
+        add(currentDisplay);
+    }
+
+    public void showAnalysis() {
+        if (currentDisplay != null) {
+            remove(currentDisplay);
+        }
+
+        currentDisplay = new AnalysisDisplay(flightData, aircraftData);
+
         add(currentDisplay);
     }
 

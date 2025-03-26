@@ -1,6 +1,7 @@
 package pg.edu.pl.lsea.gui;
 
 import pg.edu.pl.lsea.gui.analysis.AnalysisPanel;
+import pg.edu.pl.lsea.gui.buttons.AnalyseDataButton;
 import pg.edu.pl.lsea.gui.buttons.LoadAircraftDataButton;
 import pg.edu.pl.lsea.gui.buttons.LoadDataButton;
 import pg.edu.pl.lsea.gui.buttons.LoadFlightDataButton;

@@ -1,5 +1,8 @@
 package pg.edu.pl.lsea.gui.buttons;
 
+import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
+import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
+import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.files.CsvDataLoader;
 import pg.edu.pl.lsea.gui.MainPanel;
 import pg.edu.pl.lsea.gui.analysis.AnalysisPanel;
@@ -33,6 +36,7 @@ public abstract class LoadDataButton extends JButton implements ActionListener {
     public void setAnalysisPanel(AnalysisPanel panel) {
         analysisPanel = panel;
     }
+
 
     /**
      * Choose file from the available
