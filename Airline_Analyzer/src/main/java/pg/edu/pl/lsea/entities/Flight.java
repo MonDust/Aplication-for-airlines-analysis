@@ -5,7 +5,7 @@ import java.util.Comparator;
 /**
  * A class representing a tracked flight of an aircraft
  */
-public class Flight extends Trackable {
+public class Flight extends Trackable implements Cloneable {
     /**
      * Unix timestamp of the first record of the aircraft of the flight in seconds.
      */
@@ -37,6 +37,17 @@ public class Flight extends Trackable {
         this.lastSeen = lastSeen;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
+    }
+
+    /**
+     * Empty constructor needed for cloning
+     */
+    public Flight () {
+        setIcao24("");
+        firstSeen = 0;
+        lastSeen = 0;
+        arrivalAirport = "";
+        departureAirport = "";
     }
 
    /**
@@ -141,6 +152,19 @@ public class Flight extends Trackable {
                ", departureairport='" + departureAirport + "'" +
                ", arrivalairport='" + arrivalAirport + "'" +
                "}";
+    }
+
+
+
+    @Override
+    public Flight clone() {
+        Flight newFlight = new Flight();
+        newFlight.setIcao24(getIcao24());
+        newFlight.setFirstSeen(firstSeen);
+        newFlight.setLastSeen(lastSeen);
+        newFlight.setDepartureAirport(departureAirport);
+        newFlight.setArrivalAirport(arrivalAirport);
+        return newFlight;
     }
 }
 
