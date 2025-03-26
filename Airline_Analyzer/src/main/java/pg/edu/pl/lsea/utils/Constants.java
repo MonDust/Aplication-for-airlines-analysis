@@ -19,5 +19,7 @@ public class Constants {
         public static final int ANALYSIS_Y = 100;
         public static final int ANALYSIS_HEIGHT = 500;
         public static final int ANALYSIS_WIDTH = 1200;
+
+        public static final int NUMBER_OF_RECORDS_SHOWN = 10;
     }
 }

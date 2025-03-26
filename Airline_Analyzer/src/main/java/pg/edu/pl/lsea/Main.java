@@ -10,7 +10,7 @@ public class Main {
 
         MainPanel mainPanel = new MainPanel();
         AnalysisPanel analysisPanel = new AnalysisPanel();
-        mainPanel.add(analysisPanel);
+        mainPanel.setAnalysisPanel(analysisPanel);
 
         MainFrame mainFrame = new MainFrame(mainPanel);
     }
