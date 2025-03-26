@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A class responsible for first draft of data mining
+ */
 public class DataEnrichment extends DataTransform {
 
     /**
@@ -31,11 +34,11 @@ public class DataEnrichment extends DataTransform {
         }
 
         for (int i = flights.size() - 1; i >= 0; i--) {
-            if (Objects.equals(flights.get(i).getArrivalairport(), "")) {
-                flights.get(i).setArrivalairport("EMPTY");
+            if (Objects.equals(flights.get(i).getArrivalAirport(), "")) {
+                flights.get(i).setArrivalAirport("EMPTY");
             }
-            if (Objects.equals(flights.get(i).getDepartureairport(), "")) {
-                flights.get(i).setDepartureairport("EMPTY");
+            if (Objects.equals(flights.get(i).getDepartureAirport(), "")) {
+                flights.get(i).setDepartureAirport("EMPTY");
             }
 
 
@@ -54,10 +57,10 @@ public class DataEnrichment extends DataTransform {
         for (Flight flight : flights) {
             flightsNew.add(new EnrichedFlight(
                     flight.getIcao24(),
-                    flight.getFirstseen(),
-                    flight.getLastseen(),
-                    flight.getDepartureairport(),
-                    flight.getArrivalairport()
+                    flight.getFirstSeen(),
+                    flight.getLastSeen(),
+                    flight.getDepartureAirport(),
+                    flight.getArrivalAirport()
             ));
         }
 
