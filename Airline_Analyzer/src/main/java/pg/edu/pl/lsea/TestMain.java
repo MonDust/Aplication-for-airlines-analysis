@@ -31,9 +31,6 @@ public class TestMain {
         SortingCaluclator correlationCalculator = new SortingCaluclator();
 
 
-        SortingCaluclator sortingCaluclator = new SortingCaluclator();
-
-
         File fileFlights = new File("src/resources/flight_sample_2022-09-26.csv");
         File fileAircrafts = new File("src/resources/aircraft-database-complete-2022-09.csv");
         // Load data
@@ -41,7 +38,10 @@ public class TestMain {
          List<Aircraft> aircrafts = dataLoader.loadAircrafts(fileAircrafts);
          List<Flight> flights = dataLoader.loadFlights(fileFlights);
 
-        nullRemover.TransformAll(aircrafts, flights);
+        nullRemover.TransformAircrafts(aircrafts);
+
+        nullRemover.TransformFlights(flights);
+
 
         List<EnrichedFlight> enrichedFlights;
         enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flights);

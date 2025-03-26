@@ -16,10 +16,32 @@ public class DataEnrichment extends DataTransform {
 
     /**
      * Fills empty fields with "EMPTY" value
-     * @param aircrafts list of aircrafts that will be changed
+     *
      * @param flights list of flights that will be changed
      */
-    public  void TransformAll (List<Aircraft> aircrafts, List<Flight> flights) {
+    public void TransformFlights(List<Flight> flights) {
+        for (int i = flights.size() - 1; i >= 0; i--) {
+            if (Objects.equals(flights.get(i).getArrivalAirport(), "")) {
+                flights.get(i).setArrivalAirport("EMPTY");
+            }
+            if (Objects.equals(flights.get(i).getDepartureAirport(), "")) {
+                flights.get(i).setDepartureAirport("EMPTY");
+            }
+
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Fills empty fields with "EMPTY" value
+     *
+     * @param aircrafts list of aircrafts that will be changed
+     */
+    public void TransformAircrafts(List<Aircraft> aircrafts) {
         for (int i = aircrafts.size() - 1; i >= 0; i--) {
             if (Objects.equals(aircrafts.get(i).getOwner(), "")) {
                 aircrafts.get(i).setOwner("EMPTY");
@@ -33,37 +55,29 @@ public class DataEnrichment extends DataTransform {
 
         }
 
-        for (int i = flights.size() - 1; i >= 0; i--) {
-            if (Objects.equals(flights.get(i).getArrivalAirport(), "")) {
-                flights.get(i).setArrivalAirport("EMPTY");
-            }
-            if (Objects.equals(flights.get(i).getDepartureAirport(), "")) {
-                flights.get(i).setDepartureAirport("EMPTY");
+
+    }
+
+        /**
+         * Uses deep clone to create list of EnrichedFlight
+         * @param flights list of flights that will be changed
+         * @return list of flights witch was enriched by deep clone into entities EnrichedFlight
+         */
+        public List<EnrichedFlight> CreateEnrichedListOfFlights (List <Flight> flights) {
+
+            List<EnrichedFlight> flightsNew = new ArrayList<>();
+
+            for (Flight flight : flights) {
+                flightsNew.add(new EnrichedFlight(
+                        flight.getIcao24(),
+                        flight.getFirstSeen(),
+                        flight.getLastSeen(),
+                        flight.getDepartureAirport(),
+                        flight.getArrivalAirport()
+                ));
             }
 
-
+            return flightsNew;
         }
     }
 
-    /**
-     * Uses deep clone to create list of EnrichedFlight
-     * @param flights list of flights that will be changed
-     * @return list of flights witch was enriched by deep clone into entities EnrichedFlight
-     */
-    public List<EnrichedFlight> CreateEnrichedListOfFlights (List<Flight> flights){
-
-        List<EnrichedFlight> flightsNew = new ArrayList<>();
-
-        for (Flight flight : flights) {
-            flightsNew.add(new EnrichedFlight(
-                    flight.getIcao24(),
-                    flight.getFirstSeen(),
-                    flight.getLastSeen(),
-                    flight.getDepartureAirport(),
-                    flight.getArrivalAirport()
-            ));
-        }
-
-        return flightsNew;
-    }
-}
