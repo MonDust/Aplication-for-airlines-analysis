@@ -18,7 +18,7 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.WINDOW_WIDTH;
 public class MainPanel extends JPanel {
     private LoadDataButton loadFlightDataButton;
     private LoadDataButton loadAircraftDataButton;
-    private LoadDataButton analysisButton;
+    //private LoadDataButton analysisButton;
 
     /**
      * Create a MainPanel object
@@ -30,10 +30,10 @@ public class MainPanel extends JPanel {
 
         loadFlightDataButton = new LoadFlightDataButton(this);
         loadAircraftDataButton = new LoadAircraftDataButton(this);
-        analysisButton = new AnalyseDataButton(this);
+        //analysisButton = new AnalyseDataButton(this);
         add(loadFlightDataButton);
         add(loadAircraftDataButton);
-        add(analysisButton);
+        //add(analysisButton);
     }
 
     /**
@@ -44,6 +44,6 @@ public class MainPanel extends JPanel {
         add(analysisPanel);
         loadAircraftDataButton.setAnalysisPanel(analysisPanel);
         loadFlightDataButton.setAnalysisPanel(analysisPanel);
-        analysisButton.setAnalysisPanel(analysisPanel);
+        //analysisButton.setAnalysisPanel(analysisPanel);
     }
 }

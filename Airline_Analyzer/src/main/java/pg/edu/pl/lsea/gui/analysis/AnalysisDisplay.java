@@ -32,9 +32,9 @@ public class AnalysisDisplay extends AnalysisArea {
     }
 
     private void showData(List<Flight> flightData, List<Aircraft> aircraftData) {
-        nullRemover.TransformAll(aircraftData, flightData);
-        List<EnrichedFlight> enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flightData);
-        sortingCaluclator.analyzeDataForDashbord(aircraftData, enrichedFlights);
+        // nullRemover.TransformAll(aircraftData, flightData);
+        // List<EnrichedFlight> enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flightData);
+        // sortingCaluclator.analyzeDataForDashbord(aircraftData, enrichedFlights);
     }
 
     @Override
