@@ -37,12 +37,4 @@ public class EnrichedFlight extends Flight {
         this.timeInAir = firstSeen - lastSeen;
     }
 
-
-    public static class EnrichedFlightComparator implements Comparator<EnrichedFlight> {
-
-        @Override
-        public int compare(EnrichedFlight o1, EnrichedFlight o2) {
-            return 0;
-        }
-    }
 }

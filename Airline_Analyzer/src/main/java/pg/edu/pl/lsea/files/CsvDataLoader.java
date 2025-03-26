@@ -84,40 +84,6 @@ public  class CsvDataLoader extends FileDataLoader {
             throw new RuntimeException(e);
 
         }
-//        try {
-//            Scanner myReader = new Scanner(aircraftFile);
-//
-//            List<Aircraft> aircrafts = new ArrayList<>();
-//            while (myReader.hasNextLine()) {
-//                String line = myReader.nextLine();
-//
-//                String[] splitLine = line.split(",");
-//
-//                System.out.println(splitLine[0].length());
-//                if (validateAircraftLine(splitLine)) {
-//                    String icao24 = splitLine[0].trim();
-//
-//                    // Checks if first line is not a header
-//                    if (!icao24.equals("icao24")) {
-//                        String model = splitLine[3].trim();
-//                        String operator = splitLine[9].trim();
-//                        String owner = splitLine[13].trim();
-//
-//                        Aircraft aircraft = new Aircraft(icao24, model, operator, owner);
-//                        aircrafts.add(aircraft);
-//                    }
-//                }
-//            }
-//
-//            myReader.close();
-//
-//            return aircrafts;
-//
-//        } catch (FileNotFoundException e) {
-//            System.out.println("An error occurred.");
-//            e.printStackTrace();
-//        }
-//        return null;
     }
 
     /**
