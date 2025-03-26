@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A class responsible for removing entieties with empty fields
+ */
 public class NullRemover extends DataTransform {
 
     /**
@@ -20,7 +23,6 @@ public class NullRemover extends DataTransform {
             if(aircrafts.get(i).getIcao24() == null || aircrafts.get(i).getOwner() == null || aircrafts.get(i).getOperator() == null || aircrafts.get(i).getModel() == null)
                 aircrafts.remove(i);
         }
-
 
         for(int i = aircrafts.size() - 1; i >= 0; i--){
             if(Objects.equals(aircrafts.get(i).getOwner(), "") || Objects.equals(aircrafts.get(i).getOperator(), "") || Objects.equals(aircrafts.get(i).getModel(), ""))
@@ -46,7 +48,6 @@ public class NullRemover extends DataTransform {
             if(Objects.equals(flights.get(i).getIcao24(), "NULL") || Objects.equals(flights.get(i).getDepartureAirport(), "NULL") || Objects.equals(flights.get(i).getArrivalAirport(), "NULL"))
                 flights.remove(i);
         }
-
 
     };
 }
