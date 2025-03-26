@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Abstract class responsible for all transformation connected with turning data transfer object into object that can be more easly analized
+ */
 public abstract class DataTransform {
 
     /**

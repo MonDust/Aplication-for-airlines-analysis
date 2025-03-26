@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A class responsible for first draft of data mining
+ */
 public class DataEnrichment extends DataTransform {
 
     /**

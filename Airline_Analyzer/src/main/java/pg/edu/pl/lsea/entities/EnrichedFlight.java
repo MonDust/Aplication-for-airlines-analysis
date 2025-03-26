@@ -2,6 +2,9 @@ package pg.edu.pl.lsea.entities;
 
 import java.util.Comparator;
 
+/**
+ *  A class representing an aircraft that is ready for analysis.
+ */
 public class EnrichedFlight extends Flight {
 
     private int timeInAir;
