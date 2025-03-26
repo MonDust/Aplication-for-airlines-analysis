@@ -11,9 +11,16 @@ public abstract class DataTransform {
 
     /**
      * Function that will transform whole provided class
-     * @param aircrafts list of aircrafts that will be changed
      * @param flights list of flights that will be changed
      */
-    public abstract void TransformAll (List<Aircraft> aircrafts, List<Flight> flights);
+    public abstract void TransformFlights (List<Flight> flights);
+
+
+    /**
+     * Function that will transform all provided classes
+     * @param aircrafts list of aircrafts that will be changed
+     */
+    public abstract void TransformAircrafts (List<Aircraft> aircrafts);
+
 
 }
