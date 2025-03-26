@@ -71,14 +71,4 @@ public class AnalysisPanel extends JPanel {
         add(currentDisplay);
     }
 
-    public void showAnalysis() {
-        if (currentDisplay != null) {
-            remove(currentDisplay);
-        }
-
-        currentDisplay = new AnalysisDisplay(flightData, aircraftData);
-
-        add(currentDisplay);
-    }
-
 }
