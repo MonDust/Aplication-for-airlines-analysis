@@ -52,7 +52,6 @@ public class AnalysisPanel extends JPanel {
      * Updated the current display, so it shows the available data
      */
     private void updateDisplay() {
-        System.out.println("HELLO");
 
         // Remove any previous component
         if (currentDisplay != null) {
