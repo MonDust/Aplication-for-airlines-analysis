@@ -1,6 +1,10 @@
 package pg.edu.pl.lsea.gui.analysis;
 
 import java.awt.*;
+import java.util.List;
+
+import pg.edu.pl.lsea.entities.Aircraft;
+import pg.edu.pl.lsea.entities.Flight;
 
 /**
  * Class representing a basic chart

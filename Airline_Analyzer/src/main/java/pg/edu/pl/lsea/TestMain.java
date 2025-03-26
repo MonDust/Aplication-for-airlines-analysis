@@ -51,9 +51,9 @@ public class TestMain {
 
 
         // Process with data engineering system
-        //Object processedData = featureBuilder.process(dataCleaner.process(data));
+        //Object processedData = dataEnrichment.process(nullRemover.process(data));
 
         // Analyze data
-        //Object analysisResult = dataAnalyzer.analyze(processedData);
+        //Object analysisResult = correlationCalculator.analyze(processedData);
     }
 }
