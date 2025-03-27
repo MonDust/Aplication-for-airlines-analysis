@@ -1,6 +1,7 @@
 package pg.edu.pl.lsea.entities;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * A class representing an aircraft described by a specific model, operator and owner.
@@ -112,5 +113,19 @@ public class Aircraft extends Trackable{
                ", operator='" + operator + "'" +
                ", owner='" + owner + "'" +
                "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Aircraft aircraft = (Aircraft) o;
+        // checking aircraft uniqueness by model and icao24
+        return Objects.equals(getIcao24(), aircraft.getIcao24()) && Objects.equals(model, aircraft.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIcao24(), model);
     }
 }
