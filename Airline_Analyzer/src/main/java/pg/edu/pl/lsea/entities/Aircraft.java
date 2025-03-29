@@ -114,7 +114,11 @@ public class Aircraft extends Trackable{
                ", owner='" + owner + "'" +
                "}";
     }
-
+    /**
+     * A method that compares an aircraft object to another object and determines if they are equal based on icao24 and model values.
+     * @param o the objects to compare the aircraft to
+     * @return true if the compared objects are considered equal, false if they are different
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,7 +127,11 @@ public class Aircraft extends Trackable{
         // checking aircraft uniqueness by model and icao24
         return Objects.equals(getIcao24(), aircraft.getIcao24()) && Objects.equals(model, aircraft.model);
     }
-
+    /**
+     * Calculates a hash code for aircraft objects based on icao24 and model values to ensure objects
+     * with the same values of these fields are considered equal and have the same hash code
+     * @return hash code value for the aircraft object
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getIcao24(), model);

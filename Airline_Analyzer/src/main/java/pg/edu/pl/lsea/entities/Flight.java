@@ -144,6 +144,11 @@ public class Flight extends Trackable {
                "}";
     }
 
+    /**
+     * A method that compares a flight object to another object and determines if they are equal based on icao24 and firstSeen values.
+     * @param o the objects to compare the flight to
+     * @return true if the compared objects are considered equal, false if they are different
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -153,6 +158,11 @@ public class Flight extends Trackable {
         return firstSeen == flight.firstSeen && Objects.equals(getIcao24(), flight.getIcao24());
     }
 
+    /**
+     * Calculates a hash code for flight objects based on icao24 and firstSeen values to ensure objects
+     * with the same values of these fields are considered equal and have the same hash code
+     * @return hash code value for the flight object
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getIcao24(), firstSeen);
