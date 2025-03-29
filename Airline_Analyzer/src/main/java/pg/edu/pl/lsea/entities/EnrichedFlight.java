@@ -1,8 +1,13 @@
 package pg.edu.pl.lsea.entities;
 
+import java.util.Comparator;
+
+/**
+ *  A class representing an aircraft that is ready for analysis.
+ */
 public class EnrichedFlight extends Flight {
 
-    int timeInAir;
+    private int timeInAir;
     /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.

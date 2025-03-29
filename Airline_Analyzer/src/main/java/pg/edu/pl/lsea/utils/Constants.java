@@ -1,7 +1,12 @@
 package pg.edu.pl.lsea.utils;
 
-/** Constants needed for GUI **/
+/**
+ * Global constants
+ */
 public class Constants {
+    /**
+     * Constants needed for GUI
+     */
     public static class DisplayLayout {
         public static final int WINDOW_HEIGHT = 900;
         public static final int WINDOW_WIDTH = 1600;
@@ -14,5 +19,7 @@ public class Constants {
         public static final int ANALYSIS_Y = 100;
         public static final int ANALYSIS_HEIGHT = 500;
         public static final int ANALYSIS_WIDTH = 1200;
+
+        public static final int NUMBER_OF_RECORDS_SHOWN = 10;
     }
 }

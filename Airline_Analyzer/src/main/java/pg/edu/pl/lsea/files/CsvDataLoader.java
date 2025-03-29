@@ -6,7 +6,6 @@ import pg.edu.pl.lsea.entities.Flight;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 
 /**
@@ -56,13 +55,11 @@ public  class CsvDataLoader extends FileDataLoader {
      * @param aircraftFile Csv file with aircrafts which should be read
      */
     public List<Aircraft> loadAircrafts(File aircraftFile) {
-        try {
-            Scanner myReader = new Scanner(aircraftFile);
+        List<Aircraft> aircrafts = new ArrayList<>();
 
-            List<Aircraft> aircrafts = new ArrayList<>();
-            while (myReader.hasNextLine()) {
-                String line = myReader.nextLine();
-
+        try (BufferedReader reader = new BufferedReader(new FileReader(aircraftFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
                 String[] splitLine = line.split(",");
 
                 if (validateAircraftLine(splitLine)) {
@@ -79,45 +76,11 @@ public  class CsvDataLoader extends FileDataLoader {
                     }
                 }
             }
-            return aircrafts;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
         }
-//        try {
-//            Scanner myReader = new Scanner(aircraftFile);
-//
-//            List<Aircraft> aircrafts = new ArrayList<>();
-//            while (myReader.hasNextLine()) {
-//                String line = myReader.nextLine();
-//
-//                String[] splitLine = line.split(",");
-//
-//                System.out.println(splitLine[0].length());
-//                if (validateAircraftLine(splitLine)) {
-//                    String icao24 = splitLine[0].trim();
-//
-//                    // Checks if first line is not a header
-//                    if (!icao24.equals("icao24")) {
-//                        String model = splitLine[3].trim();
-//                        String operator = splitLine[9].trim();
-//                        String owner = splitLine[13].trim();
-//
-//                        Aircraft aircraft = new Aircraft(icao24, model, operator, owner);
-//                        aircrafts.add(aircraft);
-//                    }
-//                }
-//            }
-//
-//            myReader.close();
-//
-//            return aircrafts;
-//
-//        } catch (FileNotFoundException e) {
-//            System.out.println("An error occurred.");
-//            e.printStackTrace();
-//        }
-//        return null;
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return aircrafts;
     }
 
     /**
@@ -125,12 +88,11 @@ public  class CsvDataLoader extends FileDataLoader {
      * @param flightsFile Csv file with flights which should be read
      */
     public List<Flight> loadFlights(File flightsFile) {
-        try {
-            Scanner myReader = new Scanner(flightsFile);
+        List<Flight> flights = new ArrayList<>();
 
-            List<Flight> flights = new ArrayList<>();
-            while (myReader.hasNextLine()) {
-                String line = myReader.nextLine();
+        try (BufferedReader reader = new BufferedReader(new FileReader(flightsFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
 
                 String[] splitLine = line.split(",");
 
@@ -144,16 +106,11 @@ public  class CsvDataLoader extends FileDataLoader {
                     }
                 }
             }
-
-            myReader.close();
-
-            return flights;
-
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
         }
-        return null;
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return flights;
     }
 
     /**
