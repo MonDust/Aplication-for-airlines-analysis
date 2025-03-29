@@ -25,12 +25,8 @@ public  class CsvDataLoader extends FileDataLoader {
         }
 
         // Checks icao24 length
-        if (cleanString(splitLine[0]).length() != 6) {
-            return false;
-        }
-
-        return true;
-    };
+        return cleanString(splitLine[0]).length() == 6;
+    }
 
     /**
      *
@@ -43,21 +39,18 @@ public  class CsvDataLoader extends FileDataLoader {
         }
 
         // Checks icao24 length
-        if (cleanString(splitLine[0]).length() != 6) {
-            return false;
-        }
-
-        return true;
-    };
+        return cleanString(splitLine[0]).length() == 6;
+    }
 
     /**
      *
-     * @param aircraftFile Csv file with aircrafts which should be read
+     * @param aircraftsFile Csv file with aircrafts which should be read
      */
-    public List<Aircraft> loadAircrafts(File aircraftFile) {
+    @Override
+    public List<Aircraft> readAircrafts(File aircraftsFile) {
         List<Aircraft> aircrafts = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(aircraftFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(aircraftsFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] splitLine = line.split(",");
@@ -87,7 +80,8 @@ public  class CsvDataLoader extends FileDataLoader {
      *
      * @param flightsFile Csv file with flights which should be read
      */
-    public List<Flight> loadFlights(File flightsFile) {
+    @Override
+    public List<Flight> readFlights(File flightsFile) {
         List<Flight> flights = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(flightsFile))) {
@@ -135,8 +129,7 @@ public  class CsvDataLoader extends FileDataLoader {
         String airportDeparture = splitLine[4].trim();
         String airportArrival = splitLine[5].trim();
 
-        Flight flight = new Flight(icao24, firstSeen, lastSeen, airportDeparture, airportArrival);
-        return flight;
+        return new Flight(icao24, firstSeen, lastSeen, airportDeparture, airportArrival);
     }
 
     /**
@@ -146,5 +139,15 @@ public  class CsvDataLoader extends FileDataLoader {
      */
     private static String cleanString(String text) {
         return text.replace("\"", "");
+    }
+
+    @Override
+    public void loadAircraftsToStorage(File file) {
+
+    }
+
+    @Override
+    public void loadFlightsToStorage(File file) {
+
     }
 }

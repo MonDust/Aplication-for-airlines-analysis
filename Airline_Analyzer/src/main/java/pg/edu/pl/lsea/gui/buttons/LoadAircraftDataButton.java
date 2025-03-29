@@ -29,7 +29,7 @@ public class LoadAircraftDataButton extends LoadDataButton {
     public void actionPerformed(ActionEvent e) {
         File file = chooseFile();
         if (file != null) {
-            List<Aircraft> aircrafts = dataLoader.loadAircrafts(file);
+            List<Aircraft> aircrafts = dataLoader.readAircrafts(file);
             JOptionPane.showMessageDialog(mainPanel, "Loaded " + aircrafts.size() + " aircrafts.");
             analysisPanel.setAircraftData(aircrafts);
         }

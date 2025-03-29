@@ -31,22 +31,28 @@ public class TestMain {
         SortingCaluclator correlationCalculator = new SortingCaluclator();
 
 
-        File fileFlights = new File("src/resources/flight_sample_2022-09-26.csv");
-        File fileAircrafts = new File("src/resources/aircraft-database-complete-2022-09.csv");
+        File fileFlights = new File("resources/flight_sample_2022-09-26.csv");
+        File fileAircrafts = new File("resources/aircraft-database-complete-2022-09.csv");
         // Load data
         //Object data = dataLoader.loadFlights();
-         List<Aircraft> aircrafts = dataLoader.loadAircrafts(fileAircrafts);
-         List<Flight> flights = dataLoader.loadFlights(fileFlights);
+//        long start = System.currentTimeMillis();
+//        long end = System.currentTimeMillis();
+//        System.out.println(end-start);
+        List<Flight> flights = dataLoader.readFlights(fileFlights);
+        List<Aircraft> aircrafts = dataLoader.readAircrafts(fileAircrafts);
 
-        nullRemover.TransformAircrafts(aircrafts);
+        System.out.println(aircrafts.size());
+        System.out.println(flights.size());
 
-        nullRemover.TransformFlights(flights);
-
-
-        List<EnrichedFlight> enrichedFlights;
-        enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flights);
-
-        correlationCalculator.analyzeDataForDashbord(aircrafts, enrichedFlights);
+//        nullRemover.TransformAircrafts(aircrafts);
+//
+//        nullRemover.TransformFlights(flights);
+//
+//
+//        List<EnrichedFlight> enrichedFlights;
+//        enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flights);
+//
+//        correlationCalculator.analyzeDataForDashbord(aircrafts, enrichedFlights);
 
 
 
