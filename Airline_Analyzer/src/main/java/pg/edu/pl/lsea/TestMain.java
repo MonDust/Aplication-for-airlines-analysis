@@ -4,6 +4,7 @@ package pg.edu.pl.lsea;
 import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.data.engieniering.NullRemover;
+import pg.edu.pl.lsea.data.storage.DataStorage;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Flight;
@@ -31,29 +32,28 @@ public class TestMain {
         SortingCaluclator correlationCalculator = new SortingCaluclator();
 
 
-        File fileFlights = new File("resources/flight_sample_2022-09-26.csv");
-        File fileAircrafts = new File("resources/aircraft-database-complete-2022-09.csv");
+        File fileFlights1 = new File("resources/flight_sample_2022-09-26.csv");
+        File fileFlights2 = new File("resources/flight_sample_2022-09-02.csv");
+        File fileFlights3 = new File("resources/flight_sample_2022-09-03.csv");
+        File fileFlights4 = new File("resources/flight_sample_2022-09-04.csv");
+        File fileFlights5 = new File("resources/flight_sample_2022-09-26.csv");
+//        File fileAircrafts = new File("resources/aircraft-database-complete-2022-09.csv");
         // Load data
         //Object data = dataLoader.loadFlights();
 //        long start = System.currentTimeMillis();
 //        long end = System.currentTimeMillis();
 //        System.out.println(end-start);
-        List<Flight> flights = dataLoader.readFlights(fileFlights);
-        List<Aircraft> aircrafts = dataLoader.readAircrafts(fileAircrafts);
+//        List<Flight> flights = dataLoader.readFlights(fileFlights);
+//        List<Aircraft> aircrafts = dataLoader.readAircrafts(fileAircrafts);
+//
+//        System.out.println(aircrafts.size());
+//        System.out.println(flights.size());
+        long start = System.currentTimeMillis();
+        dataLoader.loadFlightsToStorage(fileFlights1);
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
 
-        System.out.println(aircrafts.size());
-        System.out.println(flights.size());
-
-//        nullRemover.TransformAircrafts(aircrafts);
-//
-//        nullRemover.TransformFlights(flights);
-//
-//
-//        List<EnrichedFlight> enrichedFlights;
-//        enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flights);
-//
-//        correlationCalculator.analyzeDataForDashbord(aircrafts, enrichedFlights);
-
+//        System.out.println(DataStorage.getInstance().countFlights());
 
 
         // Process with data engineering system

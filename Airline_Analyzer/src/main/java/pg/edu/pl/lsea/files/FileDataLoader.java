@@ -13,15 +13,15 @@ import java.util.List;
 public abstract class FileDataLoader {
     /**
      * Loads aircrafts to globally available DataStorage
-     * @param file File with aircrafts which should be read
+     * @param aircraftsFile File with aircrafts which should be read
      */
-    public abstract void loadAircraftsToStorage(File file);
+    public abstract void loadAircraftsToStorage(File aircraftsFile);
 
     /**
      * Loads flights to globally available DataStorage
-     * @param file File with flights which should be read
+     * @param flightsFile File with flights which should be read
      */
-    public abstract void loadFlightsToStorage(File file);
+    public abstract void loadFlightsToStorage(File flightsFile);
 
     /**
      *

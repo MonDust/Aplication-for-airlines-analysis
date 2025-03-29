@@ -11,7 +11,6 @@ import java.util.List;
  * Implements adding data to storage row by row and prevents the addition of duplicates by using a HashSet to store the newly added data.
  * After data loading is finished the data should be finalized - converted to a list to allow sorting and further analysis.
  * If a user wants to load more data or restart loading from scratch the revertFinalization() function should be called to convert the data back to a HashSet().
- *
  * Step by step usage:
  * 1. Use DataStorage.getInstance() to access the single instance.
  * 2. Add the data - flights and/or aircrafts one by one, duplicates are not added.
@@ -79,6 +78,29 @@ public class  DataStorage {
     }
 
     /**
+     * Allows for addition of the loaded flights data to storage.
+     * Duplicates are not added.
+     * Flights are considered equal if they have the same icao24 and firstSeen values.
+     * @param flights list of flights to be added to data storage
+     */
+    public void bulkAddFlights(List<Flight> flights) {
+        if (!finalized) {
+            finalizeData();
+        }
+        System.out.println(String.format("flights size: ", flights.size()));
+        System.out.println(String.format("flightsSet size: ", flightsSet.size()));
+
+        flights.forEach( flight -> flightsSet.add(flight));
+//        flightsSet.addAll(flights);
+
+        System.out.println(String.format("flights size: ", flights.size()));
+        System.out.println(String.format("flightsSet size: ", flightsSet.size()));
+        revertFinalization();
+
+
+    }
+
+    /**
      * Allows for addition of the loaded aircraft data to storage (HashSet).
      * Data can only be added if it has not been finalized (converted to a list).
      * Data is added one aircraft object at a time.
@@ -95,13 +117,29 @@ public class  DataStorage {
     }
 
     /**
+     * Allows for addition of the loaded aircrafts data to storage (HashSet).
+     * Duplicates are not added.
+     * Aircrafts are considered equal if they have the same icao24 and model values.
+     * @param aircrafts list of aircrafts to be added to data storage
+     */
+    public void bulkAddAircrafts(List<Aircraft> aircrafts) {
+        if (!finalized) {
+            finalizeData();
+        }
+
+        aircraftsSet.addAll(aircrafts);
+
+        revertFinalization();
+    }
+
+    /**
      * A method for accessing the loaded flight data once it has been finalized.
      * @return A list containing all loaded flight data without duplicates.
      * @throws IllegalStateException if data has not been finalized
      */
     public List<Flight> getFlights() {
         if (!finalized) {
-            throw new IllegalStateException("Data has to be finalized");
+            finalizeData();
         }
         return flights;
     }
@@ -112,7 +150,7 @@ public class  DataStorage {
      */
     public List<Aircraft> getAircrafts() {
         if (!finalized) {
-            throw new IllegalStateException("Data has to be finalized");
+            finalizeData();
         }
         return aircrafts;
     }
@@ -167,7 +205,9 @@ public class  DataStorage {
      *  Use this method only after all data for analysis has been added to maximize the efficiency.
      * @throws IllegalStateException if data is already finalized
      */
-    public void finalizeData() {
+    private void finalizeData() {
+        long start = System.currentTimeMillis();
+
         if (finalized) {
             throw new IllegalStateException("Data already finalized!");
         }
@@ -177,6 +217,9 @@ public class  DataStorage {
         aircraftsSet.clear();
 
         finalized = true;
+
+        long end = System.currentTimeMillis();
+//        System.out.println(String.format("Finalization: ", end-start));
     }
 
     /**
@@ -184,7 +227,8 @@ public class  DataStorage {
      * After using this method data can be added again but can no longer be accessed for analysis.
      * @throws IllegalStateException if data has not been finalized
      */
-    public void revertFinalization() {
+    private void revertFinalization() {
+        long start = System.currentTimeMillis();
         if (!finalized) {
             throw new IllegalStateException("Data not finalized!");
         }
@@ -194,5 +238,8 @@ public class  DataStorage {
         aircrafts.clear();
 
         finalized = false;
+
+        long end = System.currentTimeMillis();
+//        System.out.println(String.format("Reverting finalization: ", end-start));
     }
 }
