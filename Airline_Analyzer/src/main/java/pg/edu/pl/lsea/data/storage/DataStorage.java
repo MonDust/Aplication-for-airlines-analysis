@@ -17,19 +17,19 @@ public class  DataStorage {
      */
     private static final DataStorage INSTANCE = new DataStorage();
     /**
-     * HashSet for storing and loading flight data before finalization.
+     * HashSet for storing and loading flight data before they are turned into the list (HashSet takes care of duplicates).
      */
     private HashSet<Flight> flightsSet = new HashSet<>();
     /**
-     * HashSet for storing and loading aircraft data before finalization.
+     * HashSet for storing and loading aircraft data before they are turned into the list (HashSet takes care of duplicates).
      */
     private HashSet<Aircraft> aircraftsSet = new HashSet<>();
     /**
-     * A list for storing finalized flight data, can be used for sorting and analysis.
+     * A list for storing flights data that is accessible through getters.
      */
     private List<Flight> flights = null;
     /**
-     * A list for storing finalized aircraft data, can be used for sorting and analysis.
+     * A list for storing aircrafts data that is accessible through getters.
      */
     private List<Aircraft> aircrafts = null;
 
@@ -60,12 +60,11 @@ public class  DataStorage {
      * Duplicates are not added.
      * Flights are considered equal if they have the same icao24 and firstSeen values.
      * @param flight the flight to be added to data storage
-     * @throws IllegalStateException if data is already finalized
      */
     public void addFlight(Flight flight) {
-        boolean contained = flightsSet.add(flight);
+        boolean added = flightsSet.add(flight);
 
-        if (!contained) {
+        if (added) {
             flightsAccessible = false;
         }
     }
@@ -90,12 +89,11 @@ public class  DataStorage {
      * Duplicates are not added.
      * Aircrafts are considered equal if they have the same icao24 and model values.
      * @param aircraft the aircraft to be added to data storage
-     * @throws IllegalStateException if data is already finalized
      */
     public void addAircraft(Aircraft aircraft) {
-        boolean contained = aircraftsSet.add(aircraft);
+        boolean added = aircraftsSet.add(aircraft);
 
-        if (!contained) {
+        if (added) {
             aircraftsAccessible = false;
         }
     }
@@ -116,7 +114,6 @@ public class  DataStorage {
 
     /**
      * @return A list containing all loaded flight data without duplicates.
-     * @throws IllegalStateException if data has not been finalized
      */
     public List<Flight> getFlights() {
         convertFlightsAccessible();
@@ -124,7 +121,6 @@ public class  DataStorage {
     }
     /**
      * @return A list containing all loaded aircraft data without duplicates.
-     * @throws IllegalStateException if data has not been finalized
      */
     public List<Aircraft> getAircrafts() {
         convertAircraftsAccessible();
