@@ -144,7 +144,10 @@ public  class CsvDataLoader extends FileDataLoader {
 
     @Override
     public void loadAircraftsToStorage(File aircraftsFile) {
-//        Object aircrafts = loadAircraftsToStorage();
+        DataStorage storage = DataStorage.getInstance();
+
+        List<Aircraft> aircrafts = readAircrafts(aircraftsFile);
+        storage.bulkAddAircrafts(aircrafts);
     }
 
     @Override
