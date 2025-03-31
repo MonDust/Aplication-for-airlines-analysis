@@ -2,9 +2,10 @@ package pg.edu.pl.lsea.gui.analysis;
 
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
+import pg.edu.pl.lsea.gui.analysis.displays.DataDisplay;
+import pg.edu.pl.lsea.gui.analysis.displays.DefaultDisplay;
 
-import javax.swing.JPanel;
-import javax.swing.BorderFactory;
+import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
  * Class responsible for showing the analysis area
  */
 public class AnalysisPanel extends JPanel {
-    private java.util.List<Flight> flightData;
+    private List<Flight> flightData;
     private List<Aircraft> aircraftData;
     private JPanel currentDisplay;
 
@@ -61,7 +62,7 @@ public class AnalysisPanel extends JPanel {
         // Determine whether to show the chart or data
         if ((flightData == null || flightData.isEmpty()) && (aircraftData == null || aircraftData.isEmpty())) {
             // No data, show the chart
-            currentDisplay = new Chart();
+            currentDisplay = new DefaultDisplay();
         } else {
             // Data available, show the data display
             currentDisplay = new DataDisplay(flightData, aircraftData);

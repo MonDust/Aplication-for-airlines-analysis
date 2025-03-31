@@ -1,7 +1,9 @@
-package pg.edu.pl.lsea.gui.buttons;
+package pg.edu.pl.lsea.gui.buttons.separatebuttons;
 
 import pg.edu.pl.lsea.entities.Aircraft;
-import pg.edu.pl.lsea.gui.MainPanel;
+import pg.edu.pl.lsea.files.CsvDataLoader;
+import pg.edu.pl.lsea.gui.buttons.LoadDataButton;
+import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -28,10 +30,11 @@ public class LoadAircraftDataButton extends LoadDataButton {
     @Override
     public void actionPerformed(ActionEvent e) {
         File file = chooseFile();
+        CsvDataLoader dataLoader = new CsvDataLoader();
         if (file != null) {
             List<Aircraft> aircrafts = dataLoader.loadAircrafts(file);
             JOptionPane.showMessageDialog(mainPanel, "Loaded " + aircrafts.size() + " aircrafts.");
-            analysisPanel.setAircraftData(aircrafts);
+            mainPanel.setAircraftData(aircrafts);
         }
     }
 }

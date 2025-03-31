@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.gui.analysis;
+package pg.edu.pl.lsea.gui.analysis.displays;
 
 import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
@@ -6,6 +6,7 @@ import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Flight;
+import pg.edu.pl.lsea.gui.analysis.AnalysisArea;
 
 import java.awt.Graphics;
 import java.util.List;
@@ -33,7 +34,7 @@ public class DataDisplay extends AnalysisArea {
     }
 
     /**
-     * Generic method to display any data list
+     * Generic method to display any data list - first few records
      * @param data - data to be displayed
      * @param g - the graphics
      * @param label - label to give the data
@@ -48,6 +49,12 @@ public class DataDisplay extends AnalysisArea {
         }
     }
 
+    /**
+     * Show analysis of the data
+     * @param g
+     * @param label
+     * @param yPosition
+     */
     private void showAnalysis(Graphics g, String label, int yPosition) {
         if (aircraftData != null && !aircraftData.isEmpty()) {
             nullRemover.TransformAircrafts(aircraftData);
