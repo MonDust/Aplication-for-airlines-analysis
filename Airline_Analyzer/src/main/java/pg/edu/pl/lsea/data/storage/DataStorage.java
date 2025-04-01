@@ -195,4 +195,14 @@ public class  DataStorage {
 
         finalized = false;
     }
+
+    /**
+     * Function returning state of data.
+     * true - finalized
+     * false - not finalized
+     * @return - returning a value depending if data has been finalized.
+     */
+    public boolean isFinalized() {
+        return finalized;
+    }
 }

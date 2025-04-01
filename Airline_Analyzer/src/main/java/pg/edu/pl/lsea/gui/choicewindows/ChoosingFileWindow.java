@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.gui.filechoice;
+package pg.edu.pl.lsea.gui.choicewindows;
 
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
@@ -7,33 +7,38 @@ import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.io.File;
 import java.util.List;
 
-public class ChoosingFileWindow extends JFrame {
-    final private MainPanel mainPanel;
+/**
+ * Choosing File Window which lets choose the searched file type and data type that will be gotten from it
+ */
+public class ChoosingFileWindow extends BaseChoosingWindow {
     final private JComboBox<String> fileTypeComboBox;
     final private JComboBox<String> dataTypeComboBox;
     final private CsvDataLoader dataLoader = new CsvDataLoader();
 
+    /**
+     * Create ChoosingFileWindow object.
+     * @param panel - the main panel
+     */
     public ChoosingFileWindow(MainPanel panel) {
-        this.mainPanel = panel;
+        super(panel);
         setTitle("Choose File Options");
-        setLayout(new FlowLayout());
-        setSize(300, 200);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // File Type Selection (for now only CSV)
         JLabel fileTypeLabel = new JLabel("Select file type:");
-        fileTypeComboBox = new JComboBox<>(new String[]{"CSV"});
+        // Available File Types
+        String[] fileTypes = new String[]{"CSV"};
+        fileTypeComboBox = new JComboBox<>(fileTypes);
         add(fileTypeLabel);
         add(fileTypeComboBox);
 
         // Data Type Selection (flights or airports)
         JLabel dataTypeLabel = new JLabel("Select data type:");
-        dataTypeComboBox = new JComboBox<>(new String[]{"Flights", "Airports"});
+        // Available Data Types
+        String[] dataTypes = new String[]{"Flights", "Airports"};
+        dataTypeComboBox = new JComboBox<>(dataTypes);
         add(dataTypeLabel);
         add(dataTypeComboBox);
 
@@ -46,10 +51,12 @@ public class ChoosingFileWindow extends JFrame {
         setVisible(true);
     }
 
-    private void loadFiles() {
-        String fileType = (String) fileTypeComboBox.getSelectedItem();
-        String dataType = (String) dataTypeComboBox.getSelectedItem();
-
+    /**
+     * Initialize file filter for searched types of files
+     * @param fileType - the type of file needed
+     * @return - return the fileChooser with needed options
+     */
+    private JFileChooser initializeFileFilter(String fileType) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(true);
@@ -62,6 +69,17 @@ public class ChoosingFileWindow extends JFrame {
             default:
                 fileChooser.setFileFilter(null);
         }
+        return fileChooser;
+    }
+
+    /**
+     * Initialize loading data with specific file options already given
+     */
+    private void loadFiles() {
+        String fileType = (String) fileTypeComboBox.getSelectedItem();
+        String dataType = (String) dataTypeComboBox.getSelectedItem();
+
+        JFileChooser fileChooser = initializeFileFilter(fileType);
 
         // Open the file chooser dialog
         int returnValue = fileChooser.showOpenDialog(this);
@@ -74,6 +92,11 @@ public class ChoosingFileWindow extends JFrame {
         }
     }
 
+    /**
+     * Load the data from files according to choosen category
+     * @param file - file to load data from
+     * @param dataType - choosen category to load data to
+     */
     private void loadData(File file, String dataType) {
         if ("Flights".equals(dataType)) {
             List<Flight> flightList = dataLoader.loadFlights(file);

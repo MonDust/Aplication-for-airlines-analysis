@@ -16,6 +16,10 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
  * Class representing button for loading the flight data
  */
 public class LoadFlightDataButton extends LoadDataButton {
+    /**
+     * Constructor for the LoadFlightDataButton class
+     * @param panel - main panel
+     */
     public LoadFlightDataButton(MainPanel panel) {
         super(panel);
 

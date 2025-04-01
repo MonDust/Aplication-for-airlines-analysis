@@ -16,11 +16,15 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
  * Class representing button for loading the aircraft data
  */
 public class LoadAircraftDataButton extends LoadDataButton {
+    /**
+     * Constructor for the LoadAircraftDataButton class
+     * @param panel - main panel
+     */
     public LoadAircraftDataButton(MainPanel panel) {
         super(panel);
 
         setText("Load Aircraft Data (CSV)");
-        setBounds(BUTTON_X + BUTTON_WIDTH + 10, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        setBounds(BUTTON_X + BUTTON_WIDTH + ADDITIONAL_SPACE, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
     }
 
     /**

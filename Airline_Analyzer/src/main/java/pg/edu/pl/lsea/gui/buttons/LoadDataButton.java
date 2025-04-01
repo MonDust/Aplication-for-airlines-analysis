@@ -14,6 +14,10 @@ public abstract class LoadDataButton extends JButton implements ActionListener {
     protected final MainPanel mainPanel;
 
 
+    /**
+     * Constructor of the class
+     * @param panel  - main panel
+     */
     public LoadDataButton(MainPanel panel) {
         mainPanel = panel;
         setFont(new Font("Arial", Font.BOLD, 14));

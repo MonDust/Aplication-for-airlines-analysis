@@ -19,10 +19,6 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_RECORDS_SHO
 public class DataDisplay extends AnalysisArea {
     final private List<Flight> flightData;
     final private List<Aircraft> aircraftData;
-    final private NullRemover nullRemover = new NullRemover();
-    final private DataEnrichment dataEnrichment = new DataEnrichment();
-    final private SortingCaluclator sortingCaluclator = new SortingCaluclator();
-
     /**
      * Add data to DataDisplay
      * @param flightData - the to be added flight data
@@ -49,31 +45,6 @@ public class DataDisplay extends AnalysisArea {
         }
     }
 
-    /**
-     * Show analysis of the data
-     * @param g
-     * @param label
-     * @param yPosition
-     */
-    private void showAnalysis(Graphics g, String label, int yPosition) {
-        if (aircraftData != null && !aircraftData.isEmpty()) {
-            nullRemover.TransformAircrafts(aircraftData);
-        }
-
-        if (flightData != null && !flightData.isEmpty()) {
-            nullRemover.TransformFlights(flightData);
-        }
-
-
-        List<EnrichedFlight> enrichedFlights;
-        enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flightData);
-
-        sortingCaluclator.analyzeDataForDashbord(aircraftData, enrichedFlights);
-
-    }
-
-
-
 
     /**
      * Displaying FlightData either/or AircraftData
@@ -85,7 +56,8 @@ public class DataDisplay extends AnalysisArea {
 
         // Display Flight Data
         if (flightData != null && !flightData.isEmpty() && aircraftData != null && !aircraftData.isEmpty()) {
-            showAnalysis(g, "Flight Data:", 40);
+            showData(aircraftData, g, "Aircraft Data:", 40);
+            showData(flightData, g, "Flight Data:", 80);
         }
     }
 }
