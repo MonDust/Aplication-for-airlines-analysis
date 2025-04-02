@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.gui.analysis;
+package pg.edu.pl.lsea.gui.analysis.displays;
 
 import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
@@ -6,6 +6,7 @@ import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Flight;
+import pg.edu.pl.lsea.gui.analysis.AnalysisArea;
 
 import java.awt.Graphics;
 import java.util.List;
@@ -18,10 +19,6 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_RECORDS_SHO
 public class DataDisplay extends AnalysisArea {
     final private List<Flight> flightData;
     final private List<Aircraft> aircraftData;
-    final private NullRemover nullRemover = new NullRemover();
-    final private DataEnrichment dataEnrichment = new DataEnrichment();
-    final private SortingCaluclator sortingCaluclator = new SortingCaluclator();
-
     /**
      * Add data to DataDisplay
      * @param flightData - the to be added flight data
@@ -33,7 +30,7 @@ public class DataDisplay extends AnalysisArea {
     }
 
     /**
-     * Generic method to display any data list
+     * Generic method to display any data list - first few records
      * @param data - data to be displayed
      * @param g - the graphics
      * @param label - label to give the data
@@ -48,25 +45,6 @@ public class DataDisplay extends AnalysisArea {
         }
     }
 
-    private void showAnalysis(Graphics g, String label, int yPosition) {
-        if (aircraftData != null && !aircraftData.isEmpty()) {
-            nullRemover.TransformAircrafts(aircraftData);
-        }
-
-        if (flightData != null && !flightData.isEmpty()) {
-            nullRemover.TransformFlights(flightData);
-        }
-
-
-        List<EnrichedFlight> enrichedFlights;
-        enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flightData);
-
-        sortingCaluclator.analyzeDataForDashbord(aircraftData, enrichedFlights);
-
-    }
-
-
-
 
     /**
      * Displaying FlightData either/or AircraftData
@@ -78,7 +56,8 @@ public class DataDisplay extends AnalysisArea {
 
         // Display Flight Data
         if (flightData != null && !flightData.isEmpty() && aircraftData != null && !aircraftData.isEmpty()) {
-            showAnalysis(g, "Flight Data:", 40);
+            showData(aircraftData, g, "Aircraft Data:", 40);
+            showData(flightData, g, "Flight Data:", 80);
         }
     }
 }
