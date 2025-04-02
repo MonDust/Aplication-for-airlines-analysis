@@ -5,7 +5,7 @@ import java.util.Comparator;
 /**
  *  A class representing an aircraft that is ready for analysis.
  */
-public class EnrichedFlight extends Flight {
+public class EnrichedFlight extends Flight  {
 
     private int timeInAir;
     /**
@@ -19,6 +19,11 @@ public class EnrichedFlight extends Flight {
     public EnrichedFlight(String icao24, int firstSeen, int lastSeen, String departureAirport, String arrivalAirport) {
         super(icao24, firstSeen, lastSeen, departureAirport, arrivalAirport);
         updateTimeintheair(lastSeen, firstSeen);
+    }
+
+    public EnrichedFlight(Flight flight) {
+        super(flight.getIcao24(), flight.getFirstSeen(), flight.getLastSeen(), flight.getDepartureAirport(), flight.getArrivalAirport());
+        updateTimeintheair(flight.getLastSeen(), flight.getFirstSeen());
     }
 
     /**

@@ -42,4 +42,5 @@ public abstract class Trackable implements Comparable<Trackable> {
     public int compareTo(Trackable other) {
         return this.icao24.compareTo(other.icao24);
     }
+
 }
