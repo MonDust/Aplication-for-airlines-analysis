@@ -51,7 +51,6 @@ public class ChoosingAnalysisWindow extends BaseChoosingWindow{
      * Analyse the data
      */
     private void analyse() {
-        mainPanel.finalizeDataForAnalysis();
         mainPanel.performAnalysis(getAnalysisType());
     }
 

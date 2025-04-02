@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea.gui.choicewindows;
 
+import pg.edu.pl.lsea.data.storage.DataStorage;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.files.CsvDataLoader;
@@ -98,16 +99,20 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
      * @param dataType - choosen category to load data to
      */
     private void loadData(File file, String dataType) {
+        int recordsLoaded;
+        DataStorage dataStorage = DataStorage.getInstance();
         if ("Flights".equals(dataType)) {
-            List<Flight> flightList = dataLoader.loadFlights(file);
-            JOptionPane.showMessageDialog(mainPanel, "Loaded " + flightList.size() + " flights.");
-            mainPanel.setFlightData(flightList);
+            recordsLoaded = dataStorage.countFlights();
+            dataLoader.loadFlightsToStorage(file);
+            recordsLoaded = dataStorage.countFlights() - recordsLoaded;
+            JOptionPane.showMessageDialog(mainPanel, "Loaded " + recordsLoaded + " flights.");
 
             System.out.println("Loading flight data from " + file.getName());
         } else if ("Airports".equals(dataType)) {
-            List<Aircraft> aircraftList = dataLoader.loadAircrafts(file);
-            JOptionPane.showMessageDialog(mainPanel, "Loaded " + aircraftList.size() + " aircrafts.");
-            mainPanel.setAircraftData(aircraftList);
+            recordsLoaded = dataStorage.countAircrafts();
+            dataLoader.loadAircraftsToStorage(file);
+            recordsLoaded = dataStorage.countAircrafts() - recordsLoaded;
+            JOptionPane.showMessageDialog(mainPanel, "Loaded " + recordsLoaded + " aircrafts.");
 
             System.out.println("Loading airport data from " + file.getName());
         }

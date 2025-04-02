@@ -20,13 +20,13 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.WINDOW_WIDTH;
  */
 public class MainPanel extends JPanel {
     // Data Button for loading the data - after which the window of choices will be shown
-    private LoadDataButton mainLoadDataButton;
+    final private LoadDataButton mainLoadDataButton;
     // Data Button for analysing it - after which the choices of analysis will be shown
-    private LoadDataButton analyzeDataButton;
+    final private LoadDataButton analyzeDataButton;
     // Panel where analysis of the data is shown
-    private AnalysisPanel analysisPanel;
+    final private AnalysisPanel analysisPanel;
     // Storage for data needed for analysis
-    private DataStorage dataStorage;
+    final private DataStorage dataStorage;
 
     /**
      * Create a MainPanel object
@@ -49,48 +49,11 @@ public class MainPanel extends JPanel {
     }
 
     /**
-     * Set Flight data
-     * @param flights - list of aircrafts to be added to data storage
-     */
-    public void setFlightData(List<Flight> flights) {
-        for (Flight flight : flights) {
-            dataStorage.addFlight(flight);
-        }
-    }
-
-    /**
-     * Set Aircraft data
-     * @param aircrafts - list of aircrafts to be added to data storage
-     */
-    public void setAircraftData(List<Aircraft> aircrafts) {
-        for (Aircraft aircraft : aircrafts) {
-            dataStorage.addAircraft(aircraft);
-        }
-    }
-
-    /**
-     * Make data ready for analysis
-     */
-    public void finalizeDataForAnalysis() {
-        dataStorage.finalizeData();
-    }
-
-    /**
-     * Change data back so adding new data is possible
-     */
-    public void revertFinalizationOfData() {
-        dataStorage.revertFinalization();
-    }
-
-    /**
      * Get Flight data from data Storage
      * @return - the flight data
      */
     public List<Flight> getFlightData() {
-        if(dataStorage.isFinalized()) {
-            return dataStorage.getFlights();
-        }
-        else throw new IllegalStateException("Data not finalized!");
+        return dataStorage.getFlights();
     }
 
     /**
@@ -98,10 +61,7 @@ public class MainPanel extends JPanel {
      * @return - the aircraft data
      */
     public List<Aircraft> getAircraftData() {
-        if(dataStorage.isFinalized()) {
-            return dataStorage.getAircrafts();
-        }
-        else throw new IllegalStateException("Data not finalized!");
+        return dataStorage.getAircrafts();
     }
 
     /**
@@ -113,12 +73,7 @@ public class MainPanel extends JPanel {
      * @param analysisType - the type of analysis to be performed
      */
     public void performAnalysis(int analysisType) {
-        if(dataStorage.isFinalized()) {
-            analysisPanel.performAnalysis(analysisType);
-        }
-        else {
-            throw new IllegalStateException("Data not finalized!");
-        }
+        analysisPanel.performAnalysis(analysisType);
     }
 
 
