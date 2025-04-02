@@ -3,14 +3,13 @@ package pg.edu.pl.lsea.data.analyzer;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
  * This class performs all calculations conected with sorting nessesary for dashbord and other analysies
  */
-public class SortingCaluclator extends DataAnalyzer  {
+public class SortingCalculator extends DataAnalyzer  {
 
     /**
      * Calculating sorted lists for dashboard

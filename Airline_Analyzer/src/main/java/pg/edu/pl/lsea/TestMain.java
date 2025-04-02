@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea;
 
 /** Main method for testing **/
-import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
+import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.entities.Aircraft;
@@ -28,7 +28,7 @@ public class TestMain {
         DataEnrichment dataEnrichment = new DataEnrichment();
         NullRemover nullRemover = new NullRemover();
 
-        SortingCaluclator correlationCalculator = new SortingCaluclator();
+        SortingCalculator correlationCalculator = new SortingCalculator();
 
 
         File fileFlights = new File("src/resources/flight_sample_2022-09-26.csv");

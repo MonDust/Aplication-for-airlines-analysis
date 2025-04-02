@@ -1,6 +1,7 @@
 package pg.edu.pl.lsea.gui.analysis;
 
-import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
+import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
+import pg.edu.pl.lsea.data.analyzer.CorrelationCalculator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.entities.Aircraft;
@@ -20,7 +21,7 @@ public class DataDisplay extends AnalysisArea {
     final private List<Aircraft> aircraftData;
     final private NullRemover nullRemover = new NullRemover();
     final private DataEnrichment dataEnrichment = new DataEnrichment();
-    final private SortingCaluclator sortingCaluclator = new SortingCaluclator();
+    final private SortingCalculator sortingCalculator = new SortingCalculator();
 
     /**
      * Add data to DataDisplay
@@ -61,7 +62,16 @@ public class DataDisplay extends AnalysisArea {
         List<EnrichedFlight> enrichedFlights;
         enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flightData);
 
-        sortingCaluclator.analyzeDataForDashbord(aircraftData, enrichedFlights);
+        sortingCalculator.analyzeDataForDashbord(aircraftData, enrichedFlights);
+
+
+        //DEBUG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        final CorrelationCalculator correlationCalculator = new CorrelationCalculator();
+
+        float[] List1 = new float[] { 10.0f, 20.0f, 15.0f };
+        float[] List2 = new float[] { 15.0f, 25.0f, 35.0f };
+
+        System.out.println(correlationCalculator.calculateCoreelation(List1, List2));
 
     }
 
