@@ -36,7 +36,7 @@ public class LoadFlightDataButton extends LoadDataButton {
         File file = chooseFile();
         CsvDataLoader dataLoader = new CsvDataLoader();
         if (file != null) {
-            List<Flight> flights = dataLoader.loadFlights(file);
+            List<Flight> flights = dataLoader.readFlights(file);
             JOptionPane.showMessageDialog(mainPanel, "Loaded " + flights.size() + " flights.");
             mainPanel.setFlightData(flights);
         }
