@@ -1,6 +1,10 @@
 package pg.edu.pl.lsea.gui.analysis;
 
+import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
+import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
+import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.entities.Aircraft;
+import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Flight;
 
 import java.awt.Graphics;
@@ -14,6 +18,9 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_RECORDS_SHO
 public class DataDisplay extends AnalysisArea {
     final private List<Flight> flightData;
     final private List<Aircraft> aircraftData;
+    final private NullRemover nullRemover = new NullRemover();
+    final private DataEnrichment dataEnrichment = new DataEnrichment();
+    final private SortingCaluclator sortingCaluclator = new SortingCaluclator();
 
     /**
      * Add data to DataDisplay
@@ -41,6 +48,26 @@ public class DataDisplay extends AnalysisArea {
         }
     }
 
+    private void showAnalysis(Graphics g, String label, int yPosition) {
+        if (aircraftData != null && !aircraftData.isEmpty()) {
+            nullRemover.TransformAircrafts(aircraftData);
+        }
+
+        if (flightData != null && !flightData.isEmpty()) {
+            nullRemover.TransformFlights(flightData);
+        }
+
+
+        List<EnrichedFlight> enrichedFlights;
+        enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flightData);
+
+        sortingCaluclator.analyzeDataForDashbord(aircraftData, enrichedFlights);
+
+    }
+
+
+
+
     /**
      * Displaying FlightData either/or AircraftData
      * @param g the Graphics object to protect
@@ -50,14 +77,8 @@ public class DataDisplay extends AnalysisArea {
         super.paintComponent(g);
 
         // Display Flight Data
-        if (flightData != null && !flightData.isEmpty()) {
-            showData(flightData, g, "Flight Data:", 40);
-        }
-
-        // Display Aircraft Data
-        if (aircraftData != null && !aircraftData.isEmpty()) {
-            int yPosition = (flightData != null && !flightData.isEmpty()) ? 60 + (Math.min(10, flightData.size()) * 20) : 40;
-            showData(aircraftData, g, "Aircraft Data:", yPosition);
+        if (flightData != null && !flightData.isEmpty() && aircraftData != null && !aircraftData.isEmpty()) {
+            showAnalysis(g, "Flight Data:", 40);
         }
     }
 }
