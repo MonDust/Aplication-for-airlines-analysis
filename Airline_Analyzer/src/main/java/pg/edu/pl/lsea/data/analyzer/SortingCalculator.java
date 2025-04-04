@@ -69,7 +69,7 @@ public class SortingCalculator extends DataAnalyzer  {
 
         for (EnrichedFlight flight : flights) {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
-               Value =+ flight.getTimeInAir();
+               Value += flight.getTimeInAir();
             } else {
                 System.out.println(currentIcao);
                 System.out.println(Value);
