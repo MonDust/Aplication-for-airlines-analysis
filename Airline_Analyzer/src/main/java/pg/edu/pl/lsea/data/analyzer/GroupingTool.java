@@ -69,16 +69,16 @@ public class GroupingTool {
         List<List<EnrichedFlight>> output = new ArrayList<>();
 
         for (List<EnrichedFlight> enrichedFlights : input) {
-            boolean allShortFlights = true;
+            boolean IsLongFlight= false;
 
             for (EnrichedFlight flight : enrichedFlights) {
                 if (flight.getTimeInAir() >= 1800) {
-                    allShortFlights = false;
+                    IsLongFlight = true;
                     break;
                 }
             }
 
-            if (!allShortFlights) {
+            if (IsLongFlight) {
                 output.add(enrichedFlights);
             }
         }
