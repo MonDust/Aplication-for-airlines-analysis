@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.data.analyzer;
+package pg.edu.pl.lsea.data.analyzer.multithreading;
 
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;

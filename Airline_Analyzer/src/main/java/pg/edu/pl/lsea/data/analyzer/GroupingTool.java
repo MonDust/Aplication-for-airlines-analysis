@@ -7,78 +7,114 @@ import java.util.*;
 
 public class GroupingTool {
 
-    private List<EnrichedFlight> groupFlightsByModel(List<EnrichedFlight> flights, List<Aircraft> aircrafts, String SearchedModel){
-
-        List<EnrichedFlight> output = new ArrayList<>();
-
+    private List<EnrichedFlight> getAllFlightsForModel(List<EnrichedFlight> flights, List<Aircraft> aircrafts, String model){
+        List<EnrichedFlight> result = new ArrayList<>();
         List<String> icaoList = new ArrayList<>();
 
+        for(Aircraft aircraft : aircrafts) {
+            if(Objects.equals(aircraft.getModel(), model)){
+                icaoList.add(aircraft.getIcao24());
+            }
+        }
+        for (EnrichedFlight flight : flights) {
+            for(String icao : icaoList) {
+                if (Objects.equals(flight.getIcao24(), icao)) {
+                    result.add(flight);
+                }
+            }
+        }
+        return result;
+    }
 
+
+    private List<EnrichedFlight> getAllFlightsForOperator(List<EnrichedFlight> flights, List<Aircraft> aircrafts, String operator){
+        List<EnrichedFlight> result = new ArrayList<>();
+        List<String> icaoList = new ArrayList<>();
 
         for(Aircraft aircraft : aircrafts) {
-            if(Objects.equals(aircraft.getModel(),SearchedModel)){
+            if(Objects.equals(aircraft.getOperator(), operator)){
                 icaoList.add(aircraft.getIcao24());
-
+            }
+        }
+        for (EnrichedFlight flight : flights) {
+            for(String icao : icaoList) {
+                if (Objects.equals(flight.getIcao24(), icao)) {
+                    result.add(flight);
+                }
             }
         }
 
-
-            for (EnrichedFlight flight : flights) {
-                for(String icao : icaoList) {
-                    if (Objects.equals(flight.getIcao24(), icao)) {
-                        output.add(flight);
-
-                    }
-                }
-            }
-
-        return output;
+        return result;
     }
 
-    private List<String> giveListOfModels (List<Aircraft> aircrafts){
+    private List<String> getUniqueModels (List<Aircraft> aircrafts){
 
-        List<String> output = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         Set<String> seenModels = new HashSet<>();
 
         for (Aircraft aircraft : aircrafts) {
             String model = aircraft.getModel();
             if (model != null && seenModels.add(model)) {
-                output.add(model);
+                result.add(model);
             }
+        }
+
+        return result;
+    }
+
+
+    private List<String> getUniqueOperators (List<Aircraft> aircrafts){
+
+        List<String> result = new ArrayList<>();
+        Set<String> seenOperators = new HashSet<>();
+
+        for (Aircraft aircraft : aircrafts) {
+            String operator = aircraft.getOperator();
+            if (operator != null && seenOperators.add(operator)) {
+                result.add(operator);
+            }
+        }
+
+        return result;
+    }
+
+
+    public List<List<EnrichedFlight>> groupFlightsByModel (List<EnrichedFlight> flights, List<Aircraft> aircrafts) {
+        List<String> models = getUniqueModels(aircrafts);
+        List<List<EnrichedFlight>> result = new ArrayList<>();
+
+        for(String model : models) {
+            result.add(getAllFlightsForModel(flights, aircrafts, model));
+        }
+
+        return result;
+    }
+
+    public List<List<EnrichedFlight>> groupFlightsByOperator (List<EnrichedFlight> flights, List<Aircraft> aircrafts) {
+        List<String> models = getUniqueOperators(aircrafts);
+        List<List<EnrichedFlight>> output = new ArrayList<>();
+
+        for(String model : models) {
+            output.add(getAllFlightsForOperator(flights, aircrafts, model));
         }
 
         return output;
     }
 
-    public List<List<EnrichedFlight>> sortFlightsByModel (List<EnrichedFlight> flights, List<Aircraft> aircrafts) {
-
-
-        List<String> listOfModels = giveListOfModels(aircrafts);
-        List<List<EnrichedFlight>> output = new ArrayList<>();
-
-        for(String model : listOfModels) {
-            output.add(groupFlightsByModel(flights, aircrafts, model));
-        }
-
-
-
-    return output;
-    }
-
-    public List<List<EnrichedFlight>> sortModelsWithLongCourses(List<List<EnrichedFlight>> input) {
+    public List<List<EnrichedFlight>> findLongFlightsForEachModel(List<List<EnrichedFlight>> input) {
         List<List<EnrichedFlight>> output = new ArrayList<>();
 
         for (List<EnrichedFlight> enrichedFlights : input) {
-            boolean IsLongFlight= false;
+            boolean isLongFlight = false;
 
             for (EnrichedFlight flight : enrichedFlights) {
                 if (flight.getTimeInAir() >= 1800) {
-                    IsLongFlight = true;
+                    isLongFlight = true;
                     break;
                 }
             }
 
-            if (IsLongFlight) {
+            if (isLongFlight) {
                 output.add(enrichedFlights);
             }
         }
