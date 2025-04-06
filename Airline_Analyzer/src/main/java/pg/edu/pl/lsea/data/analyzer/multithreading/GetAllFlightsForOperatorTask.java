@@ -10,12 +10,12 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Class designed to be run in parallel (as it implements Runnable interface)
- * Its goal is to save all flights for a given model to a shared (across threads) list
+ * Its goal is to save all flights for a given operator to a shared (across threads) list
  */
-public class GetAllFlightsForModelTask implements Runnable {
+public class GetAllFlightsForOperatorTask implements Runnable {
     private final List<EnrichedFlight> flights;
     private final List<Aircraft> aircrafts;
-    private final String model;
+    private final String operator;
     /**
      * shared list across multiple threads
      */
@@ -26,17 +26,17 @@ public class GetAllFlightsForModelTask implements Runnable {
     CountDownLatch latch;
 
     /**
-     * Creates a GetAllFlightsForModelTask object
+     * Creates a GetAllFlightsForOperatorTask object
      * @param flights list of flights
      * @param aircrafts list of aircraft
-     * @param model aircraft's model
+     * @param operator aircraft's operator
      * @param sharedResult shared list that contains the results of task completion
      * @param latch an instance of CountDownLatch
      */
-    public GetAllFlightsForModelTask(List<EnrichedFlight> flights, List<Aircraft> aircrafts, String model, List<List<EnrichedFlight>> sharedResult, CountDownLatch latch){
+    public GetAllFlightsForOperatorTask(List<EnrichedFlight> flights, List<Aircraft> aircrafts, String operator, List<List<EnrichedFlight>> sharedResult, CountDownLatch latch){
         this.flights = flights;
         this.aircrafts = aircrafts;
-        this.model = model;
+        this.operator = operator;
         this.sharedResult = sharedResult;
         this.latch = latch;
     }
@@ -53,7 +53,7 @@ public class GetAllFlightsForModelTask implements Runnable {
             List<String> icaoList = new ArrayList<>();
 
             for (Aircraft aircraft : aircrafts) {
-                if (Objects.equals(aircraft.getModel(), model)) {
+                if (Objects.equals(aircraft.getModel(), operator)) {
                     icaoList.add(aircraft.getIcao24());
                 }
             }
