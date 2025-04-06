@@ -56,7 +56,8 @@ public class PropertiesCalculator {
 
     public void printAllAverages( List<List<EnrichedFlight>> listOfLists){
         for(List<EnrichedFlight>  list : listOfLists){
-            System.out.println(calculateAverageTimeInAir(list));
+//            System.out.println(calculateAverageTimeInAir(list));
+            calculateAverageTimeInAir(list);
         }
     }
 }
