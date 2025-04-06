@@ -19,7 +19,6 @@ public class GroupingTool {
             if(Objects.equals(aircraft.getModel(),SearchedModel)){
                 icaoList.add(aircraft.getIcao24());
 
-                //bierze tylko jedno ICOA jest kilka samolotow z ICAO
             }
         }
 
@@ -66,5 +65,26 @@ public class GroupingTool {
     return output;
     }
 
+    public List<List<EnrichedFlight>> sortModelsWithLongCourses(List<List<EnrichedFlight>> input) {
+        List<List<EnrichedFlight>> output = new ArrayList<>(input);
 
+        Iterator<List<EnrichedFlight>> iterator = output.iterator();
+        while (iterator.hasNext()) {
+            List<EnrichedFlight> enrichedFlights = iterator.next();
+            boolean allShortFlights = true;
+
+            for (EnrichedFlight flight : enrichedFlights) {
+                if (flight.getTimeInAir() >= 1800) {
+                    allShortFlights = false;
+                    break;
+                }
+            }
+
+            if (allShortFlights) {
+                iterator.remove();
+            }
+        }
+
+        return output;
+    }
 }

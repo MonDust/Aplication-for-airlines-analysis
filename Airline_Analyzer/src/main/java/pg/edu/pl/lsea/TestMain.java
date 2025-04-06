@@ -36,8 +36,8 @@ public class TestMain {
 
 
         // Load data from files
-        File fileFlights = new File("../../LSEA_DATABASE/flight_sample_2022-09-26.csv");
-        File fileAircrafts = new File("../../LSEA_DATABASE/aircraft-database-complete-2022-09.csv");
+        File fileFlights = new File("resources/flight_sample_2022-09-01.csv");
+        File fileAircrafts = new File("resources/aircraft-database-complete-2022-09.csv");
         List<Aircraft> aircrafts = dataLoader.loadAircrafts(fileAircrafts);
         List<Flight> flights = dataLoader.loadFlights(fileFlights);
 
@@ -101,6 +101,17 @@ public class TestMain {
                 count += flight.getTimeInAir();
         }
         System.out.println("(Multi) Total number of flights: " + count);
+
+
+
+
+
+
+
+        List<List<EnrichedFlight>> output = groupingTool.sortModelsWithLongCourses(listOfLists2);
+
+
+
 
     }
 }
