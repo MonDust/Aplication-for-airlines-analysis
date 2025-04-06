@@ -66,11 +66,9 @@ public class GroupingTool {
     }
 
     public List<List<EnrichedFlight>> sortModelsWithLongCourses(List<List<EnrichedFlight>> input) {
-        List<List<EnrichedFlight>> output = new ArrayList<>(input);
+        List<List<EnrichedFlight>> output = new ArrayList<>();
 
-        Iterator<List<EnrichedFlight>> iterator = output.iterator();
-        while (iterator.hasNext()) {
-            List<EnrichedFlight> enrichedFlights = iterator.next();
+        for (List<EnrichedFlight> enrichedFlights : input) {
             boolean allShortFlights = true;
 
             for (EnrichedFlight flight : enrichedFlights) {
@@ -80,11 +78,10 @@ public class GroupingTool {
                 }
             }
 
-            if (allShortFlights) {
-                iterator.remove();
+            if (!allShortFlights) {
+                output.add(enrichedFlights);
             }
         }
-
         return output;
     }
 }
