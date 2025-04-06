@@ -105,7 +105,7 @@ public class TestMain {
         ParallelGroupingTool parallelGroupingTool = new ParallelGroupingTool();
         // This method runs with multiple threads internally:
         List<List<EnrichedFlight>> listOfLists2_model = parallelGroupingTool.groupFlightsByModel(enrichedFlights, aircrafts, threads);
-//        List<List<EnrichedFlight>> listOfLists2_operator = parallelGroupingTool.groupFlightsByOperator(enrichedFlights, aircrafts, threads);
+        List<List<EnrichedFlight>> listOfLists2_operator = parallelGroupingTool.groupFlightsByOperator(enrichedFlights, aircrafts, threads);
 //
 //        PropertiesCalculator propertiesTool2 = new PropertiesCalculator();
 
