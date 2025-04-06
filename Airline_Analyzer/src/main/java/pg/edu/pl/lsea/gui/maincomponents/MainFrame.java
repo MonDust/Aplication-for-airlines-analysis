@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.gui;
+package pg.edu.pl.lsea.gui.maincomponents;
 
 import javax.swing.*;
 import java.awt.Color;

@@ -7,12 +7,14 @@ import pg.edu.pl.lsea.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.data.engieniering.NullRemover;
+import pg.edu.pl.lsea.data.storage.DataStorage;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.files.CsvDataLoader;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -35,17 +37,37 @@ public class TestMain {
         SortingCalculator correlationCalculator = new SortingCalculator();
 
 
-        // Load data from files
-        File fileFlights = new File("resources/flight_sample_2022-09-01.csv");
-        File fileAircrafts = new File("resources/aircraft-database-complete-2022-09.csv");
-        List<Aircraft> aircrafts = dataLoader.loadAircrafts(fileAircrafts);
-        List<Flight> flights = dataLoader.loadFlights(fileFlights);
+        File fileAircrafts1 = new File("resources/aircraft-database-complete-2022-09.csv");
+        File fileFlights1 = new File("resources/flight_sample_2022-09-26.csv");
+        File fileFlights2 = new File("resources/flight_sample_2022-09-02.csv");
+        File fileFlights3 = new File("resources/flight_sample_2022-09-03.csv");
+        File fileFlights4 = new File("resources/flight_sample_2022-09-04.csv");
+        File fileFlights5 = new File("resources/flight_sample_2022-09-01.csv");
 
+
+        long start = System.currentTimeMillis();
+        dataLoader.loadFlightsToStorage(fileFlights1);
+        dataLoader.loadFlightsToStorage(fileFlights2);
+        dataLoader.loadFlightsToStorage(fileFlights3);
+        dataLoader.loadFlightsToStorage(fileFlights4);
+        dataLoader.loadFlightsToStorage(fileFlights5);
+        dataLoader.loadFlightsToStorage(fileFlights1);
+        dataLoader.loadFlightsToStorage(fileFlights2);
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
 
         // Clean the data
         nullRemover.TransformAircrafts(aircrafts);
         nullRemover.TransformFlights(flights);
 
+        start = System.currentTimeMillis();
+        dataLoader.loadAircraftsToStorage(fileAircrafts1);
+        dataLoader.loadAircraftsToStorage(fileAircrafts1);
+        end = System.currentTimeMillis();
+        System.out.println(end-start);
+
+        System.out.println(DataStorage.getInstance().countAircrafts());
+        System.out.println(DataStorage.getInstance().countFlights());
         // Feature engineering (adding new features/properties to Flights)
         List<EnrichedFlight> enrichedFlights;
         enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flights);
@@ -53,6 +75,8 @@ public class TestMain {
         // Sort the data
         correlationCalculator.analyzeDataForDashbord(aircrafts, enrichedFlights);
 
+        List<Flight> flights = DataStorage.getInstance().getFlights();
+        System.out.println(flights.stream().findAny());
         long pre_analysis_end = System.currentTimeMillis();
         long pre_analysis_duration = pre_analysis_end - pre_analysis_start;
         System.out.println("Pre-analysis duration: " + pre_analysis_duration);
@@ -107,6 +131,8 @@ public class TestMain {
 
 
 
+        // Process with data engineering system
+        //Object processedData = dataEnrichment.process(nullRemover.process(data));
 
         List<List<EnrichedFlight>> output = groupingTool.sortModelsWithLongCourses(listOfLists2);
 

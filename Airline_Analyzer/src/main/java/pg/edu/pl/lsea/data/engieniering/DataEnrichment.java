@@ -67,15 +67,10 @@ public class DataEnrichment extends DataTransform {
 
             List<EnrichedFlight> flightsNew = new ArrayList<>();
 
-            for (Flight flight : flights) {
-                flightsNew.add(new EnrichedFlight(
-                        flight.getIcao24(),
-                        flight.getFirstSeen(),
-                        flight.getLastSeen(),
-                        flight.getDepartureAirport(),
-                        flight.getArrivalAirport()
-                ));
-            }
+        for (Flight flight : flights) {
+            Flight copiedFlight = flight.clone();
+            flightsNew.add(new EnrichedFlight(copiedFlight));
+        }
 
             return flightsNew;
         }
