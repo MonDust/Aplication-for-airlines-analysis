@@ -38,21 +38,21 @@ public class TestMain {
 
 
         File fileAircrafts1 = new File("resources/aircraft-database-complete-2022-09.csv");
-//        File fileFlights1 = new File("resources/flight_sample_2022-09-26.csv");
-//        File fileFlights2 = new File("resources/flight_sample_2022-09-02.csv");
-//        File fileFlights3 = new File("resources/flight_sample_2022-09-03.csv");
-//        File fileFlights4 = new File("resources/flight_sample_2022-09-04.csv");
+        File fileFlights1 = new File("resources/flight_sample_2022-09-26.csv");
+        File fileFlights2 = new File("resources/flight_sample_2022-09-02.csv");
+        File fileFlights3 = new File("resources/flight_sample_2022-09-03.csv");
+        File fileFlights4 = new File("resources/flight_sample_2022-09-04.csv");
         File fileFlights5 = new File("resources/flight_sample_2022-09-01.csv");
 
 
         long start = System.currentTimeMillis();
-//        dataLoader.loadFlightsToStorage(fileFlights1);
-//        dataLoader.loadFlightsToStorage(fileFlights2);
-//        dataLoader.loadFlightsToStorage(fileFlights3);
-//        dataLoader.loadFlightsToStorage(fileFlights4);
+        dataLoader.loadFlightsToStorage(fileFlights1);
+        dataLoader.loadFlightsToStorage(fileFlights2);
+        dataLoader.loadFlightsToStorage(fileFlights3);
+        dataLoader.loadFlightsToStorage(fileFlights4);
         dataLoader.loadFlightsToStorage(fileFlights5);
-//        dataLoader.loadFlightsToStorage(fileFlights1);
-//        dataLoader.loadFlightsToStorage(fileFlights2);
+        dataLoader.loadFlightsToStorage(fileFlights1);
+        dataLoader.loadFlightsToStorage(fileFlights2);
         long end = System.currentTimeMillis();
         System.out.println(end-start);
 
