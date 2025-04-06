@@ -108,7 +108,16 @@ public class SortingCalculator extends DataAnalyzer  {
         }
     }
 
+    public List<List<EnrichedFlight>> giveTopNOperators (List<List<EnrichedFlight>> input, int n) {
+        input.sort(Comparator.comparingInt((List<EnrichedFlight> l) -> l.size()).reversed());
+        List<List<EnrichedFlight>> output = new ArrayList<>();
 
+        for (int i = 0; i < n; i++) {
+            output.add(input.get(i));
+        }
+
+        return output;
+    }
 
 }
 
