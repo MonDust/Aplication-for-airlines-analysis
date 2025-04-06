@@ -1,15 +1,12 @@
 package pg.edu.pl.lsea.data.analyzer;
 
-import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 
 import java.util.List;
 
-public class CorrelationCalculator {
+public class PropertiesCalculator {
 
-    public float calculateCoreelation (float[] List1, float[] List2) {
-
-        float output = 0;
+    public float calculateCorrelation(float[] List1, float[] List2) {
 
         float sx = 0.0F;
         float sy = 0.0F;
@@ -42,4 +39,24 @@ public class CorrelationCalculator {
         return cov / sigmax / sigmay;
     }
 
+
+    public int calculateAverageTimeInAir(List<EnrichedFlight> input) {
+
+        int output = 0;
+
+        for (EnrichedFlight flight : input){
+            output += flight.getTimeInAir();
+        }
+
+        if(!input.isEmpty()) {
+            output = output / input.size();
+        }
+        return output;
+    }
+
+    public void printAllAverages( List<List<EnrichedFlight>> listOfLists){
+        for(List<EnrichedFlight>  list : listOfLists){
+            System.out.println(calculateAverageTimeInAir(list));
+        }
+    }
 }

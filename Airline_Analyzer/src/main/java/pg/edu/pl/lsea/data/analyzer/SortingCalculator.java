@@ -2,7 +2,6 @@ package pg.edu.pl.lsea.data.analyzer;
 
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
-import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.entities.Output;
 
 import java.util.*;
@@ -31,56 +30,60 @@ public class SortingCalculator extends DataAnalyzer  {
     }
 
 
-    public void sortByAmountOfFlights ( List<EnrichedFlight> flights){
+    public List<Output> sortByAmountOfFlights ( List<EnrichedFlight> flights){
 
-        List<Output> Temp = new ArrayList<>();
+        List<Output> output = new ArrayList<>();
 
         Collections.sort(flights);
 
-        String FirstIcao = flights.getFirst().getIcao24();
-        String currentIcao = FirstIcao;
+        String currentIcao = flights.getFirst().getIcao24();
         int Value = 0;
 
-        for (Flight flight : flights) {
+        for (EnrichedFlight flight : flights) {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
                 Value++;
             } else {
                 System.out.println(currentIcao);
                 System.out.println(Value);
-                Temp.add(new Output(currentIcao, Value));
+                output.add(new Output(currentIcao, Value));
                 Value = 0;
                 currentIcao = flight.getIcao24();
             }
         }
 
-        Temp.sort(Comparator.comparingInt(o -> o.Value));
-        System.out.println(Temp);
+        output.sort(Comparator.comparingInt(o -> o.Value));
+        System.out.println(output);
+
+
+        return output;
     }
 
-    public void sortByTimeOfFlights ( List<EnrichedFlight> flights){
+    public  List<Output>  sortByTimeOfFlights ( List<EnrichedFlight> flights){
 
-        List<Output> Temp = new ArrayList<>();
+        List<Output> output = new ArrayList<>();
 
         Collections.sort(flights);
 
-        String FirstIcao = flights.getFirst().getIcao24();
-        String currentIcao = FirstIcao;
+        String currentIcao = flights.getFirst().getIcao24();
         int Value = 0;
 
         for (EnrichedFlight flight : flights) {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
-               Value += flight.getTimeInAir();
+                Value += flight.getTimeInAir();
             } else {
                 System.out.println(currentIcao);
                 System.out.println(Value);
-                Temp.add(new Output(currentIcao, Value));
+                output.add(new Output(currentIcao, Value));
                 Value = 0;
                 currentIcao = flight.getIcao24();
             }
         }
 
-        Temp.sort(Comparator.comparingInt(o -> o.Value));
-        System.out.println(Temp);
+        output.sort(Comparator.comparingInt(o -> o.Value));
+        System.out.println(output);
+
+
+        return output;
     }
 
 
@@ -104,5 +107,8 @@ public class SortingCalculator extends DataAnalyzer  {
             System.out.println("Flight: " + flight.getIcao24() + " | Time in Air: " + flight.getTimeInAir() + "s");
         }
     }
+
+
+
 }
 

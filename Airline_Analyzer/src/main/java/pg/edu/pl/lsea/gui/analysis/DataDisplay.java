@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea.gui.analysis;
 
 import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.data.analyzer.CorrelationCalculator;
+import pg.edu.pl.lsea.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.entities.Aircraft;
@@ -66,12 +66,12 @@ public class DataDisplay extends AnalysisArea {
 
 
         //DEBUG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        final CorrelationCalculator correlationCalculator = new CorrelationCalculator();
+        final PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
 
         float[] List1 = new float[] { 10.0f, 20.0f, 15.0f };
         float[] List2 = new float[] { 15.0f, 25.0f, 35.0f };
 
-        System.out.println(correlationCalculator.calculateCoreelation(List1, List2));
+        System.out.println(propertiesCalculator.calculateCorrelation(List1, List2));
 
     }
 
