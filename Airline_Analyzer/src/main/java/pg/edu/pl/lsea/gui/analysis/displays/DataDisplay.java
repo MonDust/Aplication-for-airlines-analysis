@@ -1,6 +1,6 @@
 package pg.edu.pl.lsea.gui.analysis.displays;
 
-import pg.edu.pl.lsea.data.analyzer.SortingCaluclator;
+import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
 import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.entities.Aircraft;

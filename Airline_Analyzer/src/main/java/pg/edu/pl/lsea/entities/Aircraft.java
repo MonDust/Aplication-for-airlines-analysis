@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * A class representing an aircraft described by a specific model, operator and owner.
  */
-public class Aircraft extends Trackable{
+public class Aircraft extends Trackable implements Cloneable{
     private String model;
     private String operator;
     private String owner;
@@ -23,6 +23,16 @@ public class Aircraft extends Trackable{
         this.model = model;
         this.operator = operator;
         this.owner = owner;
+    }
+
+    /**
+     * Empty constructor needed for cloning
+     */
+    public Aircraft() {
+        setIcao24("");
+        this.model = "";
+        this.operator = "";
+        this.owner = "";
     }
 
     /**
@@ -113,6 +123,15 @@ public class Aircraft extends Trackable{
                ", operator='" + operator + "'" +
                ", owner='" + owner + "'" +
                "}";
+    }
+    @Override
+    public Aircraft clone() {
+        Aircraft newAircraft = new Aircraft();
+        newAircraft.setIcao24(getIcao24());
+        newAircraft.setModel(model);
+        newAircraft.setOperator(operator);
+        newAircraft.setOwner(owner);
+        return newAircraft;
     }
     /**
      * A method that compares an aircraft object to another object and determines if they are equal based on icao24 and model values.
