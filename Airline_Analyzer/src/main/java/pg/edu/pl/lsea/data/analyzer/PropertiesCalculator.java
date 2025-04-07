@@ -1,10 +1,14 @@
 package pg.edu.pl.lsea.data.analyzer;
 
 import pg.edu.pl.lsea.entities.EnrichedFlight;
+import pg.edu.pl.lsea.entities.Output;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropertiesCalculator {
+
+    private static final int minimalTimeInAirForLongFlightSeconds = 1800;
 
     public float calculateCorrelation(float[] List1, float[] List2) {
 
@@ -59,5 +63,35 @@ public class PropertiesCalculator {
 //            System.out.println(calculateAverageTimeInAir(list));
             calculateAverageTimeInAir(list);
         }
+    }
+
+
+    public List<Output> givePercentageOfLongFlights (List<List<EnrichedFlight>> listOfLists){
+        List<Output> output = new ArrayList<>();
+
+        for(List<EnrichedFlight>  list : listOfLists) {
+            float counter = 0F;
+            
+            for (EnrichedFlight flight : list) {
+                if (flight.getTimeInAir() >= minimalTimeInAirForLongFlightSeconds) {
+                    counter++;
+                }
+            }
+
+            if (counter != 0) {
+                
+                counter = counter / list.size();
+                counter = counter *100;
+            }
+            if (!list.isEmpty()) {
+                output.add(new Output(list.getFirst().getIcao24(), (int) counter));
+            } else {
+                output.add(new Output("EMPTY", (int) counter));
+            }
+        }
+
+
+
+        return output;
     }
 }

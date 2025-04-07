@@ -7,6 +7,9 @@ import java.util.*;
 
 public class GroupingTool {
 
+    private static final int minimalTimeInAirForLongFlightSeconds = 1800;
+
+
     private List<EnrichedFlight> getAllFlightsForModel(List<EnrichedFlight> flights, List<Aircraft> aircrafts, String model){
         List<EnrichedFlight> result = new ArrayList<>();
         List<String> icaoList = new ArrayList<>();
@@ -108,7 +111,7 @@ public class GroupingTool {
             boolean isLongFlight = false;
 
             for (EnrichedFlight flight : enrichedFlights) {
-                if (flight.getTimeInAir() >= 1800) {
+                if (flight.getTimeInAir() >= minimalTimeInAirForLongFlightSeconds) {
                     isLongFlight = true;
                     break;
                 }
