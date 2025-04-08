@@ -83,7 +83,8 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
         JFileChooser fileChooser = initializeFileFilter(fileType);
 
         // Open the file chooser dialog
-        int returnValue = fileChooser.showOpenDialog(this);
+        String dialogTitle = "Choose " + dataType + " file(s)";
+        int returnValue = fileChooser.showDialog(this, dialogTitle);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File[] selectedFiles = fileChooser.getSelectedFiles();
             // Validate the files based on selected file type and data type

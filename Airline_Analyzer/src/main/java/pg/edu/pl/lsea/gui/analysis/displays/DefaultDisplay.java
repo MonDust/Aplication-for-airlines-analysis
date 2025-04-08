@@ -1,7 +1,5 @@
 package pg.edu.pl.lsea.gui.analysis.displays;
 
-import pg.edu.pl.lsea.gui.analysis.AnalysisArea;
-
 import java.awt.*;
 
 /**
