@@ -50,6 +50,11 @@ public class GroupingTool {
         return result;
     }
 
+    /**
+     * Returns list of strings with contain
+     * @param aircrafts list of all aircraft
+     * @return list of all
+     */
     private List<String> getUniqueModels (List<Aircraft> aircrafts){
 
         List<String> result = new ArrayList<>();
