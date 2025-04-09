@@ -1,16 +1,11 @@
-package pg.edu.pl.lsea.gui.analysis;
+package pg.edu.pl.lsea.gui.analysis.displays;
 
 import java.awt.*;
-import java.util.List;
-
-import pg.edu.pl.lsea.entities.Aircraft;
-import pg.edu.pl.lsea.entities.Flight;
 
 /**
- * Class representing a basic chart
+ * Class representing a default display (basic chart)
  */
-public class Chart extends AnalysisArea {
-
+public class DefaultDisplay extends AnalysisDisplay {
     /**
      * Example graph - to change when analysis will be possible
      * @param g the Graphics object to protect

@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class DataEnrichment extends DataTransform {
 
-    /**
+    /**list of list which is containing only long flights
      * Fills empty fields with "EMPTY" value
      *
      * @param flights list of flights that will be changed
@@ -32,9 +32,6 @@ public class DataEnrichment extends DataTransform {
         }
 
     }
-
-
-
 
     /**
      * Fills empty fields with "EMPTY" value
@@ -58,26 +55,21 @@ public class DataEnrichment extends DataTransform {
 
     }
 
-        /**
-         * Uses deep clone to create list of EnrichedFlight
-         * @param flights list of flights that will be changed
-         * @return list of flights witch was enriched by deep clone into entities EnrichedFlight
-         */
-        public List<EnrichedFlight> CreateEnrichedListOfFlights (List <Flight> flights) {
+    /**
+     * Uses deep clone to create list of EnrichedFlight
+     * @param flights list of flights that will be changed
+     * @return list of flights witch was enriched by deep clone into entities EnrichedFlight
+     */
+    public List<EnrichedFlight> CreateEnrichedListOfFlights (List <Flight> flights) {
 
-            List<EnrichedFlight> flightsNew = new ArrayList<>();
+        List<EnrichedFlight> flightsNew = new ArrayList<>();
 
-            for (Flight flight : flights) {
-                flightsNew.add(new EnrichedFlight(
-                        flight.getIcao24(),
-                        flight.getFirstSeen(),
-                        flight.getLastSeen(),
-                        flight.getDepartureAirport(),
-                        flight.getArrivalAirport()
-                ));
-            }
-
-            return flightsNew;
+        for (Flight flight : flights) {
+            Flight copiedFlight = flight.clone();
+            flightsNew.add(new EnrichedFlight(copiedFlight));
         }
+
+        return flightsNew;
     }
+}
 

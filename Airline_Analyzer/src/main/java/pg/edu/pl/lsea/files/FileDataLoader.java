@@ -12,16 +12,28 @@ import java.util.List;
  */
 public abstract class FileDataLoader {
     /**
-     *
-     * @param file File with aircrafts which should be read
-     * @return The list of aircrafts that could be loaded from the file
+     * Loads aircrafts to globally available DataStorage
+     * @param aircraftsFile File with aircrafts which should be read
      */
-    public abstract List<Aircraft> loadAircrafts(File file);
+    public abstract void loadAircraftsToStorage(File aircraftsFile);
+
+    /**
+     * Loads flights to globally available DataStorage
+     * @param flightsFile File with flights which should be read
+     */
+    public abstract void loadFlightsToStorage(File flightsFile);
 
     /**
      *
-     * @param file File with flights which should be read
+     * @param aircraftsFile File with aircrafts which should be read
+     * @return The list of aircrafts that could be loaded from the file
+     */
+    public abstract List<Aircraft> readAircrafts(File aircraftsFile);
+
+    /**
+     *
+     * @param flightsFile File with flights which should be read
      * @return The list of flights that could be loaded from the file
      */
-    public abstract List<Flight> loadFlights(File file);
+    public abstract List<Flight> readFlights(File flightsFile);
 }
