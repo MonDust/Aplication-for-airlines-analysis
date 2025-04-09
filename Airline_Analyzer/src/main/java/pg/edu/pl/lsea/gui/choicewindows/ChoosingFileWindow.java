@@ -21,6 +21,7 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
 
     /**
      * Create ChoosingFileWindow object.
+     * Creates JLabels to choose file type and to choose data type, and a button to confirm.
      * @param panel - the main panel
      */
     public ChoosingFileWindow(MainPanel panel) {
@@ -35,10 +36,10 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
         add(fileTypeLabel);
         add(fileTypeComboBox);
 
-        // Data Type Selection (flights or airports)
+        // Data Type Selection (flights or aircrafts)
         JLabel dataTypeLabel = new JLabel("Select data type:");
         // Available Data Types
-        String[] dataTypes = new String[]{"Flights", "Airports"};
+        String[] dataTypes = new String[]{"Flights", "Aircrafts"};
         dataTypeComboBox = new JComboBox<>(dataTypes);
         add(dataTypeLabel);
         add(dataTypeComboBox);
@@ -122,13 +123,13 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
             JOptionPane.showMessageDialog(mainPanel, "Loaded " + recordsLoaded + " flights.");
 
             System.out.println("Loading flight data from " + file.getName());
-        } else if ("Airports".equals(dataType)) {
+        } else if ("Aircrafts".equals(dataType)) {
             recordsLoaded = dataStorage.countAircrafts();
             dataLoader.loadAircraftsToStorage(file);
             recordsLoaded = dataStorage.countAircrafts() - recordsLoaded;
             JOptionPane.showMessageDialog(mainPanel, "Loaded " + recordsLoaded + " aircrafts.");
 
-            System.out.println("Loading airport data from " + file.getName());
+            System.out.println("Loading aircrafts data from " + file.getName());
         }
     }
 }

@@ -12,7 +12,8 @@ public class ChoosingAnalysisWindow extends BaseChoosingWindow{
     final private JComboBox<String> analysisTypeComboBox;
 
     /**
-     * Constructor for ChoosingAnalysisWindow class
+     * Constructor for ChoosingAnalysisWindow class.
+     * Created JLable for choosing analysis type and a button to confirm.
      * @param panel - main panel
      */
     public ChoosingAnalysisWindow(MainPanel panel) {

@@ -1,8 +1,6 @@
 package pg.edu.pl.lsea.gui.analysis;
 
-import pg.edu.pl.lsea.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.data.analyzer.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.data.storage.DataStorage;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
@@ -66,6 +64,7 @@ public class AnalysisPanel extends JPanel {
 
     /**
      * Constructor for AnalysisPanel.
+     * Getting instance of data storage, adding current display and text area.
      */
     public AnalysisPanel() {
         setLayout(null); // Can be later changed to other layout like FlowLayout
@@ -83,6 +82,10 @@ public class AnalysisPanel extends JPanel {
         add(progressTextArea);
     }
 
+    /**
+     * Show the update of analysis in the text area.
+     * @param message message that should be shown (update).
+     */
     public void updateAnalysisProgress(String message) {
         progressTextArea.append(message + "\n");
         progressTextArea.setCaretPosition(progressTextArea.getDocument().getLength());
@@ -105,7 +108,7 @@ public class AnalysisPanel extends JPanel {
      * @return int - number of threads.
      */
     private int promptForThreadCount() {
-        Integer[] options = {1, 2, 4, 8, 16};
+        Integer[] options = {1, 2, 3, 4, 5, 10, 15, 20};
         Integer selection = (Integer) JOptionPane.showInputDialog(
                 null,
                 "Select number of threads for parallel analysis:",
@@ -129,8 +132,7 @@ public class AnalysisPanel extends JPanel {
      *   <li> 4 - Most popular operators</li>
      *   <li> 5 - Most popular models</li>
      *   <li> 6 - Plot average time</li>
-     *   <li> 7 - Flights per airport</li>
-     *   <li> 8 - Most used operators</li>
+     *   <li> 7 - Percentage of long flights</li>
      * </ul>
      * @param analysisType int - type of the analysis to be performed
      */
@@ -158,7 +160,7 @@ public class AnalysisPanel extends JPanel {
             case PLOT_AVERAGE_TIME:
                 performPlotAverageTimePerOperator(calc);
                 break;
-            case FLIGHTS_PER_AIRPORT:
+            case PERCENTAGE_OF_THE_LONG_FLIGHTS:
                 performPercentageOfLongFlights(calc);
             default:
                 currentDisplay = new DefaultDisplay();
@@ -167,6 +169,10 @@ public class AnalysisPanel extends JPanel {
         repaint();
     }
 
+    /**
+     * Generate a plot showing average time per top N Operators.
+     * @param calc SortingCalculator, to perform analysis.
+     */
     private void performPlotAverageTimePerOperator(SortingCalculator calc) {
         System.out.println("Showing plot...");
         PlotAverageTimePerOperatorDisplay plotDisplay = new PlotAverageTimePerOperatorDisplay(parser);
@@ -174,6 +180,10 @@ public class AnalysisPanel extends JPanel {
         System.out.println("Stop showing");
     }
 
+    /**
+     * Show Top N Operators.
+     * @param calc SortingCalculator to perform analysis.
+     */
     private void performTopNOperators(SortingCalculator calc) {
         System.out.println("Showing TopN operators...");
         TopNOperators topNOperatorsAnalyse = new TopNOperators();
@@ -198,9 +208,6 @@ public class AnalysisPanel extends JPanel {
         ThreadAnalysisRunner runner = new ThreadAnalysisRunner(this);
 
         int threads = promptForThreadCount();
-        // Uncomment bellow to perform single-thread analysis always
-        // runner.runAnalysis(false, 1);  // Single-threaded
-        //runner.runAnalysis(true, threads);   // Multi-threaded
 
         new Thread(() -> {
             runner.runAnalysis(true, threads); // Multi-threaded analysis
@@ -208,6 +215,10 @@ public class AnalysisPanel extends JPanel {
         }).start();
     }
 
+    /**
+     * Perform analysis to find the percentage of long flights for top N Operators.
+     * @param calc SortingCalculator, to perform analysis.
+     */
     private void performPercentageOfLongFlights(SortingCalculator calc) {
         System.out.println("Long Flights percentage...");
         TopNOperatorsPercentage topPercentage = new TopNOperatorsPercentage();
@@ -215,6 +226,10 @@ public class AnalysisPanel extends JPanel {
         topPercentage.showResultsDialog();
     }
 
+    /**
+     * Sorting and showing flights by the number and then showing the window.
+     * @param calc SortingCalculator, to perform analysis.
+     */
     private void performSortByNumberOfFlights(SortingCalculator calc) {
         List <EnrichedFlight> enrichedFlights = DataStorageAnalysis.prepareFlights();
         System.out.println("Sorting by the amount of flights...");
@@ -222,6 +237,10 @@ public class AnalysisPanel extends JPanel {
         displaySortedData(sortedByCount, "amount of flights");
     }
 
+    /**
+     * Sorting and showing flights by the time and then showing the window.
+     * @param calc SortingCalculator, to perform analysis.
+     */
     private void performSortByTimeOfFlights(SortingCalculator calc) {
         List <EnrichedFlight> enrichedFlights = DataStorageAnalysis.prepareFlights();
         System.out.println("Sorting by the time of flights...");
@@ -229,6 +248,11 @@ public class AnalysisPanel extends JPanel {
         displaySortedData(sortedByTime, "time of flights");
     }
 
+    /**
+     * Display Sorted data - make a table in which it is possible to display data.
+     * @param sortedData - data that has been sorted by previous function.
+     * @param description - description that should be visible.
+     */
     private void displaySortedData(List<Output> sortedData, String description) {
         currentDisplay = new OutputTableDisplay(sortedData, parser);
         currentDisplay.showAsPopup(description);

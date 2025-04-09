@@ -13,12 +13,12 @@ import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_DEFAULT_THREADS;
 
 /**
- * Class responsible for returning Top N Operators - showing a windows with an appropriate message.
+ * Class responsible for returning Top N Models - showing a windows with an appropriate message.
  */
 public class TopNModels extends BaseRunner {
 
     /**
-     * Method to perform the Top N operators analysis and display the results.
+     * Method to perform the Top N models analysis and display the results.
      * n established by constant.
      */
     public void analyzeTopModels(SortingCalculator calc, AircraftParser parser) {
