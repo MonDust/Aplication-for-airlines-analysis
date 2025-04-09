@@ -1,5 +1,8 @@
 package pg.edu.pl.lsea.utils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Global constants
  */
@@ -20,7 +23,7 @@ public class Constants {
 
         // Analysis panel
         public static final int ANALYSIS_X = 50;
-        public static final int ANALYSIS_Y = 100;
+        public static final int ANALYSIS_Y = 80;
         public static final int ANALYSIS_HEIGHT = 500;
         public static final int ANALYSIS_WIDTH = 1200;
 
@@ -30,5 +33,8 @@ public class Constants {
         // Choice Window
         public static final int CHOICE_WINDOW_WIDTH = 300;
         public static final int CHOICE_WINDOW_HEIGHT = 200;
+
+        public static final int NUMBER_OF_DEFAULT_THREADS = 4;
+
     }
 }

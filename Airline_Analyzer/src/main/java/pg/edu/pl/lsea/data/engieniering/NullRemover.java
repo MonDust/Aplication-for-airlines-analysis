@@ -10,7 +10,7 @@ import java.util.Objects;
 public class NullRemover extends DataTransform {
 
     /**
-     * Removes entieties with empty fields
+     * Removes entities with empty fields
      * @param flights list of flights that will be changed
      */
     public void TransformFlights (List<Flight> flights){
@@ -33,7 +33,7 @@ public class NullRemover extends DataTransform {
     }
 
     /**
-     * Removes entieties with empty fields
+     * Removes entities with empty fields
      * @param aircrafts list of aircrafts that will be changed
      */
     public  void TransformAircrafts (List<Aircraft> aircrafts){

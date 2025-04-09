@@ -55,21 +55,21 @@ public class DataEnrichment extends DataTransform {
 
     }
 
-        /**
-         * Uses deep clone to create list of EnrichedFlight
-         * @param flights list of flights that will be changed
-         * @return list of flights witch was enriched by deep clone into entities EnrichedFlight
-         */
-        public List<EnrichedFlight> CreateEnrichedListOfFlights (List <Flight> flights) {
+    /**
+     * Uses deep clone to create list of EnrichedFlight
+     * @param flights list of flights that will be changed
+     * @return list of flights witch was enriched by deep clone into entities EnrichedFlight
+     */
+    public List<EnrichedFlight> CreateEnrichedListOfFlights (List <Flight> flights) {
 
-            List<EnrichedFlight> flightsNew = new ArrayList<>();
+        List<EnrichedFlight> flightsNew = new ArrayList<>();
 
         for (Flight flight : flights) {
             Flight copiedFlight = flight.clone();
             flightsNew.add(new EnrichedFlight(copiedFlight));
         }
 
-            return flightsNew;
-        }
+        return flightsNew;
     }
+}
 

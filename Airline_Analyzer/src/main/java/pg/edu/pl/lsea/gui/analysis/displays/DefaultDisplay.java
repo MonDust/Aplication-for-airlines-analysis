@@ -1,13 +1,11 @@
 package pg.edu.pl.lsea.gui.analysis.displays;
 
-import pg.edu.pl.lsea.gui.analysis.AnalysisArea;
-
 import java.awt.*;
 
 /**
  * Class representing a default display (basic chart)
  */
-public class DefaultDisplay extends AnalysisArea {
+public class DefaultDisplay extends AnalysisDisplay {
     /**
      * Example graph - to change when analysis will be possible
      * @param g the Graphics object to protect

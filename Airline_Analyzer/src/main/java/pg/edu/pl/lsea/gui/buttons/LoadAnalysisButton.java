@@ -30,6 +30,7 @@ public class LoadAnalysisButton extends LoadDataButton{
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        mainPanel.initializeParser();
         // This will open the ChoosingFileWindow as a separate window
         BaseChoosingWindow fileWindow = new ChoosingAnalysisWindow(mainPanel);
     }
