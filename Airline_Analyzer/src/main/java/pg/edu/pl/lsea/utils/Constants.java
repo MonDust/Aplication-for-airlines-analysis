@@ -34,6 +34,7 @@ public class Constants {
         public static final int CHOICE_WINDOW_WIDTH = 300;
         public static final int CHOICE_WINDOW_HEIGHT = 200;
 
+        public static final int NUMBER_OF_DEFAULT_THREADS = 4;
 
     }
 }

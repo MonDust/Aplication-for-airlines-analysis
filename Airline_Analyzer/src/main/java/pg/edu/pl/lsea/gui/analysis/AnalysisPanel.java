@@ -1,22 +1,29 @@
 package pg.edu.pl.lsea.gui.analysis;
 
+import pg.edu.pl.lsea.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.data.engieniering.DataEnrichment;
-import pg.edu.pl.lsea.data.engieniering.NullRemover;
+import pg.edu.pl.lsea.data.analyzer.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.data.storage.DataStorage;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.entities.Output;
-import pg.edu.pl.lsea.gui.analysis.displays.AnalysisArea;
-import pg.edu.pl.lsea.gui.analysis.displays.datadisplays.ThreadAnalysisRunner;
+import pg.edu.pl.lsea.gui.analysis.displays.AnalysisDisplay;
+import pg.edu.pl.lsea.gui.analysis.displays.datadisplays.PlotAverageTimePerOperatorDisplay;
+import pg.edu.pl.lsea.gui.analysis.displays.results.ThreadAnalysisRunner;
 import pg.edu.pl.lsea.gui.analysis.displays.datadisplays.OutputTableDisplay;
 import pg.edu.pl.lsea.gui.analysis.displays.DefaultDisplay;
+import pg.edu.pl.lsea.gui.analysis.displays.results.TopNModels;
+import pg.edu.pl.lsea.gui.analysis.displays.results.TopNOperators;
+import pg.edu.pl.lsea.gui.analysis.displays.results.TopNOperatorsPercentage;
+import pg.edu.pl.lsea.gui.analysis.utils.AircraftParser;
+import pg.edu.pl.lsea.gui.analysis.utils.DataStorageAnalysis;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.*;
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 
 /**
@@ -24,13 +31,13 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
  */
 public class AnalysisPanel extends JPanel {
     private DataStorage dataStorage;
-    private AnalysisArea currentDisplay;
-    NullRemover nullRemover = new NullRemover();
-    DataEnrichment enricher = new DataEnrichment();
+    private AnalysisDisplay currentDisplay;
+    private AircraftParser parser;
+    private JTextArea progressTextArea;
 
     /**
      * Sets FlightData if available and updated the display
-     * @param flights - list of flights to be added to storage.
+     * @param flights list of flights to be added to storage.
      */
     public void setFlightData(List<Flight> flights) {
         for (Flight flight : flights) {
@@ -40,7 +47,7 @@ public class AnalysisPanel extends JPanel {
 
     /**
      * Sets the AircraftData if available and updates the display
-     * @param aircrafts - list of aircrafts to be added to storage.
+     * @param aircrafts list of aircrafts to be added to storage.
      */
     public void setAircraftData(List<Aircraft> aircrafts) {
         for (Aircraft aircraft : aircrafts) {
@@ -49,7 +56,16 @@ public class AnalysisPanel extends JPanel {
     }
 
     /**
-     * Creates an AnalysisPanel object
+     * Function initilizing the parser of aircrafts.
+     * Parser maps Icao24 to aircrafts.
+     */
+    public void initializeParser() {
+        List<Aircraft> aircrafts = dataStorage.getAircrafts();
+        parser = new AircraftParser(aircrafts);
+    }
+
+    /**
+     * Constructor for AnalysisPanel.
      */
     public AnalysisPanel() {
         setLayout(null); // Can be later changed to other layout like FlowLayout
@@ -59,10 +75,21 @@ public class AnalysisPanel extends JPanel {
         dataStorage = DataStorage.getInstance();
         currentDisplay = new DefaultDisplay();
         add(currentDisplay);
+
+        progressTextArea = new JTextArea();
+        progressTextArea.setEditable(false);
+        progressTextArea.setBounds(10, 10, 400, 200);
+        progressTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        add(progressTextArea);
+    }
+
+    public void updateAnalysisProgress(String message) {
+        progressTextArea.append(message + "\n");
+        progressTextArea.setCaretPosition(progressTextArea.getDocument().getLength());
     }
 
     /**
-     * Fully remove the display from analysis panel.
+     * Fully remove the display from analysis panel, and then repaint.
      */
     public void removeDisplay() {
         if (currentDisplay != null) {
@@ -71,19 +98,12 @@ public class AnalysisPanel extends JPanel {
         repaint();
     }
 
-    public List<EnrichedFlight> prepareFlights() {
-        List<Flight> flights = dataStorage.getFlights();
-        nullRemover.TransformFlights(flights);
-        List<EnrichedFlight> enrichedFlights = enricher.CreateEnrichedListOfFlights(flights);
-        return enrichedFlights;
-    }
-
-    public List<Aircraft> prepareAircrafts() {
-        List<Aircraft> aircrafts = dataStorage.getAircrafts();
-        nullRemover.TransformAircrafts(aircrafts);
-        return aircrafts;
-    }
-
+    /**
+     * The window that will make choosing number of threads possible.
+     * Options: 1, 2, 4, 8, 16.
+     * Will return 4 thread as default.
+     * @return int - number of threads.
+     */
     private int promptForThreadCount() {
         Integer[] options = {1, 2, 4, 8, 16};
         Integer selection = (Integer) JOptionPane.showInputDialog(
@@ -93,54 +113,124 @@ public class AnalysisPanel extends JPanel {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
-                4 // default
+                NUMBER_OF_DEFAULT_THREADS // default
         );
 
-        return selection != null ? selection : 4; // default to 4 if user cancels
+        return selection != null ? selection : NUMBER_OF_DEFAULT_THREADS; // default to 4 if user cancels
     }
 
 
     /**
      * Perform analysis on available data.
-     * Analysis type (analysisType):
-     * 1 - ...
-     * 2 - ...
-     * @param analysisType - type of the analysis to be performed
+     * <ul>
+     *   <li> 1 - Sequential vs Parallel performance</li>
+     *   <li> 2 - Sort by number of flights</li>
+     *   <li> 3 - Sort by total time of flights</li>
+     *   <li> 4 - Most popular operators</li>
+     *   <li> 5 - Most popular models</li>
+     *   <li> 6 - Plot average time</li>
+     *   <li> 7 - Flights per airport</li>
+     *   <li> 8 - Most used operators</li>
+     * </ul>
+     * @param analysisType int - type of the analysis to be performed
      */
     public void performAnalysis(int analysisType) {
+        progressTextArea.setText("");
         removeDisplay();
-        List<EnrichedFlight> enrichedFlights = prepareFlights();
-        List<Aircraft> aircrafts = prepareAircrafts();
         SortingCalculator calc = new SortingCalculator();
 
         switch (analysisType) {
-            case 1:
-                System.out.println("Comparing sequential and parallel performance...");
-                ThreadAnalysisRunner runner = new ThreadAnalysisRunner();
-
-                int threads = promptForThreadCount();
-                runner.runAnalysis(false, 1, enrichedFlights, aircrafts);  // Single-threaded
-                runner.runAnalysis(true, threads, enrichedFlights, aircrafts);   // Multi-threaded
-
-                JOptionPane.showMessageDialog(null, runner.getMessages(), "Analysis Report", JOptionPane.INFORMATION_MESSAGE);
+            case THREADS_ANALYSIS:
+                performThreadsAnalysis();
                 break;
-            case 2:
-                System.out.println("Sorting by the amount of flights...");
-                List<Output> sortedByCount = calc.sortByAmountOfFlights(enrichedFlights);
-                currentDisplay = new OutputTableDisplay(sortedByCount);
-                currentDisplay.showAsPopup("amount of flights");
+            case SORT_BY_NUMBER_OF_FLIGHTS:
+                performSortByNumberOfFlights(calc);
                 break;
-            case 3:
-                System.out.println("Sorting by the time of flights...");
-                List<Output> sortedByTime = calc.sortByTimeOfFlights(enrichedFlights);
-                currentDisplay = new OutputTableDisplay(sortedByTime);
-                currentDisplay.showAsPopup( "time of flights");
+            case SORT_BY_TOTAL_TIME_OF_FLIGHTS:
+                performSortByTimeOfFlights(calc);
                 break;
+            case MOST_POPULAR_OPERATORS:
+                performTopNOperators(calc);
+                break;
+            case MOST_POPULAR_MODELS:
+                performTopNModels(calc);
+                break;
+            case PLOT_AVERAGE_TIME:
+                performPlotAverageTimePerOperator(calc);
+                break;
+            case FLIGHTS_PER_AIRPORT:
+                performPercentageOfLongFlights(calc);
             default:
-                add(currentDisplay);
                 currentDisplay = new DefaultDisplay();
+                add(currentDisplay);
         }
         repaint();
     }
 
+    private void performPlotAverageTimePerOperator(SortingCalculator calc) {
+        System.out.println("Showing plot...");
+        PlotAverageTimePerOperatorDisplay plotDisplay = new PlotAverageTimePerOperatorDisplay(parser);
+        plotDisplay.plotAverageTime(calc);
+        System.out.println("Stop showing");
+    }
+
+    private void performTopNOperators(SortingCalculator calc) {
+        System.out.println("Showing TopN operators...");
+        TopNOperators topNOperatorsAnalyse = new TopNOperators();
+        topNOperatorsAnalyse.analyzeTopOperators(calc, parser);
+        topNOperatorsAnalyse.showResultsDialog();
+    }
+
+    private void performTopNModels(SortingCalculator calc) {
+        System.out.println("Showing TopN models...");
+        TopNModels topNModelsAnalyse = new TopNModels();
+        topNModelsAnalyse.analyzeTopModels(calc, parser);
+        topNModelsAnalyse.showResultsDialog();
+    }
+
+    /**
+     * Perform the threads analysis - sequential and multithread.
+     * Shows a window to choose number of threads and then runs analysis.
+     * The information about time needed to perform it will be shown.
+     */
+    private void performThreadsAnalysis() {
+        System.out.println("Comparing sequential and parallel performance...");
+        ThreadAnalysisRunner runner = new ThreadAnalysisRunner(this);
+
+        int threads = promptForThreadCount();
+        // Uncomment bellow to perform single-thread analysis always
+        // runner.runAnalysis(false, 1);  // Single-threaded
+        //runner.runAnalysis(true, threads);   // Multi-threaded
+
+        new Thread(() -> {
+            runner.runAnalysis(true, threads); // Multi-threaded analysis
+            runner.showResultsDialog();
+        }).start();
+    }
+
+    private void performPercentageOfLongFlights(SortingCalculator calc) {
+        System.out.println("Long Flights percentage...");
+        TopNOperatorsPercentage topPercentage = new TopNOperatorsPercentage();
+        topPercentage.analyzeTopOperators(calc, parser);
+        topPercentage.showResultsDialog();
+    }
+
+    private void performSortByNumberOfFlights(SortingCalculator calc) {
+        List <EnrichedFlight> enrichedFlights = DataStorageAnalysis.prepareFlights();
+        System.out.println("Sorting by the amount of flights...");
+        List<Output> sortedByCount = calc.sortByAmountOfFlights(enrichedFlights);
+        displaySortedData(sortedByCount, "amount of flights");
+    }
+
+    private void performSortByTimeOfFlights(SortingCalculator calc) {
+        List <EnrichedFlight> enrichedFlights = DataStorageAnalysis.prepareFlights();
+        System.out.println("Sorting by the time of flights...");
+        List<Output> sortedByTime = calc.sortByTimeOfFlights(enrichedFlights);
+        displaySortedData(sortedByTime, "time of flights");
+    }
+
+    private void displaySortedData(List<Output> sortedData, String description) {
+        currentDisplay = new OutputTableDisplay(sortedData, parser);
+        currentDisplay.showAsPopup(description);
+    }
 }

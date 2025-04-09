@@ -12,7 +12,7 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 /**
  * Base class for all Graphical Analysis components
  */
-public abstract class AnalysisArea extends JPanel {
+public abstract class AnalysisDisplay extends JPanel {
     private List<Flight> flightData;
     private List<Aircraft> aircraftData;
 
@@ -20,7 +20,7 @@ public abstract class AnalysisArea extends JPanel {
      * Constructor of the class.
      * Sets the default location of the area and creates border
      */
-    public AnalysisArea() {
+    public AnalysisDisplay() {
         setBounds(0, 0 , ANALYSIS_WIDTH, ANALYSIS_HEIGHT);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }

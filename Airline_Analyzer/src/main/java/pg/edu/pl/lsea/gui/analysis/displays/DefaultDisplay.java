@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * Class representing a default display (basic chart)
  */
-public class DefaultDisplay extends AnalysisArea {
+public class DefaultDisplay extends AnalysisDisplay {
     /**
      * Example graph - to change when analysis will be possible
      * @param g the Graphics object to protect

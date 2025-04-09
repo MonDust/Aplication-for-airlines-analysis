@@ -10,6 +10,7 @@ import pg.edu.pl.lsea.gui.buttons.LoadChoiceButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.List;
 
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.WINDOW_HEIGHT;
@@ -27,6 +28,8 @@ public class MainPanel extends JPanel {
     final private AnalysisPanel analysisPanel;
     // Storage for data needed for analysis
     final private DataStorage dataStorage;
+    // Last directory that file was gotten from.
+    private File lastDirectory;
 
     /**
      * Create a MainPanel object
@@ -65,12 +68,43 @@ public class MainPanel extends JPanel {
     }
 
     /**
+     * Function initializing the parser of aircrafts.
+     * Parser maps Icao24 to aircrafts.
+     */
+    public void initializeParser() {
+        analysisPanel.initializeParser();
+    }
+
+    /**
+     * Sets the last directory from which files were loaded.
+     * @param directory The directory to set as last used.
+     */
+    public void setLastDirectory(File directory) {
+        this.lastDirectory = directory;
+    }
+
+    /**
+     * Gets the last directory from which files were loaded.
+     * @return The last directory used, or null if not set.
+     */
+    public File getLastDirectory() {
+        return lastDirectory;
+    }
+
+    /**
      * The function that will call a specific function to perform analysis.
-     * Analysis types (AnalysisType):
-     * 1 - ...
-     * 2 - ...
-     * 3 - ...
-     * @param analysisType - the type of analysis to be performed
+     * Perform analysis on available data.
+     * <ul>
+     *   <li> 1 - Sequential vs Parallel performance</li>
+     *   <li> 2 - Sort by number of flights</li>
+     *   <li> 3 - Sort by total time of flights</li>
+     *   <li> 4 - Correlation analysis</li>
+     *   <li> 5 - Flights per aircraft table</li>
+     *   <li> 6 - Group by operator</li>
+     *   <li> 7 - Flights per airport</li>
+     *   <li> 8 - Most used operators</li>
+     * </ul>
+     * @param analysisType - type of the analysis to be performed
      */
     public void performAnalysis(int analysisType) {
         analysisPanel.performAnalysis(analysisType);

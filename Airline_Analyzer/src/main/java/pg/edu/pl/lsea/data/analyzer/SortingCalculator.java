@@ -18,13 +18,13 @@ public class SortingCalculator extends DataAnalyzer  {
      */
     @Override
     public void analyzeDataForDashbord(List<Aircraft> aircrafts, List<EnrichedFlight> flights) {
-        System.out.println("===== Dashboard =====");
-        System.out.println("Sorted Aircraft List:");
+        //System.out.println("===== Dashboard =====");
+        //System.out.println("Sorted Aircraft List:");
 
         aircrafts.sort(new Aircraft.AircraftComparator());
         printAircraftList(aircrafts);
 
-        System.out.println("\nSorted Flight List:");
+        //System.out.println("\nSorted Flight List:");
         flights.sort(Comparator.comparingInt(EnrichedFlight::getTimeInAir));
        // printFlightList(flights);
     }

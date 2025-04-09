@@ -1,11 +1,9 @@
 package pg.edu.pl.lsea.gui.choicewindows;
 
-import pg.edu.pl.lsea.gui.analysis.AnalysisTypeMapping;
+import pg.edu.pl.lsea.utils.AnalysisTypeConstants;
 import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
 
 import javax.swing.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Choosing Analysis Window which lets choose analysis type to perform
@@ -24,7 +22,7 @@ public class ChoosingAnalysisWindow extends BaseChoosingWindow{
         // Analysis Type Selection
         JLabel analysisTypeLabel = new JLabel("Select analysis type:");
         // Available File Types
-        analysisTypeComboBox = new JComboBox<>(AnalysisTypeMapping.NAME_TO_ID.keySet().toArray(new String[0]));
+        analysisTypeComboBox = new JComboBox<>(AnalysisTypeConstants.NAME_TO_ID.keySet().toArray(new String[0]));
         add(analysisTypeLabel);
         add(analysisTypeComboBox);
 
@@ -33,7 +31,7 @@ public class ChoosingAnalysisWindow extends BaseChoosingWindow{
         loadButton.addActionListener(e -> analyse());
         add(loadButton);
 
-        // Set the window to be visible when this frame is shown
+        // Set the window to be visible
         setVisible(true);
     }
 
@@ -42,7 +40,7 @@ public class ChoosingAnalysisWindow extends BaseChoosingWindow{
      */
     private void analyse() {
         String selectedName = (String) analysisTypeComboBox.getSelectedItem();
-        int selectedType = AnalysisTypeMapping.NAME_TO_ID.getOrDefault(selectedName, 0);
+        int selectedType = AnalysisTypeConstants.NAME_TO_ID.getOrDefault(selectedName, 0);
         mainPanel.performAnalysis(selectedType);
     }
 }

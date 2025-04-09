@@ -59,6 +59,13 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
      */
     private JFileChooser initializeFileFilter(String fileType) {
         JFileChooser fileChooser = new JFileChooser();
+
+        // Use last known directory if available
+        File lastDir = mainPanel.getLastDirectory();
+        if (lastDir != null && lastDir.exists()) {
+            fileChooser.setCurrentDirectory(lastDir);
+        }
+
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(true);
 
@@ -87,6 +94,12 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
         int returnValue = fileChooser.showDialog(this, dialogTitle);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File[] selectedFiles = fileChooser.getSelectedFiles();
+
+            // Save the parent directory of the first selected file
+            if (selectedFiles.length > 0) {
+                mainPanel.setLastDirectory(selectedFiles[0].getParentFile());
+            }
+
             // Validate the files based on selected file type and data type
             for (File file : selectedFiles) {
                 loadData(file, dataType);

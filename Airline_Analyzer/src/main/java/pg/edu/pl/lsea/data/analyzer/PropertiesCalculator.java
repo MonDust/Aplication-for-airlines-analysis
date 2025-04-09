@@ -58,12 +58,21 @@ public class PropertiesCalculator {
         return output;
     }
 
-    public void printAllAverages( List<List<EnrichedFlight>> listOfLists){
-        for(List<EnrichedFlight>  list : listOfLists){
-    //          System.out.println(calculateAverageTimeInAir(list));
-            calculateAverageTimeInAir(list);
+    public List<Output> printAllAverages( List<List<EnrichedFlight>> listOfLists){
+        List<Output> output = new ArrayList<>();
+
+        for(List<EnrichedFlight>  list : listOfLists) {
+            if (!list.isEmpty()) {
+                output.add(new Output(list.getFirst().getIcao24(), calculateAverageTimeInAir(list)));
+            } else {
+                output.add(new Output("EMPTY", calculateAverageTimeInAir(list)));
+            }
         }
+
+        return output;
+
     }
+
 
 
     public List<Output> givePercentageOfLongFlights (List<List<EnrichedFlight>> listOfLists){
@@ -81,7 +90,7 @@ public class PropertiesCalculator {
             if (counter != 0) {
                 
                 counter = counter / list.size();
-                counter = counter *100;
+                counter = counter * 100;
             }
             if (!list.isEmpty()) {
                 output.add(new Output(list.getFirst().getIcao24(), (int) counter));
@@ -89,8 +98,6 @@ public class PropertiesCalculator {
                 output.add(new Output("EMPTY", (int) counter));
             }
         }
-
-
 
         return output;
     }
