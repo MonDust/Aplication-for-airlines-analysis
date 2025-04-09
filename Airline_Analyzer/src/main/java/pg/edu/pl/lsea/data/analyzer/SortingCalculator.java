@@ -43,8 +43,8 @@ public class SortingCalculator extends DataAnalyzer  {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
                 Value++;
             } else {
-                System.out.println(currentIcao);
-                System.out.println(Value);
+//                System.out.println(currentIcao);
+//                System.out.println(Value);
                 output.add(new Output(currentIcao, Value));
                 Value = 0;
                 currentIcao = flight.getIcao24();
@@ -52,7 +52,7 @@ public class SortingCalculator extends DataAnalyzer  {
         }
 
         output.sort(Comparator.comparingInt(o -> o.Value));
-        System.out.println(output);
+//        System.out.println(output);
 
 
         return output;
@@ -71,8 +71,8 @@ public class SortingCalculator extends DataAnalyzer  {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
                 Value += flight.getTimeInAir();
             } else {
-                System.out.println(currentIcao);
-                System.out.println(Value);
+//                System.out.println(currentIcao);
+//                System.out.println(Value);
                 output.add(new Output(currentIcao, Value));
                 Value = 0;
                 currentIcao = flight.getIcao24();
@@ -80,7 +80,7 @@ public class SortingCalculator extends DataAnalyzer  {
         }
 
         output.sort(Comparator.comparingInt(o -> o.Value));
-        System.out.println(output);
+//        System.out.println(output);
 
 
         return output;

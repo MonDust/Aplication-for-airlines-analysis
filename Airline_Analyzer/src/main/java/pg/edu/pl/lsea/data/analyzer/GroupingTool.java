@@ -94,11 +94,11 @@ public class GroupingTool {
     }
 
     public List<List<EnrichedFlight>> groupFlightsByOperator (List<EnrichedFlight> flights, List<Aircraft> aircrafts) {
-        List<String> models = getUniqueOperators(aircrafts);
+        List<String> operators = getUniqueOperators(aircrafts);
         List<List<EnrichedFlight>> output = new ArrayList<>();
 
-        for(String model : models) {
-            output.add(getAllFlightsForOperator(flights, aircrafts, model));
+        for(String operator : operators) {
+            output.add(getAllFlightsForOperator(flights, aircrafts, operator));
         }
 
         return output;
