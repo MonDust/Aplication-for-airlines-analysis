@@ -54,19 +54,19 @@ public class PropertiesCalculator {
 
     /**
      * Calculates average time in air for list of flights
-     * @param input list of flights from with averred will be calculated
+     * @param ListOfEnrichedFlights list of flights from with averred will be calculated
      * @return averred time per inputed flights
      */
-    public int calculateAverageTimeInAir(List<EnrichedFlight> input) {
+    public int calculateAverageTimeInAir(List<EnrichedFlight> ListOfEnrichedFlights) {
 
         int output = 0;
 
-        for (EnrichedFlight flight : input){
+        for (EnrichedFlight flight : ListOfEnrichedFlights){
             output += flight.getTimeInAir();
         }
 
-        if(!input.isEmpty()) {
-            output = output / input.size();
+        if(!ListOfEnrichedFlights.isEmpty()) {
+            output = output / ListOfEnrichedFlights.size();
         }
         return output;
     }
