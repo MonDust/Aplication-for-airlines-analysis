@@ -22,6 +22,10 @@ public class EnrichedFlight extends Flight  {
     }
 
 
+    /**
+     * Creates a flight object.
+     * @param flight - flight with all needed values.
+     */
     public EnrichedFlight(Flight flight) {
         super(flight.getIcao24(), flight.getFirstSeen(), flight.getLastSeen(), flight.getDepartureAirport(), flight.getArrivalAirport());
         updateTimeintheair(flight.getLastSeen(), flight.getFirstSeen());
