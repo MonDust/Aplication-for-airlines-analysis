@@ -17,13 +17,11 @@ public class AnalysisTypeConstants {
     public static final int SORT_BY_NUMBER_OF_FLIGHTS = 2;
     public static final int SORT_BY_TOTAL_TIME_OF_FLIGHTS = 3;
     public static final int MOST_POPULAR_OPERATORS = 4;
-    // public static final int FLIGHTS_PER_AIRCRAFT_TABLE = 5;
     public static final int MOST_POPULAR_MODELS = 5;
     public static final int PLOT_AVERAGE_TIME = 6;
-    // public static final int FLIGHTS_PER_AIRPORT = 7;
-    public static final int FLIGHTS_PER_AIRPORT = 7;
+    public static final int PERCENTAGE_OF_THE_LONG_FLIGHTS = 7;
 
-    // Number of most popular models to be shown at the end of analysis.
+    // Number of most popular operators to be shown at the end of analysis.
     public static final int NUMBER_OF_MOST_POPULAR_OPERATORS = 5;
 
     static {
@@ -35,7 +33,7 @@ public class AnalysisTypeConstants {
         NAME_TO_ID.put("Show " + NUMBER_OF_MOST_POPULAR_OPERATORS + " most popular operators", MOST_POPULAR_OPERATORS);
         NAME_TO_ID.put("Show " + NUMBER_OF_MOST_POPULAR_OPERATORS + " most popular models", MOST_POPULAR_MODELS);
         NAME_TO_ID.put("Plot average time", PLOT_AVERAGE_TIME);
-        NAME_TO_ID.put("Flights per airport", FLIGHTS_PER_AIRPORT);
+        NAME_TO_ID.put("Long flight percentage in top " + NUMBER_OF_MOST_POPULAR_OPERATORS + " operators" , PERCENTAGE_OF_THE_LONG_FLIGHTS);
 
         ID_TO_NAME = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> entry : NAME_TO_ID.entrySet()) {

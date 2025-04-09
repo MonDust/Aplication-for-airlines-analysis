@@ -15,12 +15,12 @@ import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_DEFAULT_THREADS;
 
 /**
- * Class responsible for returning Top N Operators - showing a windows with an appropriate message.
+ * Class responsible for returning percentage of long flights for Top N Operators - showing a windows with an appropriate message.
  */
 public class TopNOperatorsPercentage extends BaseRunner {
 
     /**
-     * Method to perform the Top N operators analysis and display the results.
+     * Method to perform the percentage of long flights for Top N operators analysis and display the results.
      * n established by constant.
      */
     public void analyzeTopOperators(SortingCalculator calc, AircraftParser parser) {
@@ -39,12 +39,12 @@ public class TopNOperatorsPercentage extends BaseRunner {
         // Log the results
         log("Top " + n + " Operators:");
         for (int i = 0; i < topOperators.size(); i++) {
-            System.out.println(topOperators.get(i));
+            //System.out.println(topOperators.get(i));
             log("Operator " + parser.getAircraftByIcao(percantages.get(i).getIcao24()).getOperator() + ": " + percantages.get(i).Value + " %");
-            for (EnrichedFlight flight : topOperators.get(i)) {
-                System.out.println();
-                System.out.println(flight + " | " + parser.getAircraftByIcao(flight.getIcao24()));
-            }
+//            for (EnrichedFlight flight : topOperators.get(i)) {
+//                System.out.println();
+//                System.out.println(flight + " | " + parser.getAircraftByIcao(flight.getIcao24()));
+//            }
         }
     }
 }
