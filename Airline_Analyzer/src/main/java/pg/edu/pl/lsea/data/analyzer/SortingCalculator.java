@@ -119,16 +119,16 @@ public class SortingCalculator extends DataAnalyzer  {
 
     /**
      * function that returns top 'n' operators
-     * @param input list of lists of flights grouped by operator
+     * @param ListOfListOprator list of lists of flights grouped by operator
      * @param n how much of top operators you want
      * @return n amount of operators from the top
      */
-    public List<List<EnrichedFlight>> giveTopNOperators (List<List<EnrichedFlight>> input, int n) {
-        input.sort(Comparator.comparingInt((List<EnrichedFlight> l) -> l.size()).reversed());
+    public List<List<EnrichedFlight>> giveTopNOperators (List<List<EnrichedFlight>> ListOfListOprator, int n) {
+        ListOfListOprator.sort(Comparator.comparingInt((List<EnrichedFlight> l) -> l.size()).reversed());
         List<List<EnrichedFlight>> output = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            output.add(input.get(i));
+            output.add(ListOfListOprator.get(i));
         }
 
         return output;

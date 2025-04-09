@@ -146,13 +146,13 @@ public class GroupingTool {
 
     /**
      * returns list of list which is containing any long flights
-     * @param input original list of list contain all flights
+     * @param listOfListsAll original list of list contain all flights
      * @return list of list which is containing any long flights
      */
-    public List<List<EnrichedFlight>> findLongFlightsForEachModel(List<List<EnrichedFlight>> input) {
+    public List<List<EnrichedFlight>> findLongFlightsForEachModel(List<List<EnrichedFlight>> listOfListsAll) {
         List<List<EnrichedFlight>> output = new ArrayList<>();
 
-        for (List<EnrichedFlight> enrichedFlights : input) {
+        for (List<EnrichedFlight> enrichedFlights : listOfListsAll) {
             boolean isLongFlight = false;
 
             //searches if there is any long flight in this model
