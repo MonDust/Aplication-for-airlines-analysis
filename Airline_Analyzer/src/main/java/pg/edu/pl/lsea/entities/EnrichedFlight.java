@@ -21,6 +21,7 @@ public class EnrichedFlight extends Flight  {
         updateTimeintheair(lastSeen, firstSeen);
     }
 
+
     public EnrichedFlight(Flight flight) {
         super(flight.getIcao24(), flight.getFirstSeen(), flight.getLastSeen(), flight.getDepartureAirport(), flight.getArrivalAirport());
         updateTimeintheair(flight.getLastSeen(), flight.getFirstSeen());

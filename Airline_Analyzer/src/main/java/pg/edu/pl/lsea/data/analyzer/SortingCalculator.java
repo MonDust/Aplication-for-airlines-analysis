@@ -26,10 +26,14 @@ public class SortingCalculator extends DataAnalyzer  {
 
         System.out.println("\nSorted Flight List:");
         flights.sort(Comparator.comparingInt(EnrichedFlight::getTimeInAir));
-       // printFlightList(flights);
     }
 
 
+    /**
+     * Gives amount of flights per each ICAO
+     * @param flights list of all flights
+     * @return amount of flights per model writen in outpu objects
+     */
     public List<Output> sortByAmountOfFlights ( List<EnrichedFlight> flights){
 
         List<Output> output = new ArrayList<>();
@@ -58,6 +62,11 @@ public class SortingCalculator extends DataAnalyzer  {
         return output;
     }
 
+    /**
+     * Gives amount of time in air per each ICAO
+     * @param flights list of all flights
+     * @return in output object ICAO and it's time in air
+     */
     public  List<Output>  sortByTimeOfFlights ( List<EnrichedFlight> flights){
 
         List<Output> output = new ArrayList<>();
