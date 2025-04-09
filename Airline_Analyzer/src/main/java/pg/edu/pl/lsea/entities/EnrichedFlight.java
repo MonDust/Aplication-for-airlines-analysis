@@ -8,7 +8,6 @@ import java.util.Comparator;
 public class EnrichedFlight extends Flight  {
 
     private int timeInAir;
-
     /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.
@@ -22,10 +21,7 @@ public class EnrichedFlight extends Flight  {
         updateTimeintheair(lastSeen, firstSeen);
     }
 
-    /**
-     * Creates a flight object.
-     * @param flight - flight with all needed values.
-     */
+
     public EnrichedFlight(Flight flight) {
         super(flight.getIcao24(), flight.getFirstSeen(), flight.getLastSeen(), flight.getDepartureAirport(), flight.getArrivalAirport());
         updateTimeintheair(flight.getLastSeen(), flight.getFirstSeen());

@@ -26,10 +26,14 @@ public class SortingCalculator extends DataAnalyzer  {
 
         //System.out.println("\nSorted Flight List:");
         flights.sort(Comparator.comparingInt(EnrichedFlight::getTimeInAir));
-       // printFlightList(flights);
     }
 
 
+    /**
+     * Gives amount of flights per each ICAO
+     * @param flights list of all flights
+     * @return amount of flights per model writen in outpu objects
+     */
     public List<Output> sortByAmountOfFlights ( List<EnrichedFlight> flights){
 
         List<Output> output = new ArrayList<>();
@@ -43,8 +47,8 @@ public class SortingCalculator extends DataAnalyzer  {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
                 Value++;
             } else {
-                System.out.println(currentIcao);
-                System.out.println(Value);
+//                System.out.println(currentIcao);
+//                System.out.println(Value);
                 output.add(new Output(currentIcao, Value));
                 Value = 0;
                 currentIcao = flight.getIcao24();
@@ -52,12 +56,17 @@ public class SortingCalculator extends DataAnalyzer  {
         }
 
         output.sort(Comparator.comparingInt(o -> o.Value));
-        System.out.println(output);
+//        System.out.println(output);
 
 
         return output;
     }
 
+    /**
+     * Gives amount of time in air per each ICAO
+     * @param flights list of all flights
+     * @return in output object ICAO and it's time in air
+     */
     public  List<Output>  sortByTimeOfFlights ( List<EnrichedFlight> flights){
 
         List<Output> output = new ArrayList<>();
@@ -71,8 +80,8 @@ public class SortingCalculator extends DataAnalyzer  {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
                 Value += flight.getTimeInAir();
             } else {
-                System.out.println(currentIcao);
-                System.out.println(Value);
+//                System.out.println(currentIcao);
+//                System.out.println(Value);
                 output.add(new Output(currentIcao, Value));
                 Value = 0;
                 currentIcao = flight.getIcao24();
@@ -80,7 +89,7 @@ public class SortingCalculator extends DataAnalyzer  {
         }
 
         output.sort(Comparator.comparingInt(o -> o.Value));
-        System.out.println(output);
+//        System.out.println(output);
 
 
         return output;

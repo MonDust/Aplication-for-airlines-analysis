@@ -53,7 +53,7 @@ public class GetAllFlightsForOperatorTask implements Runnable {
             List<String> icaoList = new ArrayList<>();
 
             for (Aircraft aircraft : aircrafts) {
-                if (Objects.equals(aircraft.getModel(), operator)) {
+                if (Objects.equals(aircraft.getOperator(), operator)) {
                     icaoList.add(aircraft.getIcao24());
                 }
             }
