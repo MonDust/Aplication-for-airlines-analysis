@@ -1,9 +1,8 @@
 package pg.edu.pl.lsea.gui.choicewindows;
 
-import pg.edu.pl.lsea.data.storage.DataStorage;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
-import pg.edu.pl.lsea.files.CsvDataLoader;
+import pg.edu.pl.lsea.files.CsvDataReader;
 import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
 
 import javax.swing.*;
@@ -17,7 +16,7 @@ import java.util.List;
 public class ChoosingFileWindow extends BaseChoosingWindow {
     final private JComboBox<String> fileTypeComboBox;
     final private JComboBox<String> dataTypeComboBox;
-    final private CsvDataLoader dataLoader = new CsvDataLoader();
+    final private CsvDataReader dataLoader = new CsvDataReader();
 
     /**
      * Create ChoosingFileWindow object.
@@ -118,7 +117,6 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
         System.out.println("TEST - ChoosingFileWindow - loadData(File file, String dataType)");
 
         int recordsLoaded;
-        DataStorage dataStorage = DataStorage.getInstance();
         if ("Flights".equals(dataType)) {
             List<Flight> flights = dataLoader.readFlights(file);
 

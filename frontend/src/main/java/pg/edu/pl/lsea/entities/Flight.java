@@ -55,6 +55,7 @@ public class Flight extends Trackable implements Cloneable {
      * Class for comparing flights based on firstSeen timestamp, lastSeen timestamp and departure airport.
      */
     public static class FlightComparator implements Comparator<Flight> {
+        // TODO (optional) - Here if we don't use this code, this comapring logics could probably be removed
        /**
         * Compares flights by firstSeen,
         * if firstSeen is the same compares by lastSeen,

@@ -1,6 +1,5 @@
 package pg.edu.pl.lsea.gui.analysis;
 
-import pg.edu.pl.lsea.data.analyzer.SortingCalculator;
 import pg.edu.pl.lsea.gui.analysis.displays.AnalysisDisplay;
 import pg.edu.pl.lsea.gui.analysis.displays.datadisplays.PlotAverageTimePerOperatorDisplay;
 import pg.edu.pl.lsea.gui.analysis.displays.DefaultDisplay;
@@ -101,7 +100,6 @@ public class AnalysisPanel extends JPanel {
     public void performAnalysis(int analysisType) {
         progressTextArea.setText("");
         removeDisplay();
-        SortingCalculator calc = new SortingCalculator();
 
         switch (analysisType) {
             case THREADS_ANALYSIS:

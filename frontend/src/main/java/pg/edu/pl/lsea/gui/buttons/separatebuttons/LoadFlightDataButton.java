@@ -1,14 +1,9 @@
 package pg.edu.pl.lsea.gui.buttons.separatebuttons;
 
-import pg.edu.pl.lsea.entities.Flight;
-import pg.edu.pl.lsea.files.CsvDataLoader;
 import pg.edu.pl.lsea.gui.buttons.LoadDataButton;
 import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.util.List;
 
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 

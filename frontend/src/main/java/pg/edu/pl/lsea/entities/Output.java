@@ -8,6 +8,7 @@ public class Output extends Trackable{
 
     public int Value;
 
+    // TODO - Here probably should be many classes for different types of analysis with different, clear and understandable names
 
     public Output(String icao24, int Value) {
         setIcao24(icao24);

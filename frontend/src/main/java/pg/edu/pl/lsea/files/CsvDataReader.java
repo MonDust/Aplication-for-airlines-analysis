@@ -1,6 +1,5 @@
 package pg.edu.pl.lsea.files;
 
-import pg.edu.pl.lsea.data.storage.DataStorage;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
 
@@ -10,9 +9,9 @@ import java.util.List;
 
 
 /**
- * Class responsible for loading CSV files with aircrafts and flights.
+ * Class responsible for reading CSV files with aircrafts and flights.
  */
-public  class CsvDataLoader extends FileDataLoader {
+public  class CsvDataReader extends FileDataReader {
 
     /**
      *
@@ -140,21 +139,5 @@ public  class CsvDataLoader extends FileDataLoader {
      */
     private static String cleanString(String text) {
         return text.replace("\"", "");
-    }
-
-    @Override
-    public void loadAircraftsToStorage(File aircraftsFile) {
-        DataStorage storage = DataStorage.getInstance();
-
-        List<Aircraft> aircrafts = readAircrafts(aircraftsFile);
-        storage.bulkAddAircrafts(aircrafts);
-    }
-
-    @Override
-    public void loadFlightsToStorage(File flightsFile) {
-        DataStorage storage = DataStorage.getInstance();
-
-        List<Flight> flights = readFlights(flightsFile);
-        storage.bulkAddFlights(flights);
     }
 }

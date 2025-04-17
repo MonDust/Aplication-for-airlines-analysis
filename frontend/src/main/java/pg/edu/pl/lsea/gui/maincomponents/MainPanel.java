@@ -1,8 +1,5 @@
 package pg.edu.pl.lsea.gui.maincomponents;
 
-import pg.edu.pl.lsea.data.storage.DataStorage;
-import pg.edu.pl.lsea.entities.Aircraft;
-import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.gui.analysis.AnalysisPanel;
 import pg.edu.pl.lsea.gui.buttons.LoadAnalysisButton;
 import pg.edu.pl.lsea.gui.buttons.LoadDataButton;
@@ -11,7 +8,6 @@ import pg.edu.pl.lsea.gui.buttons.LoadChoiceButton;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.List;
 
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.WINDOW_HEIGHT;
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.WINDOW_WIDTH;
