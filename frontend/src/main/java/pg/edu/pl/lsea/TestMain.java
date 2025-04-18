@@ -1,9 +1,12 @@
 package pg.edu.pl.lsea;
 
-/** Main method for testing **/
+import pg.edu.pl.lsea.api.DataUploader;
+import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.files.CsvDataReader;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main method for testing
@@ -26,15 +29,30 @@ public class TestMain {
 //        File fileFlights4 = new File("resources/flight_sample_2022-09-04.csv");
 //        File fileFlights5 = new File("resources/flight_sample_2022-09-01.csv");
 
-        // TODO - Replace with API requests to save read data. Optional, but we probably want to keep some logic in TestMain
-//        dataLoader.loadFlightsToStorage(fileFlights1);
-//        dataLoader.loadFlightsToStorage(fileFlights2);
-//        dataLoader.loadFlightsToStorage(fileFlights3);
-//        dataLoader.loadFlightsToStorage(fileFlights4);
-//        dataLoader.loadFlightsToStorage(fileFlights5);
+        // Could be used for debugging if file loading doesn't work
+//        List<Flight> flights = new ArrayList<>();
+//        flights.add(new Flight("abc123", 1682000000, 1682003600, "JFK", "LAX"));
+//        flights.add(new Flight("def456", 1682007200, 1682010800, "ORD", "ATL"));
+
+        DataUploader uploader = new DataUploader();
+
+        // Send the list of flights and aircrafts via the REST API
+        try {
+            uploader.sendAircrafts(dataLoader.readAircrafts(fileAircrafts1));
 
 
-//        dataLoader.loadAircraftsToStorage(fileAircrafts1);
+            uploader.sendFlights(dataLoader.readFlights(fileFlights1));
+//            uploader.sendFlights(dataLoader.readFlights(fileFlights2));
+//            uploader.sendFlights(dataLoader.readFlights(fileFlights3));
+
+        } catch (Exception e) {
+            System.out.println("An error occurred while uploading flights.");
+            System.out.println("Error Message: " + e.getMessage());
+            System.out.println("Stack Trace:");
+            e.printStackTrace();
+        }
+
+
 
 
         long pre_analysis_end = System.currentTimeMillis();
@@ -45,7 +63,7 @@ public class TestMain {
 
         // --------------------------------------- DATA ENGINEERING ---------------------------------------
 
-        // TODO - Can be removed - we dont do data engineering on the client side
+        // TODO - Can be removed - we don't do data engineering on the client side
 //        // Clean the data
 //        nullRemover.TransformAircrafts(aircrafts);
 //        nullRemover.TransformFlights(flights);

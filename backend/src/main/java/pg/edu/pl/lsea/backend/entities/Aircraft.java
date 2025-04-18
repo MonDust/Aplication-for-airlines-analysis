@@ -1,14 +1,25 @@
 package pg.edu.pl.lsea.backend.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 import java.util.Comparator;
 import java.util.Objects;
 
 /**
  * A class representing an aircraft described by a specific model, operator and owner.
  */
+@Entity
+@Table(name = "aircrafts")
 public class Aircraft extends Trackable implements Cloneable{
+    @Column(name = "model")
     private String model;
+
+    @Column(name = "operator")
     private String operator;
+
+    @Column(name = "owner")
     private String owner;
 
     /**

@@ -1,27 +1,37 @@
 package pg.edu.pl.lsea.backend.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 import java.util.Comparator;
 import java.util.Objects;
 
 /**
  * A class representing a tracked flight of an aircraft
  */
+@Entity
+@Table(name = "flights")
 public class Flight extends Trackable implements Cloneable {
     /**
      * Unix timestamp of the first record of the aircraft of the flight in seconds.
      */
+    @Column(name = "first_seen")
     private int firstSeen;
     /**
      * Unix timestamp of the last record of the aircraft of the flight in seconds.
      */
+    @Column(name = "last_seen")
     private int lastSeen;
     /**
      * IATA code of the airport from which the aircraft is taking off on this flight.
      */
+    @Column(name = "departure_airport")
     private String departureAirport;
     /**
      * IATA code of the airport where the aircraft lands during this flight.
      */
+    @Column(name = "arrival_airport")
     private String arrivalAirport;
 
     /**

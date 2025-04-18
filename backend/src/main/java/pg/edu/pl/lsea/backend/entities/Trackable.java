@@ -1,12 +1,17 @@
 package pg.edu.pl.lsea.backend.entities;
 
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+
 /**
  * Abstract class representing trackable entities such as flight and aircraft.
  */
+@MappedSuperclass
 public abstract class Trackable implements Comparable<Trackable> {
     /**
      * Unique icao24 code for identifying aircraft using a 24-bit 6-character hexadecimal format.
      */
+    @Id
     private String icao24;
 
     /**
