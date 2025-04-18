@@ -1,8 +1,8 @@
 package pg.edu.pl.lsea.backend.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -10,9 +10,18 @@ import java.util.Objects;
 /**
  * A class representing a tracked flight of an aircraft
  */
+@Setter
+@Getter
 @Entity
-@Table(name = "flights")
+@Table(
+        name = "flights"
+//        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
+)
 public class Flight extends Trackable implements Cloneable {
+    @Id
+    @GeneratedValue
+    private Long id;
+
     /**
      * Unix timestamp of the first record of the aircraft of the flight in seconds.
      */
@@ -90,66 +99,6 @@ public class Flight extends Trackable implements Cloneable {
     }
 
 
-    /**
-     * Returns the unix timestamp of the first record of the aircraft during the tracked flight.
-     * @return An integer representing the unix timestamp of the first record of the aircraft of the flight
-     */
-    public int getFirstSeen() {
-        return firstSeen;
-    }
-    /**
-     * Returns the unix timestamp of the last record of the aircraft during the tracked flight.
-     * @return An integer representing the unix timestamp of the last record of the aircraft of the flight
-     */
-    public int getLastSeen() {
-        return lastSeen;
-    }
-
-    /**
-     * Returns the IATA code of the departure airport of the flight.
-     * @return A string representing the IATA code of the airport from which the aircraft is taking off on this flight
-     */
-    public String getDepartureAirport() {
-        return departureAirport;
-    }
-    /**
-     * Returns the IATA code of the arrival airport of the flight.
-     * @return A string representing the IATA code of the airport where the aircraft lands during this flight
-     */
-    public String getArrivalAirport() {
-        return arrivalAirport;
-    }
-    /**
-     * Sets the unix timestamp of the first record of the aircraft during the tracked flight.
-     * @param firstSeen An integer representing the unix timestamp of the first record of the aircraft of the flight
-     */
-    public void setFirstSeen(int firstSeen) {
-        this.firstSeen = firstSeen;
-    }
-
-    /**
-     * Sets the unix timestamp of the last record of the aircraft during the tracked flight.
-     * @param lastSeen An integer representing the unix timestamp of the last record of the aircraft of the flight
-     */
-    public void setLastSeen(int lastSeen) {
-        this.lastSeen = lastSeen;
-    }
-
-    /**
-     * Sets the departure airport of the flight.
-     * @param departureAirport A string representing the IATA code of the airport from which the aircraft is taking off on this flight
-     */
-    public void setDepartureAirport(String departureAirport) {
-        this.departureAirport = departureAirport;
-    }
-
-    /**
-     * Sets the arrival airport of the flight.
-     * @param arrivalAirport A string representing the IATA code of the airport where the aircraft lands during this flight
-     */
-    public void setArrivalAirport(String arrivalAirport) {
-        this.arrivalAirport = arrivalAirport;
-    }
     /**
      * Printing flights.
      * @return Flight with all fields in a string format.

@@ -12,6 +12,7 @@ public class FlightToResponseMapper implements Function<Flight, FlightResponse> 
     @Override
     public FlightResponse apply(Flight flight) {
         return new FlightResponse(
+                flight.getId(),
                 flight.getIcao24(),
                 flight.getFirstSeen(),
                 flight.getLastSeen(),

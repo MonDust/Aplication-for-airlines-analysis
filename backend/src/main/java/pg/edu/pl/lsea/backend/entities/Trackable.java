@@ -1,6 +1,6 @@
 package pg.edu.pl.lsea.backend.entities;
 
-import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
 /**
@@ -11,7 +11,7 @@ public abstract class Trackable implements Comparable<Trackable> {
     /**
      * Unique icao24 code for identifying aircraft using a 24-bit 6-character hexadecimal format.
      */
-    @Id
+    @Column(nullable = false)
     private String icao24;
 
     /**

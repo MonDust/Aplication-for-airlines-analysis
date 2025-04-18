@@ -12,6 +12,7 @@ public class AircraftToResponseMapper implements Function<Aircraft, AircraftResp
     @Override
     public AircraftResponse apply(Aircraft aircraft) {
         return new AircraftResponse(
+                aircraft.getId(),
                 aircraft.getIcao24(),
                 aircraft.getModel(),
                 aircraft.getOperator(),

@@ -42,7 +42,8 @@ public class DataUploader {
 
             System.out.println("Sent " + dataType + ": " + data.size() + " items");
             System.out.println("Response code: " + response.statusCode());
-            System.out.println("Response body: " + response.body());
+//            System.out.println("Response body: " + response.body());
+
 
         } catch (Exception e) {
             System.out.println("Failed to send " + dataType + ":");

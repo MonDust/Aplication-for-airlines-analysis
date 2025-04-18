@@ -40,9 +40,8 @@ public class TestMain {
         try {
             uploader.sendAircrafts(dataLoader.readAircrafts(fileAircrafts1));
 
-
             uploader.sendFlights(dataLoader.readFlights(fileFlights1));
-//            uploader.sendFlights(dataLoader.readFlights(fileFlights2));
+            uploader.sendFlights(dataLoader.readFlights(fileFlights2));
 //            uploader.sendFlights(dataLoader.readFlights(fileFlights3));
 
         } catch (Exception e) {
@@ -65,6 +64,7 @@ public class TestMain {
 
         // TODO - Can be removed - we don't do data engineering on the client side
 //        // Clean the data
+//        NullRemover nullRemover = new NullRemover();
 //        nullRemover.TransformAircrafts(aircrafts);
 //        nullRemover.TransformFlights(flights);
 //        List<EnrichedFlight> enrichedFlights = dataEnrichment.CreateEnrichedListOfFlights(flights);
