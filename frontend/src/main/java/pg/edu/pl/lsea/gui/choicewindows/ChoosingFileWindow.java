@@ -11,7 +11,8 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Choosing File Window which lets choose the searched file type and data type that will be gotten from it
+ * Choosing File Window which lets choose the searched file type and data type that will be gotten from it.
+ * The class in which you send the data - loaded objects.
  */
 public class ChoosingFileWindow extends BaseChoosingWindow {
     final private JComboBox<String> fileTypeComboBox;
@@ -113,7 +114,6 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
      * @param dataType - choosen category to load data to
      */
     private void loadData(File file, String dataType) {
-
         System.out.println("TEST - ChoosingFileWindow - loadData(File file, String dataType)");
 
         int recordsLoaded;

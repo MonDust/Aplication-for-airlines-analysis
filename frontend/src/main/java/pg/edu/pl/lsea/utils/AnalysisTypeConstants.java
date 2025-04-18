@@ -13,13 +13,11 @@ public class AnalysisTypeConstants {
     public static final Map<Integer, String> ID_TO_NAME;
 
     // Constants for each analysis type
-    public static final int THREADS_ANALYSIS = 1;
-    public static final int SORT_BY_NUMBER_OF_FLIGHTS = 2;
-    public static final int SORT_BY_TOTAL_TIME_OF_FLIGHTS = 3;
-    public static final int MOST_POPULAR_OPERATORS = 4;
-    public static final int MOST_POPULAR_MODELS = 5;
-    public static final int PLOT_AVERAGE_TIME = 6;
-    public static final int PERCENTAGE_OF_THE_LONG_FLIGHTS = 7;
+    public static final int PERFORM_ALL_TYPES = 1;
+    public static final int MOST_POPULAR_OPERATORS = 2;
+    public static final int MOST_POPULAR_MODELS = 3;
+    public static final int PLOT_AVERAGE_TIME = 4;
+    public static final int PERCENTAGE_OF_THE_LONG_FLIGHTS = 5;
 
     // Number of most popular operators to be shown at the end of analysis.
     public static final int NUMBER_OF_MOST_POPULAR_OPERATORS = 5;
@@ -27,9 +25,7 @@ public class AnalysisTypeConstants {
     static {
         // Initialize the NAME_TO_ID map with strings mapped to the constants
         NAME_TO_ID = new LinkedHashMap<>();
-        NAME_TO_ID.put("Sequential vs Parallel performance", THREADS_ANALYSIS);
-        NAME_TO_ID.put("Sort by number of flights", SORT_BY_NUMBER_OF_FLIGHTS);
-        NAME_TO_ID.put("Sort by total time of flights", SORT_BY_TOTAL_TIME_OF_FLIGHTS);
+        NAME_TO_ID.put("Perform all of types of analysis", PERFORM_ALL_TYPES);
         NAME_TO_ID.put("Show " + NUMBER_OF_MOST_POPULAR_OPERATORS + " most popular operators", MOST_POPULAR_OPERATORS);
         NAME_TO_ID.put("Show " + NUMBER_OF_MOST_POPULAR_OPERATORS + " most popular models", MOST_POPULAR_MODELS);
         NAME_TO_ID.put("Plot average time", PLOT_AVERAGE_TIME);

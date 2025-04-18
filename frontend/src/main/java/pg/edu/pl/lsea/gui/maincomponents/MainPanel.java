@@ -1,6 +1,6 @@
 package pg.edu.pl.lsea.gui.maincomponents;
 
-import pg.edu.pl.lsea.gui.analysis.AnalysisPanel;
+import pg.edu.pl.lsea.gui.maincomponents.AnalysisPanel;
 import pg.edu.pl.lsea.gui.buttons.LoadAnalysisButton;
 import pg.edu.pl.lsea.gui.buttons.LoadDataButton;
 import pg.edu.pl.lsea.gui.buttons.LoadChoiceButton;
@@ -59,23 +59,8 @@ public class MainPanel extends JPanel {
         return lastDirectory;
     }
 
-    /**
-     * The function that will call a specific function to perform analysis.
-     * Perform analysis on available data.
-     * <ul>
-     *   <li> 1 - Sequential vs Parallel performance</li>
-     *   <li> 2 - Sort by number of flights</li>
-     *   <li> 3 - Sort by total time of flights</li>
-     *   <li> 4 - Correlation analysis</li>
-     *   <li> 5 - Flights per aircraft table</li>
-     *   <li> 6 - Group by operator</li>
-     *   <li> 7 - Flights per airport</li>
-     *   <li> 8 - Most used operators</li>
-     * </ul>
-     * @param analysisType - type of the analysis to be performed
-     */
-    public void performAnalysis(int analysisType) {
-        analysisPanel.performAnalysis(analysisType);
+    public void showAnalysis(int analysisType) {
+        analysisPanel.displayAnalysis(analysisType);
     }
 
 

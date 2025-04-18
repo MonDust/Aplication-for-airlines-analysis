@@ -1,9 +1,11 @@
-package pg.edu.pl.lsea.gui.analysis.displays.results;
+package pg.edu.pl.lsea.gui.display.topNdisplay;
+
+import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 /**
  * Class responsible for returning Top N Models - showing a windows with an appropriate message.
  */
-public class TopNModels extends BaseRunner {
+public class TopNModelsDisplay extends BaseAnalysisDisplay {
 
     /**
      * Method to perform the Top N models analysis and display the results.

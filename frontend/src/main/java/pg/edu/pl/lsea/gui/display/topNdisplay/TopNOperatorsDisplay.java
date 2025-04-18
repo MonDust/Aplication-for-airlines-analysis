@@ -1,9 +1,11 @@
-package pg.edu.pl.lsea.gui.analysis.displays.results;
+package pg.edu.pl.lsea.gui.display.topNdisplay;
+
+import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 /**
  * Class responsible for returning Top N Operators - showing a windows with an appropriate message.
  */
-public class TopNOperators extends BaseRunner {
+public class TopNOperatorsDisplay extends BaseAnalysisDisplay {
 
     /**
      * Method to perform the Top N operators analysis and display the results.

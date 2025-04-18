@@ -1,34 +1,31 @@
-package pg.edu.pl.lsea.gui.analysis.displays.datadisplays;
-
-import pg.edu.pl.lsea.entities.Output;
-import pg.edu.pl.lsea.gui.analysis.displays.AnalysisDisplay;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
+package pg.edu.pl.lsea.gui.display.graphdisplay;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
+import pg.edu.pl.lsea.entities.Output;
+import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 /**
  * Class displaying plots for average times.
  */
-public class PlotAverageTimePerOperatorDisplay extends AnalysisDisplay {
+public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
 
-    public PlotAverageTimePerOperatorDisplay() {
-    }
+    public PlotAverageTimePerOperatorDisplay() {}
 
     /**
      * Function to plot the average time per operator using JFreeChart.
      */
-    public void plotAverageTime() {
+    public void plotAverageTime(List<Output> averages) {
         // Get the list of averages for the operators
 //        List<Output> averages = calc.printAllAverages(getGroupedEnrichedFlights(sortCalc)); // REMOVE IT
 
         // TODO - these averages should be taken from API and passed as an argument to 'plotAverageTime' function - we cannot be calculating any data on the client side
-        List<Output> averages = List.of();
         DefaultCategoryDataset dataset = createDataset(averages);
 
         JFreeChart chart = createChart(dataset);
