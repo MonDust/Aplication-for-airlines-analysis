@@ -1,14 +1,34 @@
 package pg.edu.pl.lsea.backend.entities;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Comparator;
 import java.util.Objects;
 
 /**
  * A class representing an aircraft described by a specific model, operator and owner.
  */
+@Setter
+@Getter
+@Entity
+@Table(
+        name = "aircrafts"
+//        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"})
+)
 public class Aircraft extends Trackable implements Cloneable{
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "model")
     private String model;
+
+    @Column(name = "operator")
     private String operator;
+
+    @Column(name = "owner")
     private String owner;
 
     /**
@@ -64,54 +84,6 @@ public class Aircraft extends Trackable implements Cloneable{
     }
 
     /**
-     * Returns the model of the aircraft.
-     * @return A string representing the model of the aircraft
-     */
-    public String getModel() {
-        return model;
-    }
-
-    /**
-     * Returns the operator of the aircraft.
-     * @return A string representing the operator of the aircraft
-     */
-    public String getOperator() {
-        return operator;
-    }
-
-    /**
-     * Returns the owner of the aircraft.
-     * @return A string representing the owner of the aircraft
-     */
-    public String getOwner() {
-        return owner;
-    }
-
-    /**
-     * Sets the model of the aircraft
-     * @param model A string representing the model of the aircraft
-     */
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    /**
-     * Sets the operator of the aircraft
-     * @param operator A string representing the operator of the aircraft
-     */
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    /**
-     * Sets the owner of the aircraft
-     * @param owner A string representing the owner of the aircraft
-     */
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    /**
      * Printing aircrafts
      * @return Aircraft with all fields in a string format.
      */
@@ -155,4 +127,5 @@ public class Aircraft extends Trackable implements Cloneable{
     public int hashCode() {
         return Objects.hash(getIcao24(), model);
     }
+
 }
