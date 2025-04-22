@@ -3,12 +3,16 @@ package pg.edu.pl.lsea.backend.services;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
+import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.backend.data.storage.DataStorage;
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
+
 
 @Service
 public class AircraftService {
@@ -55,7 +59,12 @@ public class AircraftService {
                         a.operator(),
                         a.owner()
                 ))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        NullRemover nullRemover = new NullRemover();
+
+         nullRemover.TransformAircrafts(aircrafts);
+
 
         aircraftRepo.saveAll(aircrafts); // More efficient than saving one-by-one
         DataStorage.getInstance().bulkAddAircrafts(aircrafts);
