@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A class for receiving analysis progress information through udp from the server.
@@ -12,8 +13,8 @@ public class UdpClient {
 
     private static boolean listening = false;
     private static Thread listenerThread;
-    private static volatile int sumProcessed = 0;
-    private static volatile int totalProcessed = 0;
+    private static volatile AtomicInteger sumProcessed = new AtomicInteger(0);
+    private static volatile AtomicInteger totalProcessed = new AtomicInteger(0);
     /**
      * !!! Change the value of serverIP when running server on different device.
      */
@@ -26,7 +27,7 @@ public class UdpClient {
      * @return amount of proccessed rows of data
      */
     public static int getSumProcessed() {
-        return sumProcessed;
+        return sumProcessed.get();
     }
 
     /**
@@ -34,7 +35,7 @@ public class UdpClient {
      * @return total amount of rows of data to be processed
      */
     public static int getTotalProcessed() {
-        return totalProcessed;
+        return totalProcessed.get();
     }
 
     /**
@@ -62,8 +63,8 @@ public class UdpClient {
                     int processed = byteBuffer.getInt();
                     int total = byteBuffer.getInt();
 
-                    sumProcessed = sumProcessed + processed;
-                    totalProcessed = total;
+                    sumProcessed.addAndGet(processed);
+                    totalProcessed.set(total);
                 }
 
                 socket.close();

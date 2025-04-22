@@ -2,6 +2,7 @@ package pg.edu.pl.lsea.backend.data.analyzer.multithreading;
 
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
+import pg.edu.pl.lsea.backend.udp.UdpServer;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -68,10 +69,15 @@ public class ParallelGroupingTool {
 
         try (ExecutorService service = Executors.newFixedThreadPool(threads)) {
             List<List<EnrichedFlight>> sharedResult = new ArrayList<>();
+            int processed = 0;
             for(String model: models) {
+                processed++;
                 service.submit(new GetAllFlightsForModelTask(flights, aircrafts, model, sharedResult, latch));
+                if (processed % 100 == 0){
+                    UdpServer.sendProgress( 100, models.size());
+                }
             }
-
+            UdpServer.sendProgress( models.size(), models.size());
             // Wait for everything to finish
             latch.await();
 
@@ -96,9 +102,15 @@ public class ParallelGroupingTool {
 
         try (ExecutorService service = Executors.newFixedThreadPool(threads)) {
             List<List<EnrichedFlight>> sharedResult = new ArrayList<>();
+            int processed = 0;
             for(String operator: operators) {
+                processed++;
                 service.submit(new GetAllFlightsForOperatorTask(flights, aircrafts, operator, sharedResult, latch));
+                if (processed % 100 == 0){
+                    UdpServer.sendProgress( 100, operators.size());
+                }
             }
+            UdpServer.sendProgress( operators.size(), operators.size());
 
             // Wait for everything to finish
             latch.await();
