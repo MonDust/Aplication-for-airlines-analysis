@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.backend.backend;
+package pg.edu.pl.lsea.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

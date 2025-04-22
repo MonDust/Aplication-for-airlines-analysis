@@ -55,7 +55,7 @@ public class SortingCalculator extends DataAnalyzer  {
             }
         }
 
-        output.sort(Comparator.comparingInt(o -> o.Value));
+        output.sort(Comparator.comparingInt(o -> o.getValue()));
 //        System.out.println(output);
 
 
@@ -88,7 +88,7 @@ public class SortingCalculator extends DataAnalyzer  {
             }
         }
 
-        output.sort(Comparator.comparingInt(o -> o.Value));
+        output.sort(Comparator.comparingInt(o -> o.getValue()));
 //        System.out.println(output);
 
 

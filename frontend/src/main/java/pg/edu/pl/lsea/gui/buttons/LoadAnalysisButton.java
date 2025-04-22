@@ -12,7 +12,7 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.BUTTON_HEIGHT;
 /**
  * Load Analysis Button - which will show analysis choice window after clicking
  */
-public class LoadAnalysisButton extends LoadDataButton{
+public class LoadAnalysisButton extends BaseDataButton {
     /**
      * Constructor for LoadAnalysisButton class
      * @param panel - main panel

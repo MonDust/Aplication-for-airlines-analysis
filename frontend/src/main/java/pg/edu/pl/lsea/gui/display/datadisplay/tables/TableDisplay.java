@@ -1,9 +1,6 @@
-package pg.edu.pl.lsea.gui.analysis.displays.datadisplays;
+package pg.edu.pl.lsea.gui.display.datadisplay.tables;
 
-import pg.edu.pl.lsea.entities.Aircraft;
-import pg.edu.pl.lsea.entities.Output;
-import pg.edu.pl.lsea.gui.analysis.displays.AnalysisDisplay;
-import pg.edu.pl.lsea.gui.analysis.utils.AircraftParser;
+import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,62 +8,89 @@ import java.util.List;
 
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_RECORDS_SHOWN;
 
+// COMMENT:
+// TODO - this part should be totally removed or simplified - it makes no sense to display the paginated table with all of the data we have in a database
+// If we really want to keep it, at least make these results grouped in some way
+
+
 /**
- * Class representing a display that will show up when analysis happens.
+ * A generic display component that can display a list of items in a tabular (vertical list) format.
+ * Each page displays up to NUMBER_OF_RECORDS_SHOWN items, with navigation controls
+ * to switch between pages or jump to a specific one.
+ *
+ * Override: getListPanel(int, int) to customize how each item is rendered.
+ *
+ * @param <T> The type of items to be displayed in the table.
  */
-public class OutputTableDisplay extends AnalysisDisplay {
+public class TableDisplay<T> extends BaseAnalysisDisplay {
     private int currentPage = 0;
-    private final List<Output> outputList;
-    private final AircraftParser aircraftParser;
+    protected List<T> itemList;
 
     /**
-     * Constructor of the output table display.
-     * @param outputList - the list of outputs
+     * Constructor for the generic table display.
+     * @param itemList List of items to display.
      */
-    public OutputTableDisplay(List<Output> outputList, AircraftParser aircraftParser) {
-        this.outputList = outputList;
-        this.aircraftParser = aircraftParser;
-
+    public TableDisplay(List<T> itemList) {
+        this.itemList = itemList;
         setLayout(new BorderLayout());
         displayPage(currentPage);
     }
 
     /**
-     * Display page with specific number of records.
-     * Goes through the aircraft parser, which makes it possible to display aircraft information with output information.
-     * Aircraft information: Model, Operator, Owner. The aircraft information might not get found - appropriate information will be given.
-     * Output information: icao24, value.
-     * @param page int - page number
+     * Default constructor.
+     * Use addList(List) to populate items later.
+     */
+    public TableDisplay() {
+        setLayout(new BorderLayout());
+        displayPage(currentPage);
+    }
+
+    /**
+     * Adds or replaces the list of items to be displayed.
+     * @param itemList New list of items to display.
+     */
+    public void addList(List<T> itemList) {
+        this.itemList = itemList;
+    }
+
+    /**
+     * Display a page of data (specified page of items).
+     * @param page The page index to display.
      */
     private void displayPage(int page) {
         removeAll();
 
         int start = page * NUMBER_OF_RECORDS_SHOWN;
-        int end = Math.min(start + NUMBER_OF_RECORDS_SHOWN, outputList.size());
+        int end = Math.min(start + NUMBER_OF_RECORDS_SHOWN, itemList.size());
 
-        JPanel listPanel = new JPanel(new GridLayout(NUMBER_OF_RECORDS_SHOWN, 1));
-        for (int i = start; i < end; i++) {
-            Output o = outputList.get(i);
-
-            Aircraft aircraft = aircraftParser.getAircraftByIcao(o.getIcao24());
-            String text = "ICAO24: " + o.getIcao24() + " | Value: " + o.Value;
-            if (aircraft != null) {
-                text += " | Model: " + aircraft.getModel()
-                        + " | Operator: " + aircraft.getOperator()
-                        + " | " +
-                        "" +
-                        "Owner: " + aircraft.getOwner();
-            } else {
-                text += " | Aircraft info not found";
-            }
-            listPanel.add(new JLabel(text));
-        }
+        JPanel listPanel = getListPanel(start, end);
 
         add(listPanel, BorderLayout.CENTER);
         add(createNavigationPanel(), BorderLayout.SOUTH);
 
         revalidate();
         repaint();
+    }
+
+    /**
+     * Constructs the panel displaying the items for the current page.
+     *
+     * This method can be overridden to customize item rendering.
+     *
+     * @param start - index of the first item (inclusive).
+     * @param end - index of the last item (exclusive).
+     * @return JPanel containing item labels.
+     */
+    protected JPanel getListPanel(int start, int end) {
+        JPanel listPanel = new JPanel(new GridLayout(NUMBER_OF_RECORDS_SHOWN, 1));
+        for (int i = start; i < end; i++) {
+            T item = itemList.get(i);
+
+            // Can implement this otherwise:
+            String text = item.toString();
+            listPanel.add(new JLabel(text));
+        }
+        return listPanel;
     }
 
     /**
@@ -116,9 +140,9 @@ public class OutputTableDisplay extends AnalysisDisplay {
      */
     private JButton createNextButton() {
         JButton nextButton = new JButton("Next");
-        nextButton.setEnabled((currentPage + 1) * NUMBER_OF_RECORDS_SHOWN < outputList.size());
+        nextButton.setEnabled((currentPage + 1) * NUMBER_OF_RECORDS_SHOWN < itemList.size());
         nextButton.addActionListener(e -> {
-            if ((currentPage + 1) * NUMBER_OF_RECORDS_SHOWN < outputList.size()) {
+            if ((currentPage + 1) * NUMBER_OF_RECORDS_SHOWN < itemList.size()) {
                 currentPage++;
                 displayPage(currentPage);
             }
@@ -131,7 +155,7 @@ public class OutputTableDisplay extends AnalysisDisplay {
      * @return JLabel showing the information about pages.
      */
     private JLabel createPageInfoLabel() {
-        int totalPages = (int) Math.ceil((double) outputList.size() / NUMBER_OF_RECORDS_SHOWN);
+        int totalPages = (int) Math.ceil((double) itemList.size() / NUMBER_OF_RECORDS_SHOWN);
         return new JLabel("Page " + (currentPage + 1) + " of " + totalPages);
     }
 
@@ -156,7 +180,7 @@ public class OutputTableDisplay extends AnalysisDisplay {
         JButton goToPageButton = new JButton("Go");
         goToPageButton.addActionListener(e -> {
             try {
-                int totalPages = (int) Math.ceil((double) outputList.size() / NUMBER_OF_RECORDS_SHOWN);
+                int totalPages = (int) Math.ceil((double) itemList.size() / NUMBER_OF_RECORDS_SHOWN);
                 int pageNumber = Integer.parseInt(pageInputField.getText()) - 1;
                 if (pageNumber >= 0 && pageNumber < totalPages) {
                     currentPage = pageNumber;
