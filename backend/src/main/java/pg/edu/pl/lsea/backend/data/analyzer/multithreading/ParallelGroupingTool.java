@@ -77,7 +77,7 @@ public class ParallelGroupingTool {
                     UdpServer.sendProgress( 100, models.size());
                 }
             }
-
+            UdpServer.sendProgress( models.size(), models.size());
             // Wait for everything to finish
             latch.await();
 
@@ -102,9 +102,15 @@ public class ParallelGroupingTool {
 
         try (ExecutorService service = Executors.newFixedThreadPool(threads)) {
             List<List<EnrichedFlight>> sharedResult = new ArrayList<>();
+            int processed = 0;
             for(String operator: operators) {
+                processed++;
                 service.submit(new GetAllFlightsForOperatorTask(flights, aircrafts, operator, sharedResult, latch));
+                if (processed % 100 == 0){
+                    UdpServer.sendProgress( 100, operators.size());
+                }
             }
+            UdpServer.sendProgress( operators.size(), operators.size());
 
             // Wait for everything to finish
             latch.await();
