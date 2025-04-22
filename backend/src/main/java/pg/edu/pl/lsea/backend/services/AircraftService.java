@@ -3,6 +3,7 @@ package pg.edu.pl.lsea.backend.services;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
+import pg.edu.pl.lsea.backend.data.storage.DataStorage;
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
@@ -42,6 +43,7 @@ public class AircraftService {
         );
 
         aircraftRepo.save(aircraft);
+        DataStorage.getInstance().addAircraft(aircraft);
         return aircraftToResponseMapper.apply(aircraft);
     }
 
@@ -56,6 +58,7 @@ public class AircraftService {
                 .toList();
 
         aircraftRepo.saveAll(aircrafts); // More efficient than saving one-by-one
+        DataStorage.getInstance().bulkAddAircrafts(aircrafts);
 
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)

@@ -3,6 +3,7 @@ package pg.edu.pl.lsea.backend.services;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
+import pg.edu.pl.lsea.backend.data.storage.DataStorage;
 import pg.edu.pl.lsea.backend.entities.Flight;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
@@ -41,6 +42,7 @@ public class FlightService {
                 request.arrivalAirport());
 
         flightRepo.save(flight);
+        DataStorage.getInstance().addFlight(flight);
         return flightToResponseMapper.apply(flight);
     }
 
@@ -55,6 +57,7 @@ public class FlightService {
                 .toList();
 
         flightRepo.saveAll(flights);
+        DataStorage.getInstance().bulkAddFlights(flights);
 
         return flights.stream()
                 .map(flightToResponseMapper)
