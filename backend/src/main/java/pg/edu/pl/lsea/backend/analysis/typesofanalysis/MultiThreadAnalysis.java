@@ -1,5 +1,6 @@
-package pg.edu.pl.lsea.backend.analysis;
+package pg.edu.pl.lsea.backend.analysis.typesofanalysis;
 
+import pg.edu.pl.lsea.backend.analysis.BaseAnalysis;
 import pg.edu.pl.lsea.backend.data.analyzer.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
@@ -7,7 +8,6 @@ import pg.edu.pl.lsea.backend.data.analyzer.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 
-import javax.swing.*;
 import java.util.List;
 
 /**
@@ -29,32 +29,24 @@ public class MultiThreadAnalysis extends BaseAnalysis {
      * @param enrichedFlights list of flights
      * @param aircrafts list of aircraft
      */
-    public static void performAnalysis(int threads, List<EnrichedFlight> enrichedFlights, List<Aircraft> aircrafts) {
+    public void performAnalysis(int threads, List<EnrichedFlight> enrichedFlights, List<Aircraft> aircrafts) {
+        // Grouping flights by model and operator using parallel processing
+        List<List<EnrichedFlight>> groupedByModel = parallelGroupingTool.groupFlightsByModel(enrichedFlights, aircrafts, threads);
+        List<List<EnrichedFlight>> groupedByOperator = parallelGroupingTool.groupFlightsByOperator(enrichedFlights, aircrafts, threads);
 
-        // Sort the data
+        // Sorting and analyzing
         SortingCalculator sortingCalculator = new SortingCalculator();
-
-
-        // Firstly, group aircraft by models and store a list of flights for each model
-        ParallelGroupingTool parallelGroupingTool = new ParallelGroupingTool();
-        // This method runs with multiple threads internally:
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlights, aircrafts, threads);
-        List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(enrichedFlights, aircrafts, threads);
-
-
-        // Analysis
-        GroupingTool groupingTool = new GroupingTool();
-        List<List<EnrichedFlight>> longFlights = groupingTool.findLongFlightsForEachModel(listOfLists_model);
-
-        // Secondly, for each model group, print average time in the air of all flights
-        PropertiesCalculator propertiesTool = new PropertiesCalculator();
-        propertiesTool.printAllAverages(listOfLists_model);
-        propertiesTool.givePercentageOfLongFlights(listOfLists_model);
-
-
-        sortingCalculator.giveTopNOperators(listOfLists_operator, 10);
+        sortingCalculator.giveTopNOperators(groupedByOperator, 10);
         sortingCalculator.sortByAmountOfFlights(enrichedFlights);
         sortingCalculator.sortByTimeOfFlights(enrichedFlights);
+
+        // Analyzing long flights and calculating properties
+        GroupingTool groupingTool = new GroupingTool();
+        groupingTool.findLongFlightsForEachModel(groupedByModel);
+
+        PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
+        propertiesCalculator.printAllAverages(groupedByModel);
+        propertiesCalculator.givePercentageOfLongFlights(groupedByModel);
     }
 
     /**
@@ -63,7 +55,6 @@ public class MultiThreadAnalysis extends BaseAnalysis {
      * @param threads - number of threads (will work only if parallel)
      */
     public void runAnalysis(boolean parallel, int threads) {
-
         long pre_analysis_start = System.currentTimeMillis();
 
         log("Starting analysis...");

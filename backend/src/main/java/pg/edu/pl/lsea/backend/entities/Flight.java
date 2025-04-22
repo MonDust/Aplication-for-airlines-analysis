@@ -18,6 +18,42 @@ import java.util.Objects;
 //        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
 )
 public class Flight extends Trackable implements Cloneable {
+    public String getDepartureAirport() {
+        return departureAirport;
+    }
+
+    public void setDepartureAirport(String departureAirport) {
+        this.departureAirport = departureAirport;
+    }
+
+    public void setFirstSeen(int firstSeen) {
+        this.firstSeen = firstSeen;
+    }
+
+    public int getFirstSeen() {
+        return firstSeen;
+    }
+
+    public void setLastSeen(int lastSeen) {
+        this.lastSeen = lastSeen;
+    }
+
+    public int getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setArrivalAirport(String arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
+    }
+
+    public String getArrivalAirport() {
+        return arrivalAirport;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     @Id
     @GeneratedValue
     private Long id;

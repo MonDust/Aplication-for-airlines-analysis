@@ -21,7 +21,7 @@ public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
     /**
      * Function to plot the average time per operator using JFreeChart.
      */
-    public void plotAverageTime(List<Output> averages) {
+    public JPanel plotAverageTime(List<Output> averages) {
         // Get the list of averages for the operators
 //        List<Output> averages = calc.printAllAverages(getGroupedEnrichedFlights(sortCalc)); // REMOVE IT
 
@@ -33,7 +33,10 @@ public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
         JPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(800, 600));
 
-        JOptionPane.showMessageDialog(null, chartPanel, "Average Time per Operator", JOptionPane.INFORMATION_MESSAGE);
+        // DELETE BELOW //
+        // JOptionPane.showMessageDialog(null, chartPanel, "Average Time per Operator", JOptionPane.INFORMATION_MESSAGE);
+
+        return chartPanel;
     }
 
     /**
@@ -44,11 +47,17 @@ public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
     private DefaultCategoryDataset createDataset(List<Output> averages) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
+        // DELETE BELOW //
+        //AircraftParser parser = new AircraftParser(DataStorage.getInstance().getAircrafts());
+
         for (Output output : averages) {
             // TODO Here operator names should be passed from API, not joined manually as it was before
             String operator = "placeholder " + averages;
-//            String operator = parser.getAircraftByIcao(output.getIcao24()).getOperator();
-            double value = output.Value;
+
+            // DELETE BELOW //
+            //String operator = parser.getAircraftByIcao(output.getIcao24()).getOperator();
+
+            double value = output.getValue();
 
             // Add the value to the dataset (category = operator, series = "Average Time")
             dataset.addValue(value, "Average Time", operator);

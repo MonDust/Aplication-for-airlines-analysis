@@ -11,7 +11,7 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 /**
  * Load Choice Button class - which will show the choice window after clicking
  */
-public class LoadChoiceButton extends LoadDataButton{
+public class LoadChoiceButton extends BaseDataButton {
     /**
      * Constructor for LoadChoiceButton class
      * @param panel - main panel

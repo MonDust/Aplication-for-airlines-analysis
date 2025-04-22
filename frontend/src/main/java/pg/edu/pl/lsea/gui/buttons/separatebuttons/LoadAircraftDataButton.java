@@ -1,6 +1,6 @@
 package pg.edu.pl.lsea.gui.buttons.separatebuttons;
 
-import pg.edu.pl.lsea.gui.buttons.LoadDataButton;
+import pg.edu.pl.lsea.gui.buttons.BaseDataButton;
 import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
 
 import java.awt.event.ActionEvent;
@@ -10,7 +10,7 @@ import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 /**
  * Class representing button for loading the aircraft data
  */
-public class LoadAircraftDataButton extends LoadDataButton {
+public class LoadAircraftDataButton extends BaseDataButton {
     /**
      * Constructor for the LoadAircraftDataButton class
      * @param panel - main panel

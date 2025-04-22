@@ -1,6 +1,9 @@
 package pg.edu.pl.lsea.backend.analysis;
 
+import pg.edu.pl.lsea.backend.data.analyzer.GroupingTool;
+import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
+import pg.edu.pl.lsea.backend.data.analyzer.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.backend.data.storage.DataStorage;
@@ -11,8 +14,17 @@ import pg.edu.pl.lsea.backend.entities.Output;
 
 import java.util.List;
 
+/**
+ * Base class for analysis classes
+ */
 public abstract class BaseAnalysis {
     protected final DataStorage storage = DataStorage.getInstance();
+
+    protected final SortingCalculator sortingCalculator = new SortingCalculator();
+    protected final GroupingTool groupingTool = new GroupingTool();
+
+    protected final PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
+    protected final ParallelGroupingTool parallelGroupingTool = new ParallelGroupingTool();
 
     /**
      * Constructor for the class.
@@ -65,7 +77,5 @@ public abstract class BaseAnalysis {
         SortingCalculator sortCalc = new SortingCalculator();
         return sortCalc.sortByAmountOfFlights(prepareFlights());
     }
-
-
 
 }

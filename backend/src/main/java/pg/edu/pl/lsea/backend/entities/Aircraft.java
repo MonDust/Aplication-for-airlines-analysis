@@ -18,6 +18,35 @@ import java.util.Objects;
 //        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"})
 )
 public class Aircraft extends Trackable implements Cloneable{
+    public String getModel() {
+        return model;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+
     @Id
     @GeneratedValue
     private Long id;

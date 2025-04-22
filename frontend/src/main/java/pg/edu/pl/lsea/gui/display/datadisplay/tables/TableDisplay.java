@@ -1,22 +1,23 @@
-package pg.edu.pl.lsea.gui.display.datadisplay;
+package pg.edu.pl.lsea.gui.display.datadisplay.tables;
 
-import pg.edu.pl.lsea.entities.Aircraft;
-import pg.edu.pl.lsea.entities.Output;
 import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.function.Function;
 
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_RECORDS_SHOWN;
+
+// TODO - this part should be totally removed or simplified - it makes no sense to display the paginated table with all of the data we have in a database
+// If we really want to keep it, at least make these results grouped in some way
+
 
 /**
  * A generic display component that can display any list of items, paginated and rendered via a provided formatter.
  */
 public class TableDisplay<T> extends BaseAnalysisDisplay {
     private int currentPage = 0;
-    private final List<T> itemList;
+    protected List<T> itemList;
 
     /**
      * Constructor for the generic table display.
@@ -24,9 +25,17 @@ public class TableDisplay<T> extends BaseAnalysisDisplay {
      */
     public TableDisplay(List<T> itemList) {
         this.itemList = itemList;
-
         setLayout(new BorderLayout());
         displayPage(currentPage);
+    }
+
+    public TableDisplay() {
+        setLayout(new BorderLayout());
+        displayPage(currentPage);
+    }
+
+    public void addList(List<T> itemList) {
+        this.itemList = itemList;
     }
 
     /**
@@ -39,20 +48,25 @@ public class TableDisplay<T> extends BaseAnalysisDisplay {
         int start = page * NUMBER_OF_RECORDS_SHOWN;
         int end = Math.min(start + NUMBER_OF_RECORDS_SHOWN, itemList.size());
 
-        JPanel listPanel = new JPanel(new GridLayout(NUMBER_OF_RECORDS_SHOWN, 1));
-        for (int i = start; i < end; i++) {
-            T item = itemList.get(i);
-
-            // Can implementent this otherwise: (so it is shown better)
-            String text = item.toString();
-            listPanel.add(new JLabel(text));
-        }
+        JPanel listPanel = getListPanel(start, end);
 
         add(listPanel, BorderLayout.CENTER);
         add(createNavigationPanel(), BorderLayout.SOUTH);
 
         revalidate();
         repaint();
+    }
+
+    protected JPanel getListPanel(int start, int end) {
+        JPanel listPanel = new JPanel(new GridLayout(NUMBER_OF_RECORDS_SHOWN, 1));
+        for (int i = start; i < end; i++) {
+            T item = itemList.get(i);
+            // Can implementent this otherwise: (so it is shown better)
+
+            String text = item.toString();
+            listPanel.add(new JLabel(text));
+        }
+        return listPanel;
     }
 
     /**
@@ -156,17 +170,4 @@ public class TableDisplay<T> extends BaseAnalysisDisplay {
         });
         return goToPageButton;
     }
-
-//    private String getTextOutput(Output o) {
-//          Aircraft aircraft = aircraftParser.getAircraftByIcao(o.getIcao24());
-//        String text = "ICAO24: " + o.getIcao24() + " | Value: " + o.Value;
-//        if (aircraft != null) {
-//            text += " | Model: " + aircraft.getModel()
-//                    + " | Operator: " + aircraft.getOperator()
-//                    + " | Owner: " + aircraft.getOwner();
-//        } else {
-//            text += " | Aircraft info not found";
-//        }
-//        return text;
-//    }
 }
