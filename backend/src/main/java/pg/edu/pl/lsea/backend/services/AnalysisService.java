@@ -144,9 +144,8 @@ public class AnalysisService {
 
 
         enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
+        List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(enrichedFlights, dataStorage.getAircrafts(), 8);
 
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlights, dataStorage.getAircrafts(), 8);
-
-        return sortingCalculator.giveTopNOperators(listOfLists_model, HowMuchOperators);
+        return sortingCalculator.giveTopNOperators(listOfLists_operator, HowMuchOperators);
     }
 }
