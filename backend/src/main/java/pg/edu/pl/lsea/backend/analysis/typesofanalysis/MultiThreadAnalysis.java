@@ -149,7 +149,7 @@ public class MultiThreadAnalysis extends BaseAnalysis {
     protected void log(String msg) {
         messageLog.append(msg).append("\n");
 
-        // TODO - Update real time -> here should be sending the logs: sending 'msg'
+        // TODO - Update real time -> here should be sending the logs: sending 'msg' ?
     }
 
     /**

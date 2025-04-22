@@ -7,11 +7,17 @@
 //import java.util.Timer;
 //import java.util.TimerTask;
 //
+///**
+// * Class displaying progress bar - the status of processing.
+// */
 //public class ProgressBarUDP extends JFrame {
 //    private final JProgressBar progressBar;
 //    private final JLabel progressLabel;
 //    private final Timer timer = new Timer();
 //
+//    /**
+//     * Constructor for the class.
+//     */
 //    public ProgressBarUDP() {
 //        setTitle("Analysis Progress");
 //        setLayout(new BorderLayout());

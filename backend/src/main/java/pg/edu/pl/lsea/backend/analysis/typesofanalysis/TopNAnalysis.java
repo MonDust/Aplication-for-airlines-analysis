@@ -21,7 +21,8 @@ public class TopNAnalysis extends BaseAnalysis {
     public TopNAnalysis() {}
 
     /**
-     * Get grouped by the operators - result.
+     * Returns a list of outputs for the top operators, each output containing an ICAO24 identifier
+     * and the number of flights for that operator
      * @return list of outputs with number of flights for certain operators (one of the icaos and size)
      */
     public List<Output> getTopNOperators_OutputList() {
@@ -34,6 +35,12 @@ public class TopNAnalysis extends BaseAnalysis {
         return outputList;
     }
 
+    /**
+     * Returns a list of outputs for the top N operators, each output containing an ICAO24 identifier
+     * and the number of flights for that operator.
+     * @param topN Number of top operators to include.
+     * @return List of Output representing the number of flights for the specified number of top operators.
+     */
     public List<Output> getTopNOperators_OutputList(int topN) {
         List<List<EnrichedFlight>> enrichedList = getTopNOperators(topN);
         List<Output> outputList = new ArrayList<>();
@@ -45,7 +52,8 @@ public class TopNAnalysis extends BaseAnalysis {
     }
 
     /**
-     *
+     * Returns a list of outputs for the most popular aircraft models, each output containing an ICAO24 identifier
+     * and the number of flights for that model.
      * @return list of outputs with number of flights for ceraint models (one of the icaos and size)
      */
     public List<Output> getGroupedModels_OutputList() {
@@ -58,6 +66,12 @@ public class TopNAnalysis extends BaseAnalysis {
         return outputList;
     }
 
+    /**
+     * Returns a list of outputs for the top N aircraft models, each output containing an ICAO24 identifier
+     * and the number of flights for that model.
+     * @param topN Number of top aircraft models to include.
+     * @return List of Output representing the number of flights for the specified number of top models.
+     */
     public List<Output> getTopNModels_OutputList(int topN) {
         List<List<EnrichedFlight>> enrichedList = getTopNModels(topN);
         List<Output> outputList = new ArrayList<>();

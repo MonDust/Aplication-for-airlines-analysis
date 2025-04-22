@@ -2,6 +2,7 @@ package pg.edu.pl.lsea.gui.display.topNdisplay;
 
 import pg.edu.pl.lsea.entities.Output;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +10,9 @@ import java.util.List;
  */
 public class TopNModelsDisplay extends BaseTopN {
 
+    /**
+     * Constructor fo the class.
+     */
     public TopNModelsDisplay() {
         displayTopModels();
     }
@@ -20,9 +24,9 @@ public class TopNModelsDisplay extends BaseTopN {
     public void displayTopModels() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> sizes = List.of();
+        List<Output> sizes = new ArrayList();
 
-        //SIZE - value
+        //SIZE (number of flights) - value
         Output o = new Output("PlaceholderIcao", 0);
         sizes.add(o);
 

@@ -8,12 +8,19 @@ import java.util.List;
 
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_RECORDS_SHOWN;
 
+// COMMENT:
 // TODO - this part should be totally removed or simplified - it makes no sense to display the paginated table with all of the data we have in a database
 // If we really want to keep it, at least make these results grouped in some way
 
 
 /**
- * A generic display component that can display any list of items, paginated and rendered via a provided formatter.
+ * A generic display component that can display a list of items in a tabular (vertical list) format.
+ * Each page displays up to NUMBER_OF_RECORDS_SHOWN items, with navigation controls
+ * to switch between pages or jump to a specific one.
+ *
+ * Override: getListPanel(int, int) to customize how each item is rendered.
+ *
+ * @param <T> The type of items to be displayed in the table.
  */
 public class TableDisplay<T> extends BaseAnalysisDisplay {
     private int currentPage = 0;
@@ -29,17 +36,25 @@ public class TableDisplay<T> extends BaseAnalysisDisplay {
         displayPage(currentPage);
     }
 
+    /**
+     * Default constructor.
+     * Use addList(List) to populate items later.
+     */
     public TableDisplay() {
         setLayout(new BorderLayout());
         displayPage(currentPage);
     }
 
+    /**
+     * Adds or replaces the list of items to be displayed.
+     * @param itemList New list of items to display.
+     */
     public void addList(List<T> itemList) {
         this.itemList = itemList;
     }
 
     /**
-     * Display a page of data using the formatter.
+     * Display a page of data (specified page of items).
      * @param page The page index to display.
      */
     private void displayPage(int page) {
@@ -57,12 +72,21 @@ public class TableDisplay<T> extends BaseAnalysisDisplay {
         repaint();
     }
 
+    /**
+     * Constructs the panel displaying the items for the current page.
+     *
+     * This method can be overridden to customize item rendering.
+     *
+     * @param start - index of the first item (inclusive).
+     * @param end - index of the last item (exclusive).
+     * @return JPanel containing item labels.
+     */
     protected JPanel getListPanel(int start, int end) {
         JPanel listPanel = new JPanel(new GridLayout(NUMBER_OF_RECORDS_SHOWN, 1));
         for (int i = start; i < end; i++) {
             T item = itemList.get(i);
-            // Can implementent this otherwise: (so it is shown better)
 
+            // Can implement this otherwise:
             String text = item.toString();
             listPanel.add(new JLabel(text));
         }

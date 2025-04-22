@@ -19,10 +19,18 @@ import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.*;
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 import static pg.edu.pl.lsea.utils.InformationTypeConstants.*;
 
+/**
+ * Class for displaying information (adding displays) with cardLayout.
+ * Previously: AnalysisPanel -> shows both analysis and information about the data.
+ */
 public class DisplayPanel extends JPanel {
     private final CardLayout cardLayout;
     private final Map<String, JPanel> analysisViews = new HashMap<>();
 
+    /**
+     * Constructor for the class.
+     * Adds basic display - "welcome".
+     */
     public DisplayPanel() {
         cardLayout = new CardLayout();
         setLayout(cardLayout); // you can keep the outer layout null if needed
@@ -56,6 +64,12 @@ public class DisplayPanel extends JPanel {
         return panel;
     }
 
+    /**
+     * Function for adding the display.
+     * @param key - the key of the analysis display, a way to choose the analysis display to show.
+     *            the same way it is possible to add information display.
+     * @param display - the display that is supposed to be added, and recognized by the passed key.
+     */
     public void addAnalysisDisplay(String key, JPanel display) {
         if (analysisViews.containsKey(key)) {
             // Remove old panel
@@ -68,6 +82,10 @@ public class DisplayPanel extends JPanel {
         cardLayout.show(this, key);
     }
 
+    /**
+     * Show the display by inputting the key as an argument. It will show corresponding display.
+     * @param key - the key of display that is supposed to show.
+     */
     public void showDisplay(String key) {
         if (analysisViews.containsKey(key)) {
             cardLayout.show(this, key);
@@ -111,10 +129,10 @@ public class DisplayPanel extends JPanel {
     public void displayAnalysis(int analysisType) {
         String key = "analysis_" + analysisType;
 
-        if (analysisViews.containsKey(key)) {
-            showDisplay(key);
-            return;
-        }
+//        if (analysisViews.containsKey(key)) {
+//            showDisplay(key);
+//            return;
+//        }
 
         JPanel display;
         // List<Aircraft> aircraftList = reader.readAircrafts(new File("C:\\Users\\maria\\Desktop\\PG\\SEM_VI\\Large-scale_enterprise_application\\Project\\Main_test_files\\aircraft-database-complete-2022-09.csv"));
@@ -139,6 +157,9 @@ public class DisplayPanel extends JPanel {
     }
 
 
+    /**
+     * Perform all types of analysis, and show the appropriate displays.
+     */
     private void createPerformAllTypesDisplay() {
         displayAnalysis(MOST_POPULAR_OPERATORS);
         displayAnalysis(MOST_POPULAR_MODELS);
@@ -146,23 +167,46 @@ public class DisplayPanel extends JPanel {
         displayAnalysis(PERCENTAGE_OF_THE_LONG_FLIGHTS);
     }
 
+    /**
+     * Show most popular operators - return the display.
+     * @return JPanel with most popular operators.
+     */
     private JPanel createMostPopularOperatorsDisplay() {
         return new TopNOperatorsDisplay();
     }
 
+    /**
+     * Show most popular models - return the display.
+     * @return JPanel with most popular models.
+     */
     private JPanel createMostPopularModelsDisplay() {
         return new TopNModelsDisplay();
     }
 
+    /**
+     * Plot average flight times for operators.
+     * @return JPanle with the plot.
+     */
     private JPanel createPlotAverageTimeDisplay() {
         return new PlotAverageTimePerOperatorDisplay();
     }
 
+    /**
+     * Show percentage of long flights for most popular operators.
+     * @return JPanel with the percentages.
+     */
     private JPanel createPercentageOfTheLongFlightsDisplay() {
         return new TopNOperatorsPercentageDisplay();
     }
 
 
+    /**
+     * Functions showing information depending on chosen option.
+     * RECORD_SIZE - number of flights and number of aircrafts.
+     * FLIGHTS_INFORMATION - All flights.
+     * AIRCRAFT_INFORMATION - All aircrafts.
+     * @param informationType - option of information type.
+     */
     public void showInformation(int informationType) {
         String key = "information_" + informationType;
 
@@ -186,23 +230,35 @@ public class DisplayPanel extends JPanel {
         showDisplay(key);
     }
 
+    /**
+     * Show flights information - all flights.
+     * @return JPanel with the list of flights.
+     */
     public JPanel showFlightsInformation() {
         // TODO - get info by API
-        List<Aircraft> aircraftList = new ArrayList();
         List<Flight> flightList = new ArrayList();
-        return createPlaceholderPanel("Size information: Flights: " + flightList.size() + " | " + "Aircrafts: " + aircraftList.size() );
+        return new TableDisplay(flightList);
     }
 
+    /**
+     * Show aircraft information - all aircrafts.
+     * @return JPanel with the list of aircrafts.
+     */
     public JPanel showAircraftsInformation() {
         // TODO - get info by API
         List<Aircraft> aircraftList = new ArrayList();
         return new TableDisplay(aircraftList);
     }
 
+    /**
+     * Show information about number of records available.
+     * @return JPanel with information.
+     */
     public JPanel showRecordsSizeInformation() {
         // TODO - get info by API
+        List<Aircraft> aircraftList = new ArrayList();
         List<Flight> flightList = new ArrayList();
-        return new TableDisplay(flightList);
+        return createPlaceholderPanel("Size information: Flights: " + flightList.size() + " | " + "Aircrafts: " + aircraftList.size() );
     }
 
 }

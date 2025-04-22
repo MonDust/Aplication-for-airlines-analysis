@@ -3,12 +3,16 @@ package pg.edu.pl.lsea.gui.display.topNdisplay;
 import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Output;
 
+import java.util.ArrayList;
 import java.util.List;
 /**
  * Class responsible for returning Top N Operators - showing a windows with an appropriate message.
  */
 public class TopNOperatorsDisplay extends BaseTopN {
 
+    /**
+     * Constructor for the class.
+     */
     public TopNOperatorsDisplay() {
         displayTopOperators();
     }
@@ -20,9 +24,9 @@ public class TopNOperatorsDisplay extends BaseTopN {
     public void displayTopOperators() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> sizes = List.of();
+        List<Output> sizes = new ArrayList();
 
-        //SIZE - value
+        //SIZE (number of flights) - value
         Output o = new Output("PlaceholderIcao", 0);
         sizes.add(o);
 

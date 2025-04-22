@@ -9,6 +9,7 @@ import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,16 +17,21 @@ import java.util.List;
  */
 public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
 
-    public PlotAverageTimePerOperatorDisplay() {}
+    /**
+     * Constructor for the class.
+     */
+    public PlotAverageTimePerOperatorDisplay() {
+        // Get the list of averages for the operators
+        // TODO - these averages should be taken from API and passed as an argument to 'plotAverageTime' function - we cannot be calculating any data on the client side
+        List<Output> avereges = new ArrayList();
+        plotAverageTime(avereges);
+
+    }
 
     /**
      * Function to plot the average time per operator using JFreeChart.
      */
     public JPanel plotAverageTime(List<Output> averages) {
-        // Get the list of averages for the operators
-//        List<Output> averages = calc.printAllAverages(getGroupedEnrichedFlights(sortCalc)); // REMOVE IT
-
-        // TODO - these averages should be taken from API and passed as an argument to 'plotAverageTime' function - we cannot be calculating any data on the client side
         DefaultCategoryDataset dataset = createDataset(averages);
 
         JFreeChart chart = createChart(dataset);
@@ -47,15 +53,10 @@ public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
     private DefaultCategoryDataset createDataset(List<Output> averages) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        // DELETE BELOW //
-        //AircraftParser parser = new AircraftParser(DataStorage.getInstance().getAircrafts());
-
         for (Output output : averages) {
-            // TODO Here operator names should be passed from API, not joined manually as it was before
+            // TODO Here operator names should be passed from API
+            //  (by Icao), not joined manually as it was before
             String operator = "placeholder " + averages;
-
-            // DELETE BELOW //
-            //String operator = parser.getAircraftByIcao(output.getIcao24()).getOperator();
 
             double value = output.getValue();
 

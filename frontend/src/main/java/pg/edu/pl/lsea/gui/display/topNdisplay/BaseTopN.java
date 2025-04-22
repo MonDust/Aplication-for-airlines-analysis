@@ -5,10 +5,16 @@ import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Base class for top N displays - showing top N analysis.
+ */
 public abstract class BaseTopN extends BaseAnalysisDisplay {
     protected final StringBuilder messageLog = new StringBuilder();
     private final JTextArea logArea;
 
+    /**
+     * Class constructor - making logArea, the one to show the top N information.
+     */
     public BaseTopN() {
         setLayout(new BorderLayout());
 

@@ -5,9 +5,18 @@ import pg.edu.pl.lsea.utils.InformationTypeConstants;
 
 import javax.swing.*;
 
+/**
+ * Choosing Information Window that allows the user to select the type of information to display in the GUI.
+ * The user chooses from predefined information categories.
+ */
 public class ChoosingInformationWindow extends BaseChoosingWindow{
     final private JComboBox<String> informationComboBox;
 
+    /**
+     * Constructor for ChoosingInformationWindow.
+     * Creates a dropdown for selecting information type and a button to confirm the selection.
+     * @param panel - the main panel of the application GUI.
+     */
     public ChoosingInformationWindow(MainPanel panel) {
         super(panel);
         setTitle("Choose Information to show");
@@ -27,6 +36,9 @@ public class ChoosingInformationWindow extends BaseChoosingWindow{
         setVisible(true);
     }
 
+    /**
+     * Retrieves the selected information type and then uses show information function (the one to display information in GUI).
+     */
     public void setInformation() {
         String selectedName = (String) informationComboBox.getSelectedItem();
         int selectedType = InformationTypeConstants.INFO_NAME_TO_ID.getOrDefault(selectedName, 0);

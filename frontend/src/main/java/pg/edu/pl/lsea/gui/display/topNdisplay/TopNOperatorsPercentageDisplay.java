@@ -5,16 +5,16 @@ import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Output;
 import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * Class responsible for returning percentage of long flights for Top N Operators - showing a windows with an appropriate message.
  */
 public class TopNOperatorsPercentageDisplay extends BaseTopN {
 
+    /**
+     * Constructor for the class.
+     */
     public TopNOperatorsPercentageDisplay() {
         displayTopOperatorsPercentage();
     }
@@ -26,7 +26,7 @@ public class TopNOperatorsPercentageDisplay extends BaseTopN {
     public void displayTopOperatorsPercentage() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> percentages = List.of();
+        List<Output> percentages = new ArrayList();
 
         Output o = new Output("PlaceholderIcao", 0);
         percentages.add(o);
