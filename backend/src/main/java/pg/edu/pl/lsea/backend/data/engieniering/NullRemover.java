@@ -15,17 +15,7 @@ public class NullRemover extends DataTransform {
     public void TransformFlights (List<Flight> flights){
 
         for(int i = flights.size() - 1; i >= 0; i--){
-            if(flights.get(i).getIcao24() == null || flights.get(i).getDepartureAirport() == null || flights.get(i).getArrivalAirport() == null || flights.get(i).getFirstSeen() == -1 || flights.get(i).getLastSeen() == -1)
-                flights.remove(i);
-        }
-
-        for(int i = flights.size() - 1; i >= 0; i--){
-            if(Objects.equals(flights.get(i).getIcao24(), "") || Objects.equals(flights.get(i).getDepartureAirport(), "") || Objects.equals(flights.get(i).getArrivalAirport(), ""))
-                flights.remove(i);
-        }
-
-        for(int i = flights.size() - 1; i >= 0; i--){
-            if(Objects.equals(flights.get(i).getIcao24(), "NULL") || Objects.equals(flights.get(i).getDepartureAirport(), "NULL") || Objects.equals(flights.get(i).getArrivalAirport(), "NULL"))
+            if(!CheckOneFlight(flights.get(i)))
                 flights.remove(i);
         }
 
@@ -52,6 +42,22 @@ public class NullRemover extends DataTransform {
                 aircrafts.remove(i);
         }
 
+    }
+
+
+    public boolean CheckOneFlight (Flight flight) {
+        if (flight.getIcao24() == null || flight.getDepartureAirport() == null || flight.getArrivalAirport() == null || flight.getFirstSeen() == -1 || flight.getLastSeen() == -1){
+            return false;
+}
+        if (Objects.equals(flight.getIcao24(), "") || Objects.equals(flight.getDepartureAirport(), "") || Objects.equals(flight.getArrivalAirport(), "")){
+            return false;
+        }
+
+        if(Objects.equals(flight.getIcao24(), "NULL") || Objects.equals(flight.getDepartureAirport(), "NULL") || Objects.equals(flight.getArrivalAirport(), "NULL")) {
+                return false;
+            }
+
+        return true;
     }
 
 }

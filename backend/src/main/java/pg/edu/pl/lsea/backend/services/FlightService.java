@@ -3,8 +3,10 @@ package pg.edu.pl.lsea.backend.services;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
+import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.backend.data.storage.DataStorage;
+import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 import pg.edu.pl.lsea.backend.entities.Flight;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
@@ -18,10 +20,15 @@ import java.util.stream.Collectors;
 public class FlightService {
     private final FlightRepo flightRepo;
     private final FlightToResponseMapper flightToResponseMapper;
+    private final DataEnrichment enrichmentTool = new DataEnrichment();
+    private final NullRemover nullRemover = new NullRemover();
+
+
 
     public FlightService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
+
     }
 
     public List<FlightResponse> getAll() {
@@ -46,8 +53,14 @@ public class FlightService {
                 request.arrivalAirport());
 
 
-        flightRepo.save(flight);
-        DataStorage.getInstance().addFlight(flight);
+        if(       (!nullRemover.CheckOneFlight(flight))) {
+
+            flightRepo.save(flight);
+            DataStorage.getInstance().addFlight(flight);
+            DataStorage.getInstance().addEnrichedFlight(new EnrichedFlight(flight));
+
+        }
+
         return flightToResponseMapper.apply(flight);
     }
 
@@ -67,6 +80,9 @@ public class FlightService {
 
         flightRepo.saveAll(flights);
         DataStorage.getInstance().bulkAddFlights(flights);
+        DataStorage.getInstance().bulkAddEnrichedFlights(enrichmentTool.CreateEnrichedListOfFlights(flights));
+
+
 
         return flights.stream()
                 .map(flightToResponseMapper)
