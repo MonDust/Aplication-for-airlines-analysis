@@ -19,29 +19,38 @@ import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
 import java.util.List;
 
+/**
+ * Service that handles logic behind requests from controller AnalysisController
+ */
 @Service
 public class AnalysisService {
+
+
+    /**
+     * handling data
+     */
     private final FlightRepo flightRepo;
     private final FlightToResponseMapper flightToResponseMapper;
     DataStorage dataStorage;
+
+    /**
+     * Inicialization of tools that are nessesary for handling data
+     */
     private final SortingCalculator sortingCalculator = new SortingCalculator();
     private final ParallelGroupingTool parallelGroupingTool= new ParallelGroupingTool();
     private final GroupingTool groupingTool= new GroupingTool();
     private final PropertiesCalculator propertiesTool= new PropertiesCalculator();
-    private List<List<EnrichedFlight>> listOfLists_model;
-    private List <EnrichedFlight> enrichedFlights;
 
-    private DataEnrichment enrichmentTool = new DataEnrichment();
-
-
+    /**
+     * Constructor for AnalysisService class
+     * @param flightRepo h2 database
+     * @param flightToResponseMapper h2 database
+     */
     public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
 
         this.dataStorage = DataStorage.getInstance();
-//        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
-
-
 
     }
 
@@ -52,41 +61,11 @@ public class AnalysisService {
                 .toList();
     }
 
-    public FlightResponse getByIcao(String icao) {
-        return flightRepo.findById(icao)
-                .map(flightToResponseMapper)
-                .orElseThrow(() -> new ResourceNotFoundException("Flight", "icao24", icao));
-    }
 
-    public FlightResponse create(FlightResponse request) {
-        Flight flight = new Flight(
-                request.icao24(),
-                request.firstSeen(),
-                request.lastSeen(),
-                request.departureAirport(),
-                request.arrivalAirport());
-
-        flightRepo.save(flight);
-        return flightToResponseMapper.apply(flight);
-    }
-
-    public List<FlightResponse> createBulk(List<FlightResponse> request) {
-        List<Flight> flights = request.stream()
-                .map(r -> new Flight(
-                        r.icao24(),
-                        r.firstSeen(),
-                        r.lastSeen(),
-                        r.departureAirport(),
-                        r.arrivalAirport()))
-                .toList();
-
-        flightRepo.saveAll(flights);
-
-        return flights.stream()
-                .map(flightToResponseMapper)
-                .toList();
-    }
-
+    /**
+     * Gives amount of flights per each ICAO
+     * @return amount of flights per model writen in outpu objects
+     */
     public List<Output>  sortByAmountOfFlights() {
 
         return (this.sortingCalculator.sortByAmountOfFlights(dataStorage.getEnrichedFlights()));
@@ -95,12 +74,22 @@ public class AnalysisService {
 
     }
 
+
+    /**
+     * this function gives percentage of flights that classify as long per each list in list of lists
+     * @return percentage of flight that classify as long stored in output format
+     */
     public List<Output> givePercentageOfLongFlights() {
 
         List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
         return propertiesTool.givePercentageOfLongFlights(listOfLists_model);
     }
 
+
+    /**
+     * Gives amount of time in air per each ICAO
+     * @return in output object ICAO and it's time in air
+     */
     public List<Output> sortByTimeOfFlights() {
 
 
@@ -108,6 +97,10 @@ public class AnalysisService {
 
     }
 
+    /**
+     * This functions gets all flights stored in list of list and returns average time in the air for each list
+     * @return average time in the air for each list in list of list stored in output format.
+     */
     public List<Output> printAllAverages() {
 
         List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
@@ -115,13 +108,20 @@ public class AnalysisService {
 
     }
 
+    /**
+     * Calculates average time in air for list of flights
+     * @return averred time per inputed flights
+     */
     public int calculateAverageTimeInAir() {
 
         return propertiesTool.calculateAverageTimeInAir(dataStorage.getEnrichedFlights());
     }
 
 
-
+    /**
+     * returns list of list which is containing any long flights
+     * @return list of list which is containing any long flights
+     */
     public List<List<EnrichedFlight>> findLongFlightsForEachModel() {
 
 

@@ -6,6 +6,9 @@ import pg.edu.pl.lsea.backend.entities.Flight;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class that is used to delete with null values
+ */
 public class NullRemover extends DataTransform {
 
     /**
@@ -44,7 +47,11 @@ public class NullRemover extends DataTransform {
 
     }
 
-
+    /**
+     * Function that checks whether there is null value in
+     * @param flight flight entity that is checked weather there are any nulls in it
+     * @return true if there is no nulls in
+     */
     public boolean CheckOneFlight (Flight flight) {
         if (flight.getIcao24() == null || flight.getDepartureAirport() == null || flight.getArrivalAirport() == null || flight.getFirstSeen() == -1 || flight.getLastSeen() == -1){
             return false;
