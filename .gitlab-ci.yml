@@ -21,7 +21,7 @@ backend-validate-project:
     - 'mvn $MAVEN_CLI_OPTS compile'
   artifacts:
     paths:
-      - Backend/target
+      - backend/target
     expire_in: 30 minutes
 
 backend-run-unit-tests:
@@ -37,7 +37,7 @@ backend-build-dist:
     - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
   artifacts:
     paths:
-      - Backend/target/*.jar
+      - backend/target/*.jar
 
 backend-deploy-to-test-server:
   stage: backend-deploy
@@ -59,7 +59,7 @@ frontend-validate-project:
     - 'mvn $MAVEN_CLI_OPTS compile'
   artifacts:
     paths:
-      - Frontend/target
+      - frontend/target
     expire_in: 30 minutes
 
 frontend-run-unit-tests:
@@ -75,7 +75,7 @@ frontend-build-dist:
     - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
   artifacts:
     paths:
-      - Backend/target/*.jar
+      - frontend/target/*.jar
 
 frontend-deploy-to-test-server:
   stage: frontend-deploy
