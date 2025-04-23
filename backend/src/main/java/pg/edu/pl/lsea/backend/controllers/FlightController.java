@@ -7,9 +7,15 @@ import pg.edu.pl.lsea.backend.services.FlightService;
 
 import java.util.List;
 
+/**
+ * Class responsible for handling API endpoints (part of MVC architecture)
+ */
 @RestController
 @RequestMapping("/flights")
 public class FlightController {
+    /**
+     * flightService is used for all logic
+     */
     private final FlightService flightService;
 
     public FlightController(FlightService flightService) {
