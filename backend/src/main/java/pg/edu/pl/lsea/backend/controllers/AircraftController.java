@@ -8,14 +8,21 @@ import pg.edu.pl.lsea.backend.services.AircraftService;
 
 import java.util.List;
 
+/**
+ * Class responsible for handling API endpoints (part of MVC architecture)
+ */
 @RestController
 @RequestMapping("/aircrafts")
 public class AircraftController {
+    /**
+     * aircraftService is used for all logic
+     */
     private final AircraftService aircraftService;
 
     public AircraftController(AircraftService aircraftService) {
         this.aircraftService = aircraftService;
     }
+
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
-
+/**
+ * Class responsible for aircraft REST API business logic (part of MVC architecture)
+ * It gets and saves data to/from AircraftRepo.
+ */
 @Service
 public class AircraftService {
     private final AircraftRepo aircraftRepo;
@@ -24,7 +27,10 @@ public class AircraftService {
         this.aircraftToResponseMapper = aircraftToResponseMapper;
     }
 
-
+    /**
+     * Returns the list of all aircrafts stored in database (used for GET request)
+     * @return List of AircraftResponse (AircraftResponse = DTO) is what should be exposed via REST API endpoint
+     */
     public List<AircraftResponse> getAll() {
         return aircraftRepo.findAll()
                 .stream()
@@ -32,12 +38,20 @@ public class AircraftService {
                 .toList();
     }
 
+    /**
+     * Returns one particular aircraft stored in database (used for GET request)
+     * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint
+     */
     public AircraftResponse getByIcao(String icao) {
         return aircraftRepo.findById(icao)
                 .map(aircraftToResponseMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao));
     }
 
+    /**
+     * Creates a particular aircraft and stores it in the database (used for POST request).
+     * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
+     */
     public AircraftResponse create(AircraftResponse request) {
         Aircraft aircraft = new Aircraft(
                 request.icao24(),
@@ -51,6 +65,11 @@ public class AircraftService {
         return aircraftToResponseMapper.apply(aircraft);
     }
 
+    /**
+     * Creates a list of aircrafts and stores them in the database (used for POST request).
+     * It enables client to upload all aircrafts at once.
+     * @return List of AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
+     */
     public List<AircraftResponse> createBulk(List<AircraftResponse> request) {
         List<Aircraft> aircrafts = request.stream()
                 .map(a -> new Aircraft(
