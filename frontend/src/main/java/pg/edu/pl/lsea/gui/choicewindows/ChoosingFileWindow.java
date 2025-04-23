@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea.gui.choicewindows;
 
+import pg.edu.pl.lsea.api.DataUploader;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.files.CsvDataReader;
@@ -11,12 +12,14 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Choosing File Window which lets choose the searched file type and data type that will be gotten from it
+ * Choosing File Window which lets choose the searched file type and data type that will be gotten from it.
+ * The class in which you send the data - loaded objects.
  */
 public class ChoosingFileWindow extends BaseChoosingWindow {
     final private JComboBox<String> fileTypeComboBox;
     final private JComboBox<String> dataTypeComboBox;
     final private CsvDataReader dataLoader = new CsvDataReader();
+    final private DataUploader dataUploader = new DataUploader();
 
     /**
      * Create ChoosingFileWindow object.
@@ -113,25 +116,27 @@ public class ChoosingFileWindow extends BaseChoosingWindow {
      * @param dataType - choosen category to load data to
      */
     private void loadData(File file, String dataType) {
-
         System.out.println("TEST - ChoosingFileWindow - loadData(File file, String dataType)");
 
         int recordsLoaded;
         if ("Flights".equals(dataType)) {
             List<Flight> flights = dataLoader.readFlights(file);
 
-            // TODO - send loaded objects through API
-            // FIX it
-            recordsLoaded = 0;
+            // send loaded objects through API
+
+            dataUploader.sendFlights(flights);
+            recordsLoaded = flights.size();
             JOptionPane.showMessageDialog(mainPanel, "Loaded " + recordsLoaded + " flights.");
 
             System.out.println("Loading flight data from " + file.getName());
         } else if ("Aircrafts".equals(dataType)) {
             List<Aircraft> aircrafts = dataLoader.readAircrafts(file);
 
-            // TODO - send loaded objects through API
-            // FIX it
-            recordsLoaded = 0;
+
+            // send loaded objects through API
+
+            dataUploader.sendAircrafts(aircrafts);
+            recordsLoaded = aircrafts.size();
             JOptionPane.showMessageDialog(mainPanel, "Loaded " + recordsLoaded + " aircrafts.");
 
             System.out.println("Loading aircrafts data from " + file.getName());

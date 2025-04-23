@@ -10,7 +10,7 @@ import java.io.File;
 /**
  * Base class for all available buttons
  */
-public abstract class LoadDataButton extends JButton implements ActionListener {
+public abstract class BaseDataButton extends JButton implements ActionListener {
     protected final MainPanel mainPanel;
 
 
@@ -18,7 +18,7 @@ public abstract class LoadDataButton extends JButton implements ActionListener {
      * Constructor of the class
      * @param panel  - main panel
      */
-    public LoadDataButton(MainPanel panel) {
+    public BaseDataButton(MainPanel panel) {
         mainPanel = panel;
         setFont(new Font("Arial", Font.BOLD, 14));
         setFocusable(false);
