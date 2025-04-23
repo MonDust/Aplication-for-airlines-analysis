@@ -3,6 +3,7 @@ package pg.edu.pl.lsea;
 import pg.edu.pl.lsea.api.DataUploader;
 import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.files.CsvDataReader;
+import pg.edu.pl.lsea.udp.UdpClient;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,5 +76,46 @@ public class TestMain {
 
 
         // TODO - Ask API to do some analysis based on already loaded data (aforementioned section) and print result to the console
+
+
+        // wait for analysis data
+        Thread udpThread = new Thread(() -> {
+            UdpClient.startListening();
+        });
+
+        // start thread
+        udpThread.start();
+
+        // wait for any progress to occur (without blocking main thread)
+        while (UdpClient.getTotalProcessed() == 0) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
+        // monitor progress
+        while (UdpClient.getSumProcessed() < UdpClient.getTotalProcessed()) {
+            int progress = (int) ((UdpClient.getSumProcessed() / (double) UdpClient.getTotalProcessed()) * 100);
+                System.out.println(progress + "%");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
+        // finished - stop listened
+        UdpClient.stopListening();
+
+        // optional: wait for udp to end
+        try {
+            udpThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
