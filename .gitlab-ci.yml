@@ -1,47 +1,91 @@
 image: maven:3.9-eclipse-temurin-21
 
 stages:
-  - validate
-  - test
-  - package
-  - deploy
+  - backend-validate
+  - backend-test
+  - backend-package
+  - backend-deploy
+  - frontend-validate
+  - frontend-test
+  - frontend-package
+  - frontend-deploy
 
 variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
 
-before_script:
-  - cd Airline_Analyzer
 
-validate-project:
-  stage: validate
+backend-validate-project:
+  stage: backend-validate
   script:
+    - 'cd backend'
     - 'mvn $MAVEN_CLI_OPTS compile'
   artifacts:
     paths:
-      - Airline_Analyzer/target
+      - Backend/target
     expire_in: 30 minutes
 
-run-unit-tests:
-  stage: test
+backend-run-unit-tests:
+  stage: backend-test
   script:
+    - 'cd backend'
     - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true test'
 
-build-dist:
-  stage: package
+backend-build-dist:
+  stage: backend-package
   script:
+    - 'cd backend'
     - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
   artifacts:
     paths:
-      - Airline_Analyzer/target/*.jar
+      - Backend/target/*.jar
 
-deploy-to-test-server:
-  stage: deploy
+backend-deploy-to-test-server:
+  stage: backend-deploy
   script:
     - 'true'
 
-deploy-to-production:
-  stage: deploy
+backend-deploy-to-production:
+  stage: backend-deploy
   script:
+    - 'cd backend'
+    - 'true'
+  only:
+    - master
+
+frontend-validate-project:
+  stage: frontend-validate
+  script:
+    - 'cd frontend'
+    - 'mvn $MAVEN_CLI_OPTS compile'
+  artifacts:
+    paths:
+      - Frontend/target
+    expire_in: 30 minutes
+
+frontend-run-unit-tests:
+  stage: frontend-test
+  script:
+    - 'cd frontend'
+    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true test'
+
+frontend-build-dist:
+  stage: frontend-package
+  script:
+    - 'cd frontend'
+    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
+  artifacts:
+    paths:
+      - Backend/target/*.jar
+
+frontend-deploy-to-test-server:
+  stage: frontend-deploy
+  script:
+    - 'true'
+
+frontend-deploy-to-production:
+  stage: frontend-deploy
+  script:
+    - 'cd frontend'
     - 'true'
   only:
     - master
