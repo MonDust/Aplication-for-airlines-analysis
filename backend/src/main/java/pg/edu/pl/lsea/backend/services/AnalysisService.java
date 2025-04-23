@@ -134,8 +134,10 @@ public class AnalysisService {
 
     public List<List<EnrichedFlight>> findLongFlightsForEachModel() {
 
+
+
         enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlights, dataStorage.getAircrafts(), 8);
+        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
 
         return groupingTool.findLongFlightsForEachModel(listOfLists_model);
     }
