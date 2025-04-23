@@ -88,11 +88,8 @@ public class AnalysisService {
     }
 
     public List<Output>  sortByAmountOfFlights() {
-        dataStorage.getFlights();
 
-        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
-
-        return (this.sortingCalculator.sortByAmountOfFlights(enrichedFlights));
+        return (this.sortingCalculator.sortByAmountOfFlights(dataStorage.getEnrichedFlights()));
 
 
 
@@ -100,34 +97,27 @@ public class AnalysisService {
 
     public List<Output> givePercentageOfLongFlights() {
 
-        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlights, dataStorage.getAircrafts(), 8);
-
+        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
         return propertiesTool.givePercentageOfLongFlights(listOfLists_model);
     }
 
     public List<Output> sortByTimeOfFlights() {
 
-        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
 
-
-        return sortingCalculator.sortByTimeOfFlights(enrichedFlights);
+        return sortingCalculator.sortByTimeOfFlights(dataStorage.getEnrichedFlights());
 
     }
 
     public List<Output> printAllAverages() {
 
-        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlights, dataStorage.getAircrafts(), 8);
-
+        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
         return         propertiesTool.printAllAverages(listOfLists_model);
 
     }
 
     public int calculateAverageTimeInAir() {
 
-        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
-        return propertiesTool.calculateAverageTimeInAir(enrichedFlights);
+        return propertiesTool.calculateAverageTimeInAir(dataStorage.getEnrichedFlights());
     }
 
 
@@ -136,18 +126,13 @@ public class AnalysisService {
 
 
 
-        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
         List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
-
         return groupingTool.findLongFlightsForEachModel(listOfLists_model);
     }
 
     public List<List<EnrichedFlight>> giveTopNOperators(int HowMuchOperators) {
 
-
-        enrichedFlights = enrichmentTool.CreateEnrichedListOfFlights(dataStorage.getFlights());
-        List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(enrichedFlights, dataStorage.getAircrafts(), 8);
-
+        List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
         return sortingCalculator.giveTopNOperators(listOfLists_operator, HowMuchOperators);
     }
 }
