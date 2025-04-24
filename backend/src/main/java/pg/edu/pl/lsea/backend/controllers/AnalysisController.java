@@ -8,6 +8,9 @@ import pg.edu.pl.lsea.backend.services.AnalysisService;
 
 import java.util.List;
 
+/**
+ * Controller that handles endpoints for analysis
+ */
 @RestController
 @RequestMapping("/analysis")
 public class AnalysisController {

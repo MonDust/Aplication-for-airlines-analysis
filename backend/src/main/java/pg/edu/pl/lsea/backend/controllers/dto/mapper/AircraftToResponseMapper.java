@@ -6,6 +6,10 @@ import pg.edu.pl.lsea.backend.entities.Aircraft;
 
 import java.util.function.Function;
 
+/**
+ * Maps Aircraft to AircraftResponse which is useful for converting data stored in database
+ * to data that should be sent with API (done in AircraftService)
+ */
 @Component
 public class AircraftToResponseMapper implements Function<Aircraft, AircraftResponse> {
 

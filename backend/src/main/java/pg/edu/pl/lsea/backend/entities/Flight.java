@@ -18,6 +18,10 @@ import java.util.Objects;
 //        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
 )
 public class Flight extends Trackable implements Cloneable {
+    /**
+     * This value is generated automatically during object creation
+     * and is added by the JPA (Java Persistence API).
+     */
     @Id
     @GeneratedValue
     private Long id;
