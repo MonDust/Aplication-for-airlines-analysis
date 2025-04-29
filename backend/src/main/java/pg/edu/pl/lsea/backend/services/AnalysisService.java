@@ -2,6 +2,8 @@ package pg.edu.pl.lsea.backend.services;
 
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 
 import pg.edu.pl.lsea.backend.data.analyzer.GroupingTool;
@@ -14,6 +16,8 @@ import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 import pg.edu.pl.lsea.backend.entities.Flight;
 import pg.edu.pl.lsea.backend.entities.Output;
+import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
@@ -31,8 +35,15 @@ public class AnalysisService {
      */
     private final FlightRepo flightRepo;
     private final FlightToResponseMapper flightToResponseMapper;
-    DataStorage dataStorage;
+ //   DataStorage dataStorage;
 
+    private final EnrichedFlightRepo enrichedFlightRepo;
+    private final EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
+
+
+
+    private final AircraftRepo aircraftRepo;
+    private final AircraftToResponseMapper aircraftToResponseMapper;
     /**
      * Inicialization of tools that are nessesary for handling data
      */
@@ -46,11 +57,18 @@ public class AnalysisService {
      * @param flightRepo h2 database
      * @param flightToResponseMapper h2 database
      */
-    public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper) {
+    public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper, EnrichedFlightRepo enrichedFlightRepo,
+                           EnrichedFlightToResponseMapper enrichedFlightToResponseMapper, AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper ) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
 
-        this.dataStorage = DataStorage.getInstance();
+        this.enrichedFlightRepo = enrichedFlightRepo;
+        this.enrichedFlightToResponseMapper = enrichedFlightToResponseMapper;
+
+
+        this.aircraftRepo = aircraftRepo;
+        this.aircraftToResponseMapper = aircraftToResponseMapper;
+
 
     }
 
@@ -68,7 +86,7 @@ public class AnalysisService {
      */
     public List<Output>  sortByAmountOfFlights() {
 
-        return (this.sortingCalculator.sortByAmountOfFlights(dataStorage.getEnrichedFlights()));
+        return (this.sortingCalculator.sortByAmountOfFlights(enrichedFlightRepo.findAll()));
 
 
 
@@ -81,7 +99,7 @@ public class AnalysisService {
      */
     public List<Output> givePercentageOfLongFlights() {
 
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
+        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlightRepo.findAll(), aircraftRepo.findAll(), 8);
         return propertiesTool.givePercentageOfLongFlights(listOfLists_model);
     }
 
@@ -93,7 +111,7 @@ public class AnalysisService {
     public List<Output> sortByTimeOfFlights() {
 
 
-        return sortingCalculator.sortByTimeOfFlights(dataStorage.getEnrichedFlights());
+        return sortingCalculator.sortByTimeOfFlights(enrichedFlightRepo.findAll());
 
     }
 
@@ -103,7 +121,7 @@ public class AnalysisService {
      */
     public List<Output> printAllAverages() {
 
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
+        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlightRepo.findAll(), aircraftRepo.findAll(), 8);
         return         propertiesTool.printAllAverages(listOfLists_model);
 
     }
@@ -114,7 +132,7 @@ public class AnalysisService {
      */
     public int calculateAverageTimeInAir() {
 
-        return propertiesTool.calculateAverageTimeInAir(dataStorage.getEnrichedFlights());
+        return propertiesTool.calculateAverageTimeInAir(enrichedFlightRepo.findAll());
     }
 
 
@@ -126,13 +144,13 @@ public class AnalysisService {
 
 
 
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
+        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(enrichedFlightRepo.findAll(), aircraftRepo.findAll(), 8);
         return groupingTool.findLongFlightsForEachModel(listOfLists_model);
     }
 
     public List<List<EnrichedFlight>> giveTopNOperators(int HowMuchOperators) {
 
-        List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
+        List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(enrichedFlightRepo.findAll(), aircraftRepo.findAll(), 8);
         return sortingCalculator.giveTopNOperators(listOfLists_operator, HowMuchOperators);
     }
 }
