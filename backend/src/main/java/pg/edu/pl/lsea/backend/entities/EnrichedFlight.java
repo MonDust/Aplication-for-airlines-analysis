@@ -1,13 +1,20 @@
 package pg.edu.pl.lsea.backend.entities;
 
-import java.util.Comparator;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *  A class representing an aircraft that is ready for analysis.
  */
+@Getter
+@Setter
 public class EnrichedFlight extends Flight  {
 
+    /**
+     * Time in air in seconds for the aircraft during the flight.
+     */
     private int timeInAir;
+
     /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.
@@ -18,7 +25,7 @@ public class EnrichedFlight extends Flight  {
      */
     public EnrichedFlight(String icao24, int firstSeen, int lastSeen, String departureAirport, String arrivalAirport) {
         super(icao24, firstSeen, lastSeen, departureAirport, arrivalAirport);
-        updateTimeintheair(lastSeen, firstSeen);
+        updateTimeInTheAir(lastSeen, firstSeen);
     }
 
 
@@ -28,7 +35,7 @@ public class EnrichedFlight extends Flight  {
      */
     public EnrichedFlight(Flight flight) {
         super(flight.getIcao24(), flight.getFirstSeen(), flight.getLastSeen(), flight.getDepartureAirport(), flight.getArrivalAirport());
-        updateTimeintheair(flight.getLastSeen(), flight.getFirstSeen());
+        updateTimeInTheAir(flight.getLastSeen(), flight.getFirstSeen());
     }
 
     /**
@@ -39,11 +46,12 @@ public class EnrichedFlight extends Flight  {
         return timeInAir;
     }
 
-
     /**
-     * Sets the integer representing time in the air in seconds.       .
+     * Sets the integer representing time in the air in seconds.
+     * @param firstSeen - when aircraft was first seen during the flight.
+     * @param lastSeen - when aircraft was last seen during the flight.
      */
-    private void updateTimeintheair(int firstSeen, int lastSeen) {
+    private void updateTimeInTheAir(int firstSeen, int lastSeen) {
         this.timeInAir = firstSeen - lastSeen;
     }
 

@@ -2,11 +2,14 @@ package pg.edu.pl.lsea.backend.entities.analysisresult;
 
 import lombok.Getter;
 import lombok.Setter;
+import pg.edu.pl.lsea.backend.entities.Output;
 import pg.edu.pl.lsea.backend.entities.Trackable;
 
 /**
  * A class representing an analysis result related to the aircraft model.
  * It stores a numerical value associated with a specific model and aircraft (identified by its ICAO24 code).
+ *
+ * NOT IN USE: additional class containing model, value and icao24 - for getting the result of the analysis.
  */
 @Setter
 @Getter

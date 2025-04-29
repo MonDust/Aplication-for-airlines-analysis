@@ -1,10 +1,10 @@
-package pg.edu.pl.lsea.backend.analysis.typesofanalysis;
+package pg.edu.pl.lsea.backend.services.analysis.typesofanalysis;
 
-import pg.edu.pl.lsea.backend.analysis.BaseAnalysis;
-import pg.edu.pl.lsea.backend.data.analyzer.GroupingTool;
+import pg.edu.pl.lsea.backend.services.analysis.BaseAnalysis;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.backend.data.analyzer.multithreading.ParallelGroupingTool;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 
@@ -36,7 +36,7 @@ public class MultiThreadAnalysis extends BaseAnalysis {
 
         // Sorting and analyzing
         SortingCalculator sortingCalculator = new SortingCalculator();
-        sortingCalculator.giveTopNOperators(groupedByOperator, 10);
+        sortingCalculator.giveTopN_byAttribute(groupedByOperator, 10);
         sortingCalculator.sortByAmountOfFlights(enrichedFlights);
         sortingCalculator.sortByTimeOfFlights(enrichedFlights);
 
@@ -45,7 +45,7 @@ public class MultiThreadAnalysis extends BaseAnalysis {
         groupingTool.findLongFlightsForEachModel(groupedByModel);
 
         PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
-        propertiesCalculator.printAllAverages(groupedByModel);
+        propertiesCalculator.giveAllAverages(groupedByModel);
         propertiesCalculator.givePercentageOfLongFlights(groupedByModel);
     }
 
@@ -138,7 +138,7 @@ public class MultiThreadAnalysis extends BaseAnalysis {
     private void analyzeGroupedData(List<List<EnrichedFlight>> groupedFlights, String groupingType) {
         log("Analyzing properties for " + groupingType + "...");
         PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
-        propertiesCalculator.printAllAverages(groupedFlights);
+        propertiesCalculator.giveAllAverages(groupedFlights);
         log("Finished analyzing " + groupingType + ".");
     }
 

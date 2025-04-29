@@ -4,18 +4,15 @@ import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 
-import pg.edu.pl.lsea.backend.data.analyzer.GroupingTool;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.backend.data.analyzer.multithreading.ParallelGroupingTool;
-import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.backend.data.storage.DataStorage;
-import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Flight;
 import pg.edu.pl.lsea.backend.entities.Output;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
-import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
+import pg.edu.pl.lsea.backend.services.analysis.typesofanalysis.GroupedAndForPlotAnalysis;
 
 import java.util.List;
 
@@ -24,36 +21,30 @@ import java.util.List;
  */
 @Service
 public class AnalysisService {
-
-
     /**
      * handling data
      */
     private final FlightRepo flightRepo;
     private final FlightToResponseMapper flightToResponseMapper;
-    DataStorage dataStorage;
 
-    /**
-     * Inicialization of tools that are nessesary for handling data
-     */
-    private final SortingCalculator sortingCalculator = new SortingCalculator();
-    private final ParallelGroupingTool parallelGroupingTool= new ParallelGroupingTool();
-    private final GroupingTool groupingTool= new GroupingTool();
-    private final PropertiesCalculator propertiesTool= new PropertiesCalculator();
+    // Analysis
+    private final GroupedAndForPlotAnalysis analysisFunc = new GroupedAndForPlotAnalysis();
+
 
     /**
      * Constructor for AnalysisService class
-     * @param flightRepo h2 database
-     * @param flightToResponseMapper h2 database
+     * @param flightRepo - flight repository; h2 database
+     * @param flightToResponseMapper - mapper; h2 database
      */
     public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
-
-        this.dataStorage = DataStorage.getInstance();
-
     }
 
+    /**
+     * Get all the flights from the flight repository.
+     * @return List of FlightResponse
+     */
     public List<FlightResponse> getAll() {
         return flightRepo.findAll()
                 .stream()
@@ -64,48 +55,53 @@ public class AnalysisService {
 
     /**
      * Gives amount of flights per each ICAO
-     * @return amount of flights per model writen in outpu objects
+     * @return list with amount of flights per icao24 written in output objects
      */
-    public List<Output>  sortByAmountOfFlights() {
-
-        return (this.sortingCalculator.sortByAmountOfFlights(dataStorage.getEnrichedFlights()));
-
-
-
+    public List<Output> sortByAmountOfFlights() {
+        return analysisFunc.getListSortedByNumberOfFlights();
     }
 
-
     /**
-     * this function gives percentage of flights that classify as long per each list in list of lists
-     * @return percentage of flight that classify as long stored in output format
-     */
-    public List<Output> givePercentageOfLongFlights() {
-
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
-        return propertiesTool.givePercentageOfLongFlights(listOfLists_model);
-    }
-
-
-    /**
-     * Gives amount of time in air per each ICAO
-     * @return in output object ICAO and it's time in air
+     * Gives amout of time of flights per each ICAO
+     * @return list with amount of time in air per icao24 written in output objects
      */
     public List<Output> sortByTimeOfFlights() {
+        return analysisFunc.getListSortedByNumberOfFlights();
+    }
 
 
-        return sortingCalculator.sortByTimeOfFlights(dataStorage.getEnrichedFlights());
+    /**
+     * This function gives percentage of flights that classify as long per each list in list of lists.
+     * The flights are grouped by models.
+     * @return list of outputs; value - percentage of flight that classify as long stored in output format
+     */
+    public List<Output> givePercentageOfLongFlights_ModelGrouping() {
+        return analysisFunc.getPercentageOfLongFlights_ModelGrouping();
+    }
 
+    /**
+     * This function gives percentage of flights that classify as long per each list in list of lists.
+     * The flights are grouped by operators.
+     * @return list of outputs; value - percentage of flight that classify as long stored in output format
+     */
+    public List<Output> givePercentageOfLongFlights_OperatorGrouping() {
+        return analysisFunc.getPercentageOfLongFlights_OperatorGrouping();
     }
 
     /**
      * This functions gets all flights stored in list of list and returns average time in the air for each list
      * @return average time in the air for each list in list of list stored in output format.
      */
-    public List<Output> printAllAverages() {
+    public List<Output> giveAllAverages_groupedByModel() {
+        return analysisFunc.giveAllAverages_groupedByModel();
+    }
 
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
-        return         propertiesTool.printAllAverages(listOfLists_model);
-
+    /**
+     * This functions gets all flights stored in list of list and returns average time in the air for each list
+     * @return average time in the air for each list in list of list stored in output format.
+     */
+    public List<Output> giveAllAverages_groupedByOperator() {
+        return analysisFunc.giveAllAverages_groupedByOperator();
     }
 
     /**
@@ -113,26 +109,89 @@ public class AnalysisService {
      * @return averred time per inputed flights
      */
     public int calculateAverageTimeInAir() {
-
-        return propertiesTool.calculateAverageTimeInAir(dataStorage.getEnrichedFlights());
+        return analysisFunc.calculateAverageTimeInAir();
     }
 
 
     /**
-     * returns list of list which is containing any long flights
+     * Returns list of list which is containing any long flights
      * @return list of list which is containing any long flights
      */
     public List<List<EnrichedFlight>> findLongFlightsForEachModel() {
-
-
-
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
-        return groupingTool.findLongFlightsForEachModel(listOfLists_model);
+        return analysisFunc.findLongFlightsForEachModel();
     }
 
-    public List<List<EnrichedFlight>> giveTopNOperators(int HowMuchOperators) {
+    // Needed for frontend
 
-        List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(dataStorage.getEnrichedFlights(), dataStorage.getAircrafts(), 8);
-        return sortingCalculator.giveTopNOperators(listOfLists_operator, HowMuchOperators);
+    /**
+     * Get grouped by the operators - result: output with certain icaos representing the operators and number of flights.
+     * Returns a list of outputs for the top operators, each output containing an ICAO24 identifier
+     * and the number of flights for that operator.
+     * Possible to pass an argument to specify number of top operators.
+     * @return List of Output representing the number of flights for the specified number of top operators. (one of the icaos and size)
+     */
+    public List<Output> getTopNOperatorWithNumberOfFlights() {
+        return analysisFunc.getGroupedTopNOperators();
     }
+
+    /**
+     * Get grouped by the operators - result with a specified number of top operators.
+     * Returns a list of outputs for the top N operators, each output containing an ICAO24 identifier
+     * and the number of flights for that operator.
+     * @param topN the number of top operators to consider
+     * @return List of Output representing the number of flights for the specified number of top operators.
+     */
+    public List<Output> getTopNOperatorWithNumberOfFlights(int topN) {
+        return analysisFunc.getGroupedTopNOperators(topN);
+    }
+
+    /**
+     * Get grouped by the models - result: output with certain icaos representing the models and number of flights.
+     * Returns a list of outputs for the top N aircraft models, each output containing an ICAO24 identifier
+     * and the number of flights for that model.
+     * Possible to pass an argument to specify number of top models.
+     * @return List of Output representing the number of flights for the specified number of top models. (one of the icaos and size)
+     */
+    public List<Output> getTopNModelWithNumberOfFlights() {
+        return analysisFunc.getGroupedTopNModels();
+    }
+
+    /**
+     * Get grouped by the models - result with a specified number of top models.
+     * Returns a list of outputs for the top N aircraft models, each output containing an ICAO24 identifier
+     * and the number of flights for that model.
+     * @param topN the number of top models to consider
+     * @return List of Output representing the number of flights for the specified number of top models.
+     */
+    public List<Output> getTopNModelWithNumberOfFlights(int topN) {
+        return analysisFunc.getGroupedTopNModels(topN);
+    }
+
+    /**
+     * Method to perform the percentage of long flights for top n operators analysis and display the results.
+     * The value of N is defined by the NUMBER_OF_MOST_POPULAR_OPERATORS constant.
+     * @return A list of Output objects containing percentage of long flights per operator.
+     */
+    public List<Output> getTopNPercentageOfLongFlights_GroupedByOperator() {
+        return analysisFunc.getTopNOperatorsPercentages();
+    }
+
+    /**
+     * Method to perform the percentage of long flights for top n operators analysis and display the results.
+     * The value of N is defined by the NUMBER_OF_MOST_POPULAR_OPERATORS constant.
+     * @return A list of Output objects containing percentage of long flights per operator.
+     */
+    public List<Output> getTopNPercentageOfLongFlights_GroupedByOperator(int topN) {
+        return analysisFunc.getTopNOperatorsPercentages(topN);
+    }
+
+    /**
+     * Function to get the average time per operator using Properties calculator.
+     * It will get the number of operators set by NUMBER_OF_MOST_POPULAR_OPERATORS.
+     *  @return A list of Output containing the average times for each operator
+     */
+    public List<Output> getTopNAverageTime_GroupedByOperator() {
+        return analysisFunc.getAverageTimesForOperators();
+    }
+
 }

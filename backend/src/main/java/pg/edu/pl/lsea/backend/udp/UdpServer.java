@@ -8,14 +8,13 @@ import java.nio.ByteBuffer;
  * A class for sending analysis progress information through udp to the client.
  */
 public class UdpServer {
-
     private static final int CLIENT_PORT = 51556;
     private static final int SERVER_PORT = 51555;
-    private static DatagramSocket socket;
     private static InetAddress clientAddress;
     private static boolean running = true;
 
 
+    private static DatagramSocket socket;
     static {
         try {
             socket = new DatagramSocket(SERVER_PORT);
@@ -30,6 +29,7 @@ public class UdpServer {
      * @param totalRows total amount of rows to be proccessed
      */
     public static void sendProgress(int rowsProcessed, int totalRows) {
+        System.out.println("Sending progress - rows processed: " + rowsProcessed + ", total rows: " + totalRows);
         if (clientAddress == null) {
             System.err.println("Unknown client address, cannot send data");
             return;

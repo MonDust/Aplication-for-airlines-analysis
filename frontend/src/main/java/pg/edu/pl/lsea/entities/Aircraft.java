@@ -35,6 +35,13 @@ public class Aircraft extends Trackable implements Cloneable{
         this.owner = "";
     }
 
+    public void setNoInformation() {
+        setIcao24("EMPTY");
+        this.model = "No model information";
+        this.operator = "No operator information";
+        this.owner = "No owner information";
+    }
+
     /**
      * Class for comparing aircrafts based on model, operator and owner.
      */
