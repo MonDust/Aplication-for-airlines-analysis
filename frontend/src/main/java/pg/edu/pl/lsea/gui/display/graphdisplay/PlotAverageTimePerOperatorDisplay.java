@@ -23,15 +23,15 @@ public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
     public PlotAverageTimePerOperatorDisplay() {
         // Get the list of averages for the operators
         // TODO - these averages should be taken from API and passed as an argument to 'plotAverageTime' function - we cannot be calculating any data on the client side
-        List<Output> avereges = new ArrayList();
-        plotAverageTime(avereges);
+                //new ArrayList();
 
     }
 
     /**
      * Function to plot the average time per operator using JFreeChart.
      */
-    public JPanel plotAverageTime(List<Output> averages) {
+    public JPanel plotAverageTime() {
+        List<Output> averages = dataLoader.getTopNAverageTime();
         DefaultCategoryDataset dataset = createDataset(averages);
 
         JFreeChart chart = createChart(dataset);
@@ -56,7 +56,10 @@ public class PlotAverageTimePerOperatorDisplay extends BaseAnalysisDisplay {
         for (Output output : averages) {
             // TODO Here operator names should be passed from API
             //  (by Icao), not joined manually as it was before
-            String operator = "placeholder " + averages;
+            String operator = dataLoader.getAircraftIcao(output.getIcao24()).getModel();
+                //"placeholder " + averages;
+
+            System.out.println(output);
 
             double value = output.getValue();
 

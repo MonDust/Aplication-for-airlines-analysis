@@ -28,7 +28,11 @@ public class FlightService {
     private final NullRemover nullRemover = new NullRemover();
 
 
-
+    /**
+     * Constructor for the class.
+     * @param flightRepo - flight repository.
+     * @param flightToResponseMapper - mapper
+     */
     public FlightService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
@@ -51,7 +55,7 @@ public class FlightService {
      * @return FlightResponse (=DTO) is what should be exposed via REST API endpoint
      */
     public FlightResponse getByIcao(String icao) {
-        return flightRepo.findById(icao)
+        return flightRepo.findByIcao24(icao)
                 .map(flightToResponseMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Flight", "icao24", icao));
     }
@@ -69,7 +73,7 @@ public class FlightService {
                 request.arrivalAirport());
 
 
-        if(       (!nullRemover.CheckOneFlight(flight))) {
+        if((!nullRemover.CheckOneFlight(flight))) {
 
             flightRepo.save(flight);
             DataStorage.getInstance().addFlight(flight);
@@ -102,8 +106,6 @@ public class FlightService {
         flightRepo.saveAll(flights);
         DataStorage.getInstance().bulkAddFlights(flights);
         DataStorage.getInstance().bulkAddEnrichedFlights(enrichmentTool.CreateEnrichedListOfFlights(flights));
-
-
 
         return flights.stream()
                 .map(flightToResponseMapper)

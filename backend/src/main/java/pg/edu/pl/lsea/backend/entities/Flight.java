@@ -25,7 +25,6 @@ public class Flight extends Trackable implements Cloneable {
     @Id
     @GeneratedValue
     private Long id;
-
     /**
      * Unix timestamp of the first record of the aircraft of the flight in seconds.
      */
