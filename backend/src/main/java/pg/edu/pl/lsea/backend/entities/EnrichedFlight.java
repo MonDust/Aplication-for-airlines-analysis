@@ -53,6 +53,7 @@ public class EnrichedFlight extends Trackable implements Cloneable {
     @Column(name = "time_in_air", nullable = false)
     private int timeInAir;
 
+
     /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.

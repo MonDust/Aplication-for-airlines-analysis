@@ -1,7 +1,9 @@
 package pg.edu.pl.lsea.gui.maincomponents;
 
+import pg.edu.pl.lsea.api.DataLoader;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
+import pg.edu.pl.lsea.gui.ProgressBarUDP;
 import pg.edu.pl.lsea.gui.display.datadisplay.tables.TableDisplay;
 import pg.edu.pl.lsea.gui.display.graphdisplay.PlotAverageTimePerOperatorDisplay;
 import pg.edu.pl.lsea.gui.display.topNdisplay.TopNModelsDisplay;
@@ -26,6 +28,7 @@ import static pg.edu.pl.lsea.utils.InformationTypeConstants.*;
 public class DisplayPanel extends JPanel {
     private final CardLayout cardLayout;
     private final Map<String, JPanel> analysisViews = new HashMap<>();
+    DataLoader dataLoader = new DataLoader();
 
     /**
      * Constructor for the class.
@@ -129,14 +132,11 @@ public class DisplayPanel extends JPanel {
     public void displayAnalysis(int analysisType) {
         String key = "analysis_" + analysisType;
 
-//        if (analysisViews.containsKey(key)) {
-//            showDisplay(key);
-//            return;
-//        }
-
         JPanel display;
         // List<Aircraft> aircraftList = reader.readAircrafts(new File("C:\\Users\\maria\\Desktop\\PG\\SEM_VI\\Large-scale_enterprise_application\\Project\\Main_test_files\\aircraft-database-complete-2022-09.csv"));
         // List<Flight> flightList = reader.readFlights(new File("C:\\Users\\maria\\Desktop\\PG\\SEM_VI\\Large-scale_enterprise_application\\Project\\Main_test_files\\flight_sample_2022-09-01.csv"));
+        new Thread(() -> new ProgressBarUDP()).start();
+        System.out.println("here 1");
 
         switch (analysisType) {
             case PERFORM_ALL_TYPES -> {
@@ -188,7 +188,10 @@ public class DisplayPanel extends JPanel {
      * @return JPanle with the plot.
      */
     private JPanel createPlotAverageTimeDisplay() {
-        return new PlotAverageTimePerOperatorDisplay();
+
+        PlotAverageTimePerOperatorDisplay averageTimePerOperatorDisplay = new PlotAverageTimePerOperatorDisplay();
+        return averageTimePerOperatorDisplay.
+                plotAverageTime();
     }
 
     /**
@@ -236,7 +239,8 @@ public class DisplayPanel extends JPanel {
      */
     public JPanel showFlightsInformation() {
         // TODO - get info by API
-        List<Flight> flightList = new ArrayList();
+        List<Flight> flightList = dataLoader.getAllFlights();
+        // new ArrayList();
         return new TableDisplay(flightList);
     }
 
@@ -246,7 +250,8 @@ public class DisplayPanel extends JPanel {
      */
     public JPanel showAircraftsInformation() {
         // TODO - get info by API
-        List<Aircraft> aircraftList = new ArrayList();
+        List<Aircraft> aircraftList = dataLoader.getAllAircrafts();
+                //new ArrayList();
         return new TableDisplay(aircraftList);
     }
 
@@ -256,8 +261,8 @@ public class DisplayPanel extends JPanel {
      */
     public JPanel showRecordsSizeInformation() {
         // TODO - get info by API
-        List<Aircraft> aircraftList = new ArrayList();
-        List<Flight> flightList = new ArrayList();
+        List<Aircraft> aircraftList = dataLoader.getAllAircrafts();
+        List<Flight> flightList = dataLoader.getAllFlights();
         return createPlaceholderPanel("Size information: Flights: " + flightList.size() + " | " + "Aircrafts: " + aircraftList.size() );
     }
 

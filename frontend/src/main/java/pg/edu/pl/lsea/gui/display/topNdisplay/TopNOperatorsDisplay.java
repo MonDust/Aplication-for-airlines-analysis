@@ -24,16 +24,18 @@ public class TopNOperatorsDisplay extends BaseTopN {
     public void displayTopOperators() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> sizes = new ArrayList();
+        List<Output> sizes = dataLoader.giveTopNOperators();
+                //new ArrayList();
 
         //SIZE (number of flights) - value
-        Output o = new Output("PlaceholderIcao", 0);
-        sizes.add(o);
+        //Output o = new Output("PlaceholderIcao", 0);
+        //sizes.add(o);
 
         log("Top " + sizes.size() + " Operators:");
         for (int i = 0; i < sizes.size(); i++) {
             // get it with Aircraft
-            String Operator = "PlaceholderOperator";
+            String Operator = dataLoader.getAircraftIcao(sizes.get(i).getIcao24()).getOperator();
+                    //"PlaceholderOperator";
 
             log("Operator " + Operator + ": " + sizes.get(i).getValue() + " flights");
         }

@@ -13,9 +13,9 @@ import java.util.Objects;
  */
 public class DataEnrichment extends DataTransform {
 
-    /**list of list which is containing only long flights
+    /**
+     * List of list which is containing only long flights
      * Fills empty fields with "EMPTY" value
-     *
      * @param flights list of flights that will be changed
      */
     public void TransformFlights(List<Flight> flights) {
@@ -34,7 +34,6 @@ public class DataEnrichment extends DataTransform {
 
     /**
      * Fills empty fields with "EMPTY" value
-     *
      * @param aircrafts list of aircrafts that will be changed
      */
     public void TransformAircrafts(List<Aircraft> aircrafts) {

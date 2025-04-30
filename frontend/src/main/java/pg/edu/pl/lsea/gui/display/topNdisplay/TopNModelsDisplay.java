@@ -24,16 +24,20 @@ public class TopNModelsDisplay extends BaseTopN {
     public void displayTopModels() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> sizes = new ArrayList();
+        System.out.println("here2");
+        List<Output> sizes = dataLoader.giveTopNModels();
+        //new ArrayList();
 
         //SIZE (number of flights) - value
-        Output o = new Output("PlaceholderIcao", 0);
-        sizes.add(o);
+        //Output o = new Output("PlaceholderIcao", 0);
+        //sizes.add(o);
 
         log("Top " + sizes.size() + " Models:");
+        System.out.println("Here 3");
         for (int i = 0; i < sizes.size(); i++) {
             // get it with Aircraft and Output
-            String Model = "PlaceholderModel";
+            String Model = dataLoader.getAircraftIcao(sizes.get(i).getIcao24()).getModel();
+                    //"PlaceholderModel";
 
             log("Model " + Model + ": " + sizes.get(i).getValue() + " flights");
         }

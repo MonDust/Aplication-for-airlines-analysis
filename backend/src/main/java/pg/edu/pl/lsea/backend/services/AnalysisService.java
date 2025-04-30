@@ -6,20 +6,17 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 
-import pg.edu.pl.lsea.backend.data.analyzer.GroupingTool;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.backend.data.analyzer.multithreading.ParallelGroupingTool;
-import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.backend.data.storage.DataStorage;
-import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Flight;
 import pg.edu.pl.lsea.backend.entities.Output;
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
 import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
-import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
+import pg.edu.pl.lsea.backend.services.analysis.typesofanalysis.GroupedAndForPlotAnalysis;
 
 import java.util.List;
 
@@ -28,8 +25,6 @@ import java.util.List;
  */
 @Service
 public class AnalysisService {
-
-
     /**
      * handling data
      */
@@ -54,8 +49,8 @@ public class AnalysisService {
 
     /**
      * Constructor for AnalysisService class
-     * @param flightRepo h2 database
-     * @param flightToResponseMapper h2 database
+     * @param flightRepo - flight repository; h2 database
+     * @param flightToResponseMapper - mapper; h2 database
      */
     public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper, EnrichedFlightRepo enrichedFlightRepo,
                            EnrichedFlightToResponseMapper enrichedFlightToResponseMapper, AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper ) {
@@ -72,6 +67,10 @@ public class AnalysisService {
 
     }
 
+    /**
+     * Get all the flights from the flight repository.
+     * @return List of FlightResponse
+     */
     public List<FlightResponse> getAll() {
         return flightRepo.findAll()
                 .stream()
@@ -82,7 +81,7 @@ public class AnalysisService {
 
     /**
      * Gives amount of flights per each ICAO
-     * @return amount of flights per model writen in outpu objects
+     * @return list with amount of flights per icao24 written in output objects
      */
     public List<Output>  sortByAmountOfFlights() {
 
@@ -94,8 +93,9 @@ public class AnalysisService {
 
 
     /**
-     * this function gives percentage of flights that classify as long per each list in list of lists
-     * @return percentage of flight that classify as long stored in output format
+     * This function gives percentage of flights that classify as long per each list in list of lists.
+     * The flights are grouped by models.
+     * @return list of outputs; value - percentage of flight that classify as long stored in output format
      */
     public List<Output> givePercentageOfLongFlights() {
 
@@ -103,10 +103,9 @@ public class AnalysisService {
         return propertiesTool.givePercentageOfLongFlights(listOfLists_model);
     }
 
-
     /**
-     * Gives amount of time in air per each ICAO
-     * @return in output object ICAO and it's time in air
+     * This functions gets all flights stored in list of list and returns average time in the air for each list
+     * @return average time in the air for each list in list of list stored in output format.
      */
     public List<Output> sortByTimeOfFlights() {
 
@@ -137,7 +136,7 @@ public class AnalysisService {
 
 
     /**
-     * returns list of list which is containing any long flights
+     * Returns list of list which is containing any long flights
      * @return list of list which is containing any long flights
      */
     public List<List<EnrichedFlight>> findLongFlightsForEachModel() {
@@ -153,4 +152,5 @@ public class AnalysisService {
         List<List<EnrichedFlight>> listOfLists_operator = parallelGroupingTool.groupFlightsByOperator(enrichedFlightRepo.findAll(), aircraftRepo.findAll(), 8);
         return sortingCalculator.giveTopNOperators(listOfLists_operator, HowMuchOperators);
     }
+
 }

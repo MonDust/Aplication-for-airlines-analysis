@@ -30,8 +30,8 @@ public class FlightController {
 
     @GetMapping("/{icao24}")
     @ResponseStatus(HttpStatus.OK)
-    public FlightResponse getFlight(@PathVariable String icao) {
-        return flightService.getByIcao(icao);
+    public FlightResponse getFlight(@PathVariable("icao24") String icao24) {
+        return flightService.getByIcao(icao24);
     };
 
 
