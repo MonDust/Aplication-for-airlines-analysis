@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea.backend.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  * It gets and saves data to/from FlightRepo.
  */
 @Service
+@Transactional
 public class FlightService {
     private final FlightRepo flightRepo;
     private final FlightToResponseMapper flightToResponseMapper;
