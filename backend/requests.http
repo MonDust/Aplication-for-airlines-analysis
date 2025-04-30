@@ -1,0 +1,68 @@
+### Create a new flight
+POST /api/flights
+Content-Type: application/json
+
+{
+  "icao24": "abc123",
+  "firstSeen": 1610000000,
+  "lastSeen": 1610003600,
+  "departureAirport": "JFK",
+  "arrivalAirport": "LAX"
+}
+
+### Create a bunch of new flights
+POST /api/flights/bulk
+Content-Type: application/json
+
+[
+  {
+    "icao24": "abc123",
+    "firstSeen": 1610000000,
+    "lastSeen": 1610003600,
+    "departureAirport": "JFK",
+    "arrivalAirport": "LAX"
+  },
+  {
+    "icao24": "def456",
+    "firstSeen": 1610100000,
+    "lastSeen": 1610103600,
+    "departureAirport": "LAX",
+    "arrivalAirport": "ORD"
+  }
+]
+
+### Get all flights
+GET /api/flights
+
+### Get a flight by id
+GET /api/flights/1
+
+### Get a flight(s) by icao24
+GET /api/flights/icao24/abc123
+
+### Replace a flight
+PUT /api/flights/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "icao24": "xyz789",
+  "firstSeen": 1610200000,
+  "lastSeen": 1610203600,
+  "departureAirport": "SFO",
+  "arrivalAirport": "SEA"
+}
+
+### Update a flight
+PATCH /api/flights/1
+Content-Type: application/json
+
+{
+  "departureAirport": "ATL"
+}
+
+### Delete a flight by id
+DELETE /api/flights/1
+
+### Delete flight(s) by date range
+DELETE /api/flights?start_date=1610000000&end_date=1610050000
