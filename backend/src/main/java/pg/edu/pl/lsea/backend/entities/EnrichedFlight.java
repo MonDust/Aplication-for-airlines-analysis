@@ -13,7 +13,7 @@ import java.util.Objects;
 @Setter
 @Getter
 @Entity
-@Table(name = "flights")
+@Table(name = "enrichedFlights")
 public class EnrichedFlight extends Trackable implements Cloneable {
     /**
      * This value is generated automatically during object creation

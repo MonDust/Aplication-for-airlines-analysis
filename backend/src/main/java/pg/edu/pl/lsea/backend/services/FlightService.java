@@ -112,7 +112,7 @@ public class FlightService {
 
         nullRemover.TransformFlights(flights);
 
-       // flightRepo.saveAll(flights);
+       flightRepo.saveAll(flights);
 
         enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(flights));
 
