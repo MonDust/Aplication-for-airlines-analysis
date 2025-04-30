@@ -14,8 +14,8 @@ import java.util.Objects;
 @Getter
 @Entity
 @Table(
-        name = "flights"
-//        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
+        name = "flights",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
 )
 public class Flight extends Trackable implements Cloneable {
     /**
