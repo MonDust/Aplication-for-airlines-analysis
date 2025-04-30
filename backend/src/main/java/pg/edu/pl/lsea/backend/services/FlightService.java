@@ -2,12 +2,14 @@ package pg.edu.pl.lsea.backend.services;
 
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.backend.data.storage.DataStorage;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 import java.util.ArrayList;
@@ -23,20 +25,25 @@ import java.util.stream.Collectors;
 @Service
 public class FlightService {
     private final FlightRepo flightRepo;
+    private final EnrichedFlightRepo enrichedFlightRepo;
+
+
     private final FlightToResponseMapper flightToResponseMapper;
+    private final EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
+
+
     private final DataEnrichment enrichmentTool = new DataEnrichment();
     private final NullRemover nullRemover = new NullRemover();
 
 
-    /**
-     * Constructor for the class.
-     * @param flightRepo - flight repository.
-     * @param flightToResponseMapper - mapper
-     */
-    public FlightService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper) {
+
+    public FlightService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper, EnrichedFlightRepo enrichedFlightRepo,
+                         EnrichedFlightToResponseMapper enrichedFlightToResponseMapper) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
 
+        this.enrichedFlightRepo = enrichedFlightRepo;
+        this.enrichedFlightToResponseMapper = enrichedFlightToResponseMapper;
     }
 
     /**
@@ -76,6 +83,8 @@ public class FlightService {
         if((!nullRemover.CheckOneFlight(flight))) {
 
             flightRepo.save(flight);
+            enrichedFlightRepo.save(new EnrichedFlight(flight));
+
             DataStorage.getInstance().addFlight(flight);
             DataStorage.getInstance().addEnrichedFlight(new EnrichedFlight(flight));
 
@@ -103,7 +112,10 @@ public class FlightService {
 
         nullRemover.TransformFlights(flights);
 
-        flightRepo.saveAll(flights);
+       flightRepo.saveAll(flights);
+
+        enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(flights));
+
         DataStorage.getInstance().bulkAddFlights(flights);
         DataStorage.getInstance().bulkAddEnrichedFlights(enrichmentTool.CreateEnrichedListOfFlights(flights));
 
