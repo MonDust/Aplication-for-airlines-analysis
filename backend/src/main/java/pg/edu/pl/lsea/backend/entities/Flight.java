@@ -47,6 +47,14 @@ public class Flight extends Trackable implements Cloneable {
     private String arrivalAirport;
 
     /**
+     * Many-to-one relation: one flight can have only one aircraft
+     * aircraft_id is a Foreign Key
+     */
+//    @ManyToOne
+//    @JoinColumn(name = "aircraft_id", referencedColumnName = "id", nullable = false)
+//    private Aircraft aircraft;
+
+    /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.
      * @param firstSeen An integer representing the unix timestamp of the first record of the aircraft of the flight in seconds.
