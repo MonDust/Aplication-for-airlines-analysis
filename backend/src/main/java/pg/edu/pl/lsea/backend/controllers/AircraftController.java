@@ -49,4 +49,23 @@ public class AircraftController {
     public List<AircraftResponse> createAircrafts(@RequestBody List<AircraftResponse> request) {
         return aircraftService.createBulk(request);
     }
+
+
+    @PutMapping("/{icao24}")
+    @ResponseStatus(HttpStatus.OK)
+    public AircraftResponse updateAircraft(@PathVariable String icao24, @RequestBody AircraftResponse request) {
+        return aircraftService.updateAircraft(icao24, request);
+    }
+
+    @PatchMapping("/{icao24}")
+    @ResponseStatus(HttpStatus.OK)
+    public AircraftResponse patchAircraft(@PathVariable String icao24, @RequestBody AircraftResponse request) {
+        return aircraftService.patchAircraft(icao24, request);
+    }
+
+    @DeleteMapping("/{icao24}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAircraft(@PathVariable String icao24) {
+        aircraftService.deleteAircraft(icao24);
+    }
 }
