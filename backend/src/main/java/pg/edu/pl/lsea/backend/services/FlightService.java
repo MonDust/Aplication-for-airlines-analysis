@@ -62,7 +62,7 @@ public class FlightService {
      * @return FlightResponse (=DTO) is what should be exposed via REST API endpoint
      */
     public FlightResponse getByIcao(String icao) {
-        return flightRepo.findById(icao)
+        return flightRepo.findByIcao24(icao)
                 .map(flightToResponseMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Flight", "icao24", icao));
     }
@@ -80,7 +80,7 @@ public class FlightService {
                 request.arrivalAirport());
 
 
-        if(       (!nullRemover.CheckOneFlight(flight))) {
+        if((!nullRemover.CheckOneFlight(flight))) {
 
             flightRepo.save(flight);
             enrichedFlightRepo.save(new EnrichedFlight(flight));
@@ -118,8 +118,6 @@ public class FlightService {
 
         DataStorage.getInstance().bulkAddFlights(flights);
         DataStorage.getInstance().bulkAddEnrichedFlights(enrichmentTool.CreateEnrichedListOfFlights(flights));
-
-
 
         return flights.stream()
                 .map(flightToResponseMapper)

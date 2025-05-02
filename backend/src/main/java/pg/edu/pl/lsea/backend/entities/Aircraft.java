@@ -25,13 +25,19 @@ public class Aircraft extends Trackable implements Cloneable{
     @Id
     @GeneratedValue
     private Long id;
-
+    /**
+     * Model of the aircraft.
+     */
     @Column(name = "model")
     private String model;
-
+    /**
+     * Operator of the aircraft.
+     */
     @Column(name = "operator")
     private String operator;
-
+    /**
+     * Owner of the aircraft.
+     */
     @Column(name = "owner")
     private String owner;
 

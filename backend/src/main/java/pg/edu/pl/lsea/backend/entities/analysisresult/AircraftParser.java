@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.backend.analysis;
+package pg.edu.pl.lsea.backend.entities.analysisresult;
 
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 
@@ -9,6 +9,8 @@ import java.util.Map;
 /**
  * Class creating a maping between icao24 and aircrafts.
  * Provides faster search.
+ *
+ * NOT IN USE: Parser for finding aircraft by icao24, as not to iterate over list constantly. Use if needed.
  */
 public class AircraftParser {
     private final Map<String, Aircraft> aircraftMap;
