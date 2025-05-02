@@ -230,6 +230,10 @@ public class DataLoader {
         return fetchOutputList("http://localhost:8080/api/analysis/getTopNAverageTime");
     }
 
+    public List<Output> getTopNAverageTime(int howMuch) {
+        return fetchOutputList("http://localhost:8080/api/analysis/getTopNAverageTime/" + howMuch);
+    }
+
     private List<Output> fetchOutputList(String url) {
         try {
             HttpRequest request = HttpRequest.newBuilder()

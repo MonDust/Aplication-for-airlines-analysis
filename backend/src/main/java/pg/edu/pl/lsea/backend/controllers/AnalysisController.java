@@ -106,4 +106,11 @@ public class AnalysisController {
     public List<Output> getTopNAverageTime() {
         return analysisService.getTopNAverageTime_GroupedByOperator();
     }
+
+    @GetMapping("/getTopNAverageTime/{howMuchOperators}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNAverageTime(@PathVariable int howMuchOperators) {
+        return analysisService.getTopNAverageTime_GroupedByOperator(howMuchOperators);
+    }
+
 }
