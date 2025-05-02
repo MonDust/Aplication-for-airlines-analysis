@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea.backend.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
  * It gets and saves data to/from AircraftRepo.
  */
 @Service
+@Transactional
 public class AircraftService {
     private final AircraftRepo aircraftRepo;
     private final AircraftToResponseMapper aircraftToResponseMapper;
@@ -96,6 +98,54 @@ public class AircraftService {
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)
                 .toList();
+    }
+
+
+    /**
+     * Replaces an aircraft stored in the database (used for PUT request)
+     * @param icao24 a unique id of an aircraft - used to find an aircraft that should be replaced
+     * @param request an aircraft - it needs all parameters specified
+     * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint.
+     */
+    public AircraftResponse updateAircraft(String icao24, AircraftResponse request) {
+        Aircraft aircraft = aircraftRepo.findByIcao24(icao24)
+                .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao24));
+
+        aircraft.setModel(request.model());
+        aircraft.setOperator(request.operator());
+        aircraft.setOwner(request.owner());
+
+        aircraftRepo.save(aircraft);
+        return aircraftToResponseMapper.apply(aircraft);
+    }
+
+    /**
+     * Updates an aircraft stored in the database (used for PATCH request)
+     * @param icao24 a unique id of an aircraft - used to find an aircraft that should be updated
+     * @param request an aircraft - you can specify any number of parameters and their values
+     * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint.
+     */
+    public AircraftResponse patchAircraft(String icao24, AircraftResponse request) {
+        Aircraft aircraft = aircraftRepo.findByIcao24(icao24)
+                .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao24));
+
+        if (request.model() != null) aircraft.setModel(request.model());
+        if (request.operator() != null) aircraft.setOperator(request.operator());
+        if (request.owner() != null) aircraft.setOwner(request.owner());
+
+        aircraftRepo.save(aircraft);
+        return aircraftToResponseMapper.apply(aircraft);
+    }
+
+    /**
+     * Deletes an aircraft based on icao24
+     * @param icao24 a unique id of an aircraft
+     */
+    public void deleteAircraft(String icao24) {
+        Aircraft aircraft = aircraftRepo.findByIcao24(icao24)
+                .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao24));
+
+        aircraftRepo.delete(aircraft);
     }
 
 }

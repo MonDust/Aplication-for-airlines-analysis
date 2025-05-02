@@ -14,8 +14,8 @@ import java.util.Objects;
 @Getter
 @Entity
 @Table(
-        name = "flights"
-//        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
+        name = "flights",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
 )
 public class Flight extends Trackable implements Cloneable {
     /**
@@ -45,6 +45,14 @@ public class Flight extends Trackable implements Cloneable {
      */
     @Column(name = "arrival_airport")
     private String arrivalAirport;
+
+    /**
+     * Many-to-one relation: one flight can have only one aircraft
+     * aircraft_id is a Foreign Key
+     */
+//    @ManyToOne
+//    @JoinColumn(name = "aircraft_id", referencedColumnName = "id", nullable = false)
+//    private Aircraft aircraft;
 
     /**
      * Creates a flight object.
