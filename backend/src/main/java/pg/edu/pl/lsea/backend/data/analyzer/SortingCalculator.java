@@ -7,7 +7,7 @@ import pg.edu.pl.lsea.backend.entities.Output;
 import java.util.*;
 
 /**
- * This class performs all calculations conected with sorting nessesary for dashbord and other analysies
+ * This class performs all calculations connected with sorting necessary for dashboard and other analysis.
  */
 public class SortingCalculator extends DataAnalyzer  {
 
@@ -18,21 +18,19 @@ public class SortingCalculator extends DataAnalyzer  {
      */
     @Override
     public void analyzeDataForDashbord(List<Aircraft> aircrafts, List<EnrichedFlight> flights) {
-        //System.out.println("===== Dashboard =====");
-        //System.out.println("Sorted Aircraft List:");
-
+        // sorted aircraft list
         aircrafts.sort(new Aircraft.AircraftComparator());
         printAircraftList(aircrafts);
 
-        //System.out.println("\nSorted Flight List:");
+        // sorted flight list
         flights.sort(Comparator.comparingInt(EnrichedFlight::getTimeInAir));
     }
 
 
     /**
-     * Gives amount of flights per each ICAO
+     * Gives amount of flights per each ICAO24
      * @param flights list of all flights
-     * @return amount of flights per model writen in outpu objects
+     * @return list of flights per model written in output objects
      */
     public List<Output> sortByAmountOfFlights ( List<EnrichedFlight> flights){
 
@@ -47,18 +45,12 @@ public class SortingCalculator extends DataAnalyzer  {
             if (Objects.equals(flight.getIcao24(), currentIcao)){
                 Value++;
             } else {
-//                System.out.println(currentIcao);
-//                System.out.println(Value);
                 output.add(new Output(currentIcao, Value));
                 Value = 0;
                 currentIcao = flight.getIcao24();
             }
         }
-
-        output.sort(Comparator.comparingInt(o -> o.getValue()));
-//        System.out.println(output);
-
-
+        output.sort(Comparator.comparingInt(Output::getValue));
         return output;
     }
 
@@ -77,6 +69,7 @@ public class SortingCalculator extends DataAnalyzer  {
         int Value = 0;
 
         for (EnrichedFlight flight : flights) {
+
             if (Objects.equals(flight.getIcao24(), currentIcao)){
                 Value += flight.getTimeInAir();
             } else {
@@ -86,7 +79,7 @@ public class SortingCalculator extends DataAnalyzer  {
             }
         }
 
-        output.sort(Comparator.comparingInt(o -> o.getValue()));
+        output.sort(Comparator.comparingInt(Output::getValue));
 
         return output;
     }
@@ -114,19 +107,19 @@ public class SortingCalculator extends DataAnalyzer  {
     }
 
     /**
-     * function that returns top 'n' operators
-     * @param ListOfListOprator list of lists of flights grouped by operator
-     * @param n how much of top operators you want
-     * @return n amount of operators from the top
+     * Function that returns top 'n' operators/models
+     * Works if already grouped by attribute.
+     * @param ListOfList list of lists of flights grouped by certain category (operator/model)
+     * @param n how much of top operators/models you want
+     * @return n amount of operators/models from the top
      */
-    public List<List<EnrichedFlight>> giveTopNOperators (List<List<EnrichedFlight>> ListOfListOprator, int n) {
-        ListOfListOprator.sort(Comparator.comparingInt((List<EnrichedFlight> l) -> l.size()).reversed());
+    public List<List<EnrichedFlight>> giveTopN_byAttribute(List<List<EnrichedFlight>> ListOfList, int n) {
+        ListOfList.sort(Comparator.comparingInt((List<EnrichedFlight> l) -> l.size()).reversed());
         List<List<EnrichedFlight>> output = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            output.add(ListOfListOprator.get(i));
+            output.add(ListOfList.get(i));
         }
-
         return output;
     }
 

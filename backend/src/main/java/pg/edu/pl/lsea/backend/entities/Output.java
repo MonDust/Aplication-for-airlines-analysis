@@ -9,16 +9,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Output extends Trackable{
-    public int getValue() {
-        return Value;
-    }
-
-    public void setValue(int value) {
-        this.Value = value;
-    }
-
-    private int Value;
+public class Output extends Trackable {
+    /**
+     * Value resulting from the analysis, that is connected to the icao24.
+     */
+    private int value;
 
 
     /**
@@ -26,9 +21,17 @@ public class Output extends Trackable{
      * @param icao24 A string representing the 6-character hexadecimal ICAO24 code of the aircraft.
      * @param Value An integer value representing the analysis result related to the model or operator.
      */
-    public Output(String icao24, int Value) {
+    public Output(String icao24, int value) {
         setIcao24(icao24);
-        this.Value = Value;
+        this.value = value;
+    }
+
+    /**
+     * Empty constructor.
+     */
+    public Output() {
+        setIcao24("");
+        this.value = 0;
     }
 
     /**
@@ -37,9 +40,9 @@ public class Output extends Trackable{
      */
     @Override
     public String toString() {
-        return "Aircraft{" +
+        return "Analysis_output{" +
                 "icao24='" + getIcao24() + "'" +
-                ", Value=" + Value +
+                ", Value=" + value +
                 "}";
     }
 

@@ -2,14 +2,17 @@ package pg.edu.pl.lsea.backend.data.analyzer;
 
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 import pg.edu.pl.lsea.backend.entities.Output;
+import pg.edu.pl.lsea.backend.udp.UdpServer;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static pg.edu.pl.lsea.backend.utils.Constants.NUMBER_OF_ROWS_TO_SEND_PROGRESS;
+
 /**
  * This clas calculates various properties connected with our data
  */
-public class PropertiesCalculator {
+public class PropertiesCalculator{
 
     private static final int minimalTimeInAirForLongFlightSeconds = 1800;
 
@@ -55,10 +58,9 @@ public class PropertiesCalculator {
     /**
      * Calculates average time in air for list of flights
      * @param ListOfEnrichedFlights list of flights from with averred will be calculated
-     * @return averred time per inputed flights
+     * @return averred time per input flights
      */
     public int calculateAverageTimeInAir(List<EnrichedFlight> ListOfEnrichedFlights) {
-
         int output = 0;
 
         for (EnrichedFlight flight : ListOfEnrichedFlights){
@@ -76,7 +78,7 @@ public class PropertiesCalculator {
      * @param listOfLists list of flights sorted by some parameter
      * @return average time in the air for each list in list of list stored in output format.
      */
-    public List<Output> printAllAverages( List<List<EnrichedFlight>> listOfLists){
+    public List<Output> giveAllAverages(List<List<EnrichedFlight>> listOfLists){
         List<Output> output = new ArrayList<>();
 
         for(List<EnrichedFlight>  list : listOfLists) {
@@ -99,14 +101,25 @@ public class PropertiesCalculator {
     public List<Output> givePercentageOfLongFlights (List<List<EnrichedFlight>> listOfLists){
         List<Output> output = new ArrayList<>();
 
+        int processed = 0;
+        int lastSent = 0;
+        int total = listOfLists.size();
         for(List<EnrichedFlight>  list : listOfLists) {
+            processed++;
             float counter = 0F;
 
             //Count amount of flight that classify as long
             for (EnrichedFlight flight : list) {
+
                 if (flight.getTimeInAir() >= minimalTimeInAirForLongFlightSeconds) {
                     counter++;
                 }
+            }
+
+            if (processed % NUMBER_OF_ROWS_TO_SEND_PROGRESS == 0 || processed == total) {
+                int delta = processed - lastSent;
+                UdpServer.sendProgress(delta, total);
+                lastSent = processed;
             }
 
             //turn amount of flights that classify as long into percentage value
@@ -122,6 +135,11 @@ public class PropertiesCalculator {
                 output.add(new Output("EMPTY", (int) counter));
             }
         }
+        int remaining = total - lastSent;
+        if (remaining > 0) {
+            UdpServer.sendProgress(remaining, total);
+        }
+
         return output;
     }
 }

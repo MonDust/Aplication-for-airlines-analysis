@@ -7,6 +7,8 @@ import pg.edu.pl.lsea.backend.entities.Trackable;
 /**
  * A class representing an analysis result related to the aircraft operator.
  * It stores a numerical value associated with a specific operator and aircraft (identified by its ICAO24 code).
+ *
+ * NOT IN USE: additional class containing operator, value and icao24 - for getting the result of the analysis.
  */
 @Setter
 @Getter

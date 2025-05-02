@@ -20,15 +20,15 @@ public class  DataStorage {
     /**
      * HashSet for storing and loading flight data before they are turned into the list (HashSet takes care of duplicates).
      */
-    private HashSet<Flight> flightsSet = new HashSet<>();
+    private final HashSet<Flight> flightsSet = new HashSet<>();
      /**
      * HashSet for storing and loading enriched flight data before they are turned into the list (HashSet takes care of duplicates).
      */
-    private HashSet<EnrichedFlight> enrichedFlightsSet = new HashSet<>();
+    private final HashSet<EnrichedFlight> enrichedFlightsSet = new HashSet<>();
     /**
      * HashSet for storing and loading aircraft data before they are turned into the list (HashSet takes care of duplicates).
      */
-    private HashSet<Aircraft> aircraftsSet = new HashSet<>();
+    private final HashSet<Aircraft> aircraftsSet = new HashSet<>();
     /**
      * A list for storing flights data that is accessible through getters.
      */
