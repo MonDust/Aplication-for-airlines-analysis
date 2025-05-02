@@ -29,6 +29,11 @@ public class Output extends Trackable{
         this.Value = Value;
     }
 
+    public Output() {
+        setIcao24("");
+        this.Value = 0;
+    }
+
     /**
      * Returns a string representation of the output object.
      * @return A human-readable string containing the ICAO24 code and the value.

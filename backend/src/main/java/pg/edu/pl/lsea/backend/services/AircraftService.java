@@ -22,6 +22,11 @@ public class AircraftService {
     private final AircraftRepo aircraftRepo;
     private final AircraftToResponseMapper aircraftToResponseMapper;
 
+    /**
+     * Constructor of the class.
+     * @param aircraftRepo - aircraft repository
+     * @param aircraftToResponseMapper - mapper
+     */
     public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper) {
         this.aircraftRepo = aircraftRepo;
         this.aircraftToResponseMapper = aircraftToResponseMapper;
@@ -43,7 +48,7 @@ public class AircraftService {
      * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint
      */
     public AircraftResponse getByIcao(String icao) {
-        return aircraftRepo.findById(icao)
+        return aircraftRepo.findByIcao24(icao)
                 .map(aircraftToResponseMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao));
     }
