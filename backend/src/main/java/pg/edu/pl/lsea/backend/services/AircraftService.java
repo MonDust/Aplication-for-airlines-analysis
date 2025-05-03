@@ -7,10 +7,13 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.backend.data.storage.DataStorage;
 import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.Operator;
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.OperatorRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 @Service
 @Transactional
 public class AircraftService {
+    private final OperatorRepo operatorRepo;
     private final AircraftRepo aircraftRepo;
     private final AircraftToResponseMapper aircraftToResponseMapper;
 
@@ -28,10 +32,12 @@ public class AircraftService {
      * Constructor of the class.
      * @param aircraftRepo - aircraft repository
      * @param aircraftToResponseMapper - mapper
+     * @param operatorRepo - operators repository
      */
-    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper) {
+    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper,  OperatorRepo operatorRepo) {
         this.aircraftRepo = aircraftRepo;
         this.aircraftToResponseMapper = aircraftToResponseMapper;
+        this.operatorRepo = operatorRepo;
     }
 
     /**
@@ -60,10 +66,22 @@ public class AircraftService {
      * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
      */
     public AircraftResponse create(AircraftResponse request) {
+
+        Optional<Operator> existingOperator = operatorRepo.findByName(request.operator());
+        Operator operator;
+        if (existingOperator.isEmpty()) {
+            operator = new Operator(request.operator());
+            operatorRepo.save(operator);
+        }
+        else {
+            operator = existingOperator.get();
+        }
+
+
         Aircraft aircraft = new Aircraft(
                 request.icao24(),
                 request.model(),
-                request.operator(),
+                operator,
                 request.owner()
         );
 
@@ -78,22 +96,51 @@ public class AircraftService {
      * @return List of AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
      */
     public List<AircraftResponse> createBulk(List<AircraftResponse> request) {
+
+        List<Operator> existingOperators = operatorRepo.findAll();
+        List<Operator> newOperators = new ArrayList<>();
+
         List<Aircraft> aircrafts = request.stream()
-                .map(a -> new Aircraft(
-                        a.icao24(),
-                        a.model(),
-                        a.operator(),
-                        a.owner()
-                ))
+                .map(a -> {
+                    Optional<Operator> existingOperator = existingOperators.stream()
+                            .filter(o -> o.getName().equals(a.operator()))
+                            .findFirst();
+
+                    Operator operator;
+                    if (existingOperator.isEmpty()) {
+                        operator = new Operator(a.operator());
+                        existingOperators.add(operator);
+                        newOperators.add(operator);
+                    }
+                    else {
+                        operator = existingOperator.get();
+                    }
+
+                    Aircraft newAircraft = new Aircraft(
+                            a.icao24(),
+                            a.model(),
+                            operator,
+                            a.owner()
+                    );
+                    operator.getAircrafts().add(newAircraft);
+
+                    return newAircraft;
+
+                })
                 .collect(Collectors.toCollection(ArrayList::new));
 
         NullRemover nullRemover = new NullRemover();
 
-         nullRemover.TransformAircrafts(aircrafts);
+        nullRemover.TransformAircrafts(aircrafts);
 
 
         aircraftRepo.saveAll(aircrafts); // More efficient than saving one-by-one
         DataStorage.getInstance().bulkAddAircrafts(aircrafts);
+
+        operatorRepo.saveAll(newOperators);
+
+        List<Operator> test = operatorRepo.findAll();
+        System.out.println(test.size());
 
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)
@@ -112,7 +159,7 @@ public class AircraftService {
                 .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao24));
 
         aircraft.setModel(request.model());
-        aircraft.setOperator(request.operator());
+        aircraft.setOperator(new Operator(request.operator()));
         aircraft.setOwner(request.owner());
 
         aircraftRepo.save(aircraft);
@@ -130,7 +177,12 @@ public class AircraftService {
                 .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao24));
 
         if (request.model() != null) aircraft.setModel(request.model());
-        if (request.operator() != null) aircraft.setOperator(request.operator());
+        if (request.operator() != null) {
+//            Operator operator = aircraft.getOperator();
+//            operator.setName(request.operator().);
+
+            // TODO - fix operator update
+        } ;
         if (request.owner() != null) aircraft.setOwner(request.owner());
 
         aircraftRepo.save(aircraft);

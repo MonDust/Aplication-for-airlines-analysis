@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea;
 
+import pg.edu.pl.lsea.api.DataLoader;
 import pg.edu.pl.lsea.api.DataUploader;
 import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.files.CsvDataReader;
@@ -26,9 +27,9 @@ public class TestMain {
         File fileAircrafts1 = new File("resources/aircraft-database-complete-2022-09.csv");
         File fileFlights1 = new File("resources/flight_sample_2022-09-26.csv");
         File fileFlights2 = new File("resources/flight_sample_2022-09-02.csv");
-//        File fileFlights3 = new File("resources/flight_sample_2022-09-03.csv");
-//        File fileFlights4 = new File("resources/flight_sample_2022-09-04.csv");
-//        File fileFlights5 = new File("resources/flight_sample_2022-09-01.csv");
+        File fileFlights3 = new File("resources/flight_sample_2022-09-03.csv");
+        File fileFlights4 = new File("resources/flight_sample_2022-09-04.csv");
+        File fileFlights5 = new File("resources/flight_sample_2022-09-01.csv");
 
         // Could be used for debugging if file loading doesn't work
 //        List<Flight> flights = new ArrayList<>();
@@ -41,9 +42,9 @@ public class TestMain {
         try {
             uploader.sendAircrafts(dataLoader.readAircrafts(fileAircrafts1));
 
-            uploader.sendFlights(dataLoader.readFlights(fileFlights1));
-            uploader.sendFlights(dataLoader.readFlights(fileFlights2));
-//            uploader.sendFlights(dataLoader.readFlights(fileFlights3));
+//            uploader.sendFlights(dataLoader.readFlights(fileFlights1));
+//            uploader.sendFlights(dataLoader.readFlights(fileFlights2));
+            uploader.sendFlights(dataLoader.readFlights(fileFlights3));
 
         } catch (Exception e) {
             System.out.println("An error occurred while uploading flights.");
@@ -76,7 +77,8 @@ public class TestMain {
 
 
         // TODO - Ask API to do some analysis based on already loaded data (aforementioned section) and print result to the console
-
+        DataLoader dataLoader1 = new DataLoader();
+        dataLoader1.giveTopNOperators();
 
         // wait for analysis data
         Thread udpThread = new Thread(() -> {
