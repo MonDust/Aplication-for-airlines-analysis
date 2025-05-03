@@ -42,7 +42,7 @@ public class DataEnrichment extends DataTransform {
                 aircrafts.get(i).setOwner("EMPTY");
             }
             if (Objects.equals(aircrafts.get(i).getOperator(), "")) {
-                aircrafts.get(i).setOperator("EMPTY");
+                aircrafts.get(i).setOperator(null);
             }
             if (Objects.equals(aircrafts.get(i).getModel(), "")) {
                 aircrafts.get(i).setModel("EMPTY");

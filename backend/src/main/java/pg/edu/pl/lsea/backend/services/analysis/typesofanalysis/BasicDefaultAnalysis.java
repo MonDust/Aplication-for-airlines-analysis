@@ -5,10 +5,12 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
+import pg.edu.pl.lsea.backend.entities.Operator;
 import pg.edu.pl.lsea.backend.entities.Output;
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
 import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
+import pg.edu.pl.lsea.backend.repositories.OperatorRepo;
 import pg.edu.pl.lsea.backend.services.analysis.BaseAnalysis;
 
 import java.util.ArrayList;
@@ -127,8 +129,8 @@ public class BasicDefaultAnalysis extends BaseAnalysis {
      * Possible to pass an argument to specify number of top operators.
      * @return List of Output representing the number of flights for the specified number of top operators. (one of the icaos and size)
      */
-    public List<Output> getGroupedTopNOperators() {
-        return getGroupedTopNOperators(NUMBER_OF_MOST_POPULAR_OPERATORS);
+    public List<Output> getGroupedTopNOperators(OperatorRepo operatorRepo) {
+        return getGroupedTopNOperators(operatorRepo, NUMBER_OF_MOST_POPULAR_OPERATORS);
     }
 
     /**
@@ -138,15 +140,15 @@ public class BasicDefaultAnalysis extends BaseAnalysis {
      * @param topN the number of top operators to consider
      * @return List of Output representing the number of flights for the specified number of top operators.
      */
-    public List<Output> getGroupedTopNOperators(int topN) {
-        List<List<EnrichedFlight>> enrichedList = getGroupedFlightsByTopNOperator(topN);
-        List<Output> outputList = new ArrayList<>();
+    public List<Output> getGroupedTopNOperators(OperatorRepo operatorRepo, int topN) {
 
-        // get one icao representing operator and value representing number of flights
-        for (int i = 0; i < enrichedList.size(); i++) {
-            Output o = new Output(enrichedList.get(i).getFirst().getIcao24(),enrichedList.get(i).size());
-            outputList.add(o);
-        }
+        List<Operator> operators = operatorRepo.findAll();
+
+        // TODO - o.getAircrafts().size() should be replaced with summed sizes of all flights
+        List<Output> outputList = operators.stream().sorted().toList().subList(0, topN).stream().map(o -> {
+            return new Output(o.getAircrafts().stream().findFirst().get().getIcao24(), o.getAircrafts().size());
+        }).toList();
+
         return outputList;
     }
 
