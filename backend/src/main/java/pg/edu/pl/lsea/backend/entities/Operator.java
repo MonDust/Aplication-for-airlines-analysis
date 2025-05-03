@@ -52,7 +52,7 @@ public class Operator implements Cloneable, Comparable<Operator> {
      */
     @Override
     public int compareTo(Operator o) {
-        return aircrafts.size() - o.aircrafts.size();
+        return o.aircrafts.size() - aircrafts.size();
     }
 
 

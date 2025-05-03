@@ -2,6 +2,7 @@ package pg.edu.pl.lsea.backend.data.engieniering;
 
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.entities.Operator;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public class NullRemover extends DataTransform {
      */
     public  void TransformAircrafts (List<Aircraft> aircrafts){
         for(int i = aircrafts.size() - 1; i >= 0; i--){
-            if(aircrafts.get(i).getIcao24() == null || aircrafts.get(i).getOwner() == null || aircrafts.get(i).getOperator() == null || aircrafts.get(i).getModel() == null)
+            if(aircrafts.get(i).getIcao24() == null || aircrafts.get(i).getOwner() == null || aircrafts.get(i).getOperator().getName() == null || aircrafts.get(i).getModel() == null)
                 aircrafts.remove(i);
         }
 

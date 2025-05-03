@@ -102,6 +102,9 @@ public class AircraftService {
 
         List<Aircraft> aircrafts = request.stream()
                 .map(a -> {
+
+                    // TODO - we should filter out empty operators here instead of removing them later
+
                     Optional<Operator> existingOperator = existingOperators.stream()
                             .filter(o -> o.getName().equals(a.operator()))
                             .findFirst();
@@ -132,7 +135,6 @@ public class AircraftService {
         NullRemover nullRemover = new NullRemover();
 
         nullRemover.TransformAircrafts(aircrafts);
-
 
         aircraftRepo.saveAll(aircrafts); // More efficient than saving one-by-one
         DataStorage.getInstance().bulkAddAircrafts(aircrafts);
