@@ -148,7 +148,6 @@ public class BasicDefaultAnalysis extends BaseAnalysis {
         List<Output> outputList = operators.stream().sorted().toList().subList(0, topN).stream().map(o -> {
             return new Output(o.getAircrafts().stream().findFirst().get().getIcao24(), o.getAircrafts().size());
         }).toList();
-        System.out.println(operators);
 
         return outputList;
     }

@@ -53,9 +53,6 @@ public class TestMain {
             e.printStackTrace();
         }
 
-
-
-
         long pre_analysis_end = System.currentTimeMillis();
         long pre_analysis_duration = pre_analysis_end - pre_analysis_start;
         System.out.println("Pre-analysis duration: " + pre_analysis_duration);

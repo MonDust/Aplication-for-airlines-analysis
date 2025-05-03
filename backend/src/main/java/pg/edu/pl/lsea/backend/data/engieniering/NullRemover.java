@@ -26,12 +26,23 @@ public class NullRemover extends DataTransform {
     }
 
     /**
+     * Removes operators with empty fields
+     * @param operators list of operators that will be cleaned
+     */
+    public void TransformOperators (List<Operator> operators) {
+        for(int i = operators.size() - 1; i >= 0; i--){
+            if(Objects.equals(operators.get(i).getName(), ""))
+                operators.remove(i);
+        }
+    }
+
+    /**
      * Removes entities with empty fields
      * @param aircrafts list of aircrafts that will be changed
      */
-    public  void TransformAircrafts (List<Aircraft> aircrafts){
+    public void TransformAircrafts (List<Aircraft> aircrafts){
         for(int i = aircrafts.size() - 1; i >= 0; i--){
-            if(aircrafts.get(i).getIcao24() == null || aircrafts.get(i).getOwner() == null || aircrafts.get(i).getOperator().getName() == null || aircrafts.get(i).getModel() == null)
+            if(aircrafts.get(i).getIcao24() == null || aircrafts.get(i).getOwner() == null || Objects.equals(aircrafts.get(i).getOperator().getName(), "") || aircrafts.get(i).getModel() == null)
                 aircrafts.remove(i);
         }
 

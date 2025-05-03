@@ -135,6 +135,7 @@ public class AircraftService {
         NullRemover nullRemover = new NullRemover();
 
         nullRemover.TransformAircrafts(aircrafts);
+        nullRemover.TransformOperators(newOperators);
 
         aircraftRepo.saveAll(aircrafts); // More efficient than saving one-by-one
         DataStorage.getInstance().bulkAddAircrafts(aircrafts);

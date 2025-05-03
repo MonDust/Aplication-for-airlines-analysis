@@ -44,7 +44,7 @@ public class Operator implements Cloneable, Comparable<Operator> {
      * Empty constructor needed for cloning
      */
     public Operator() {
-        this.name = name;
+        this.name = "";
     }
 
     /**
@@ -91,6 +91,11 @@ public class Operator implements Cloneable, Comparable<Operator> {
 
         Operator operator = (Operator) o;
         return Objects.equals(name, operator.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
 
