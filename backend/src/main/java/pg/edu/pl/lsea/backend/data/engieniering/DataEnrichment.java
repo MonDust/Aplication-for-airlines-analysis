@@ -21,10 +21,10 @@ public class DataEnrichment extends DataTransform {
     public void TransformFlights(List<Flight> flights) {
         for (int i = flights.size() - 1; i >= 0; i--) {
             if (Objects.equals(flights.get(i).getArrivalAirport(), "")) {
-                flights.get(i).setArrivalAirport("EMPTY");
+                flights.get(i).setArrivalAirport(null);
             }
             if (Objects.equals(flights.get(i).getDepartureAirport(), "")) {
-                flights.get(i).setDepartureAirport("EMPTY");
+                flights.get(i).setDepartureAirport(null);
             }
 
 
