@@ -67,6 +67,24 @@ public class AircraftService {
     }
 
     /**
+     * Checks if the aircraft request is valid
+     */
+    private boolean checkRequestValidity(AircraftResponse req) {
+        if (Objects.equals(req.operator(), "") || Objects.equals(req.model(), "") || Objects.equals(req.owner(), "")) {
+            return false;
+        }
+
+        if (Objects.equals(req.operator(), "NULL") || Objects.equals(req.model(), "NULL") || Objects.equals(req.owner(), "NULL")) {
+            return false;
+        }
+
+        if (Objects.equals(req.operator(), null) || Objects.equals(req.model(), null) || Objects.equals(req.owner(), null)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Creates a particular aircraft and stores it in the database (used for POST request).
      * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
      */
@@ -107,20 +125,6 @@ public class AircraftService {
 
         aircraftRepo.save(aircraft);
         return aircraftToResponseMapper.apply(aircraft);
-    }
-
-    /**
-     * Checks if the aircraft request is valid
-     */
-    private boolean checkRequestValidity(AircraftResponse req) {
-        if (Objects.equals(req.operator(), "") || Objects.equals(req.model(), "") || Objects.equals(req.owner(), "")) {
-            return false;
-        }
-
-        if (Objects.equals(req.operator(), "NULL") || Objects.equals(req.model(), "NULL") || Objects.equals(req.owner(), "NULL")) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -200,10 +204,6 @@ public class AircraftService {
         operatorRepo.saveAll(newOperators);
         modelRepo.saveAll(newModels);
         aircraftRepo.saveAll(aircrafts);
-
-        List<Operator> test_operators = operatorRepo.findAll();
-        List<Model> test_models = modelRepo.findAll();
-        System.out.println("TEST - operators: " + test_operators.size() + "; models: " + test_models.size());
 
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)

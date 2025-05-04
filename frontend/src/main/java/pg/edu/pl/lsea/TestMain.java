@@ -76,8 +76,8 @@ public class TestMain {
 
 
         // TODO - Ask API to do some analysis based on already loaded data (aforementioned section) and print result to the console
-        DataLoader dataLoader1 = new DataLoader();
-        dataLoader1.giveTopNModels();
+//        DataLoader dataLoader1 = new DataLoader();
+//        dataLoader1.giveTopNModels();
 
         // wait for analysis data
         Thread udpThread = new Thread(() -> {
