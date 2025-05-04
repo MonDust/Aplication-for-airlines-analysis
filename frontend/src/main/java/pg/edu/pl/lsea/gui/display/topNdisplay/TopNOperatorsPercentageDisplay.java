@@ -7,6 +7,8 @@ import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 import java.util.*;
 
+import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
+
 /**
  * Class responsible for returning percentage of long flights for Top N Operators - showing a windows with an appropriate message.
  */
@@ -26,7 +28,7 @@ public class TopNOperatorsPercentageDisplay extends BaseTopN {
     public void displayTopOperatorsPercentage() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> percentages = dataLoader.getTopNPercentageOfLongFlights();
+        List<Output> percentages = dataLoader.getTopNPercentageOfLongFlights(NUMBER_OF_MOST_POPULAR_OPERATORS);
                 //new ArrayList();
 
         //Output o = new Output("PlaceholderIcao", 0);

@@ -1,6 +1,7 @@
 package pg.edu.pl.lsea.backend.services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightUpdateRequest;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -84,6 +86,17 @@ public class FlightService {
     }
 
     /**
+     * Check if flight exists.
+     * @param icao24 - ICAO
+     * @param firstSeen - FIRST SEEN
+     * @return - boolean true if exists, false if not.
+     */
+    private boolean checkIfFlightExists(String icao24, int firstSeen) {
+        Optional<Flight> existingFlight = flightRepo.findByIcao24AndFirstSeen(icao24, firstSeen);
+        return existingFlight.isPresent();
+    }
+
+    /**
      * Creates a particular flight and stores it in the database (used for POST request).
      * @return FlightResponse (=DTO) is what should be exposed via REST API endpoint.
      */
@@ -95,15 +108,19 @@ public class FlightService {
                 request.departureAirport(),
                 request.arrivalAirport());
 
+        // Check if the flight already exists
+        if (checkIfFlightExists(flight.getIcao24(), flight.getFirstSeen())) {
+            // System.out.println("Flight with ICAO " + flight.getIcao24() + " and first seen " + flight.getFirstSeen() + " already exists.");
+            return flightToResponseMapper.apply(flight);
+        }
 
         if((!nullRemover.CheckOneFlight(flight))) {
-
-            flightRepo.save(flight);
-            enrichedFlightRepo.save(new EnrichedFlight(flight));
-
-            DataStorage.getInstance().addFlight(flight);
-            DataStorage.getInstance().addEnrichedFlight(new EnrichedFlight(flight));
-
+            try {
+                flightRepo.save(flight);
+                enrichedFlightRepo.save(new EnrichedFlight(flight));
+            } catch (DataIntegrityViolationException ex) {
+                System.err.println("Error saving flight: " + ex.getMessage());
+            }
         }
 
         return flightToResponseMapper.apply(flight);
@@ -125,15 +142,28 @@ public class FlightService {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         NullRemover nullRemover = new NullRemover();
-
         nullRemover.TransformFlights(flights);
 
-        flightRepo.saveAll(flights);
+        List<Flight> newFlights = new ArrayList<>();
+        for (Flight flight : flights) {
+            // Check if the flight already exists
+            if (!checkIfFlightExists(flight.getIcao24(), flight.getFirstSeen())) {
+                newFlights.add(flight);
+            } else {
+                // System.out.println("Flight with ICAO " + flight.getIcao24() + " and first seen " + flight.getFirstSeen() + " already exists.");
+            }
+        }
 
-        enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(flights));
+        if (!newFlights.isEmpty()) {
+            try {
+                flightRepo.saveAll(newFlights);
+                enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(newFlights));
+            } catch (DataIntegrityViolationException ex) {
+                System.err.println("Error saving to Flight Repo: " + ex.getMessage());
+            }
+        }
 
-
-        return flights.stream()
+        return newFlights.stream()
                 .map(flightToResponseMapper)
                 .toList();
     }
@@ -155,7 +185,11 @@ public class FlightService {
         flight.setDepartureAirport(request.departureAirport());
         flight.setArrivalAirport(request.arrivalAirport());
 
-        flightRepo.save(flight);
+        try {
+            flightRepo.save(flight);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving flight: " + ex.getMessage());
+        }
 
         return flightToResponseMapper.apply(flight);
     }
@@ -177,7 +211,11 @@ public class FlightService {
         if (req.departureAirport() != null) flight.setDepartureAirport(req.departureAirport());
         if (req.arrivalAirport() != null) flight.setArrivalAirport(req.arrivalAirport());
 
-        flightRepo.save(flight);
+        try {
+            flightRepo.save(flight);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving flight: " + ex.getMessage());
+        }
         return flightToResponseMapper.apply(flight);
     }
 

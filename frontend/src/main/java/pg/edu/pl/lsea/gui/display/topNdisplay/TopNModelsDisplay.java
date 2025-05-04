@@ -5,6 +5,8 @@ import pg.edu.pl.lsea.entities.Output;
 import java.util.ArrayList;
 import java.util.List;
 
+import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_MODELS;
+
 /**
  * Class responsible for returning Top N Models - showing a windows with an appropriate message.
  */
@@ -25,7 +27,7 @@ public class TopNModelsDisplay extends BaseTopN {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
         System.out.println("here2");
-        List<Output> sizes = dataLoader.giveTopNModels();
+        List<Output> sizes = dataLoader.giveTopNModels(NUMBER_OF_MOST_POPULAR_MODELS);
         //new ArrayList();
 
         //SIZE (number of flights) - value

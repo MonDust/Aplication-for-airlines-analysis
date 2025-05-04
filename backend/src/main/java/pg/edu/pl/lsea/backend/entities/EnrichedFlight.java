@@ -49,6 +49,7 @@ public class EnrichedFlight extends Trackable implements Cloneable {
 
     /**
      * Duration of the flight in seconds.
+     * Time in air in seconds for the aircraft during the flight.
      */
     @Column(name = "time_in_air", nullable = false)
     private int timeInAir;
@@ -70,6 +71,8 @@ public class EnrichedFlight extends Trackable implements Cloneable {
         this.arrivalAirport = arrivalAirport;
         this.timeInAir =0;
         updateTimeInAir(lastSeen, firstSeen);
+
+        // super(icao24, firstSeen, lastSeen, departureAirport, arrivalAirport);
     }
 
     /**
@@ -84,6 +87,10 @@ public class EnrichedFlight extends Trackable implements Cloneable {
         timeInAir = 0;
     }
 
+    /**
+     * Creates a flight object.
+     * @param copiedFlight - flight with all needed values.
+     */
     public EnrichedFlight(Flight copiedFlight) {
         setIcao24(copiedFlight.getIcao24());
         this.firstSeen = copiedFlight.getFirstSeen();
@@ -96,7 +103,9 @@ public class EnrichedFlight extends Trackable implements Cloneable {
     }
 
     /**
-     * Updates time in air based on timestamps.
+     * Sets the integer representing time in the air in seconds.
+     * @param firstSeen - when aircraft was first seen during the flight.
+     * @param lastSeen - when aircraft was last seen during the flight.
      */
     public void updateTimeInAir(int lastSeen, int firstSeen) {
         this.timeInAir = lastSeen - firstSeen;
@@ -136,6 +145,9 @@ public class EnrichedFlight extends Trackable implements Cloneable {
                 "}";
     }
 
+    /**
+     * Clonning EnrichedFlights.
+     */
     @Override
     public EnrichedFlight clone() {
         EnrichedFlight newFlight = new EnrichedFlight();
