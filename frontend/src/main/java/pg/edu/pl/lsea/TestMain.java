@@ -40,10 +40,12 @@ public class TestMain {
 
         // Send the list of flights and aircrafts via the REST API
         try {
-            uploader.sendAircrafts(dataLoader.readAircrafts(fileAircrafts1));
 
 //            uploader.sendFlights(dataLoader.readFlights(fileFlights1));
 //            uploader.sendFlights(dataLoader.readFlights(fileFlights2));
+
+
+            uploader.sendAircrafts(dataLoader.readAircrafts(fileAircrafts1));
             uploader.sendFlights(dataLoader.readFlights(fileFlights3));
 
         } catch (Exception e) {
@@ -75,7 +77,7 @@ public class TestMain {
 
         // TODO - Ask API to do some analysis based on already loaded data (aforementioned section) and print result to the console
         DataLoader dataLoader1 = new DataLoader();
-        dataLoader1.giveTopNOperators();
+        dataLoader1.giveTopNModels();
 
         // wait for analysis data
         Thread udpThread = new Thread(() -> {

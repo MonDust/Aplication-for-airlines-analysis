@@ -5,15 +5,12 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
+import pg.edu.pl.lsea.backend.entities.Model;
 import pg.edu.pl.lsea.backend.entities.Operator;
 import pg.edu.pl.lsea.backend.entities.Output;
-import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
-import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
-import pg.edu.pl.lsea.backend.repositories.FlightRepo;
-import pg.edu.pl.lsea.backend.repositories.OperatorRepo;
+import pg.edu.pl.lsea.backend.repositories.*;
 import pg.edu.pl.lsea.backend.services.analysis.BaseAnalysis;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static pg.edu.pl.lsea.backend.utils.Constants.*;
@@ -159,8 +156,8 @@ public class BasicDefaultAnalysis extends BaseAnalysis {
      * Possible to pass an argument to specify number of top models.
      * @return List of Output representing the number of flights for the specified number of top models. (one of the icaos and size)
      */
-    public List<Output> getGroupedTopNModels() {
-        return getGroupedTopNModels(NUMBER_OF_MOST_POPULAR_MODELS);
+    public List<Output> getGroupedTopNModels(ModelRepo modelRepo) {
+        return getGroupedTopNModels(modelRepo, NUMBER_OF_MOST_POPULAR_MODELS);
     }
 
     /**
@@ -170,15 +167,15 @@ public class BasicDefaultAnalysis extends BaseAnalysis {
      * @param topN the number of top models to consider
      * @return List of Output representing the number of flights for the specified number of top models.
      */
-    public List<Output> getGroupedTopNModels(int topN) {
-        List<List<EnrichedFlight>> enrichedList = getGroupedFlightsByTopNModel(topN);
-        List<Output> outputList = new ArrayList<>();
+    public List<Output> getGroupedTopNModels(ModelRepo modelRepo, int topN) {
 
-        // get one icao representing models and value representing number of flights
-        for (List<EnrichedFlight> enrichedFlights : enrichedList) {
-            Output o = new Output(enrichedFlights.getFirst().getIcao24(), enrichedFlights.size());
-            outputList.add(o);
-        }
+        List<Model> models = modelRepo.findAll();
+
+        // TODO - o.getAircrafts().size() should be replaced with summed sizes of all flights
+        List<Output> outputList = models.stream().sorted().toList().subList(0, topN).stream().map(o -> {
+            return new Output(o.getAircrafts().stream().findFirst().get().getIcao24(), o.getAircrafts().size());
+        }).toList();
+
         return outputList;
     }
 
