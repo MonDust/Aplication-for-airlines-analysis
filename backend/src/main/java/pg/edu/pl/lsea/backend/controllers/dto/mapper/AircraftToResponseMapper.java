@@ -18,8 +18,8 @@ public class AircraftToResponseMapper implements Function<Aircraft, AircraftResp
         return new AircraftResponse(
                 aircraft.getId(),
                 aircraft.getIcao24(),
-                aircraft.getModel(),
-                aircraft.getOperator(),
+                aircraft.getModel().getName(),
+                aircraft.getOperator().getName(),
                 aircraft.getOwner()
         );
     }
