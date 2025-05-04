@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.backend.services.analysis;
+package pg.edu.pl.lsea.backend.entities.analysisresult;
 
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 

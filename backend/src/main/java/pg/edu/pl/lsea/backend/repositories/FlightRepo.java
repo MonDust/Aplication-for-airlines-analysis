@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import pg.edu.pl.lsea.backend.entities.Flight;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FlightRepo extends JpaRepository<Flight, Long> {
@@ -14,4 +15,6 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
     List<Flight> findByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(int start, int end);
 
     void deleteByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(int start, int end);
+
+    Optional<Flight> findByIcao24AndFirstSeen(String icao24, int firstSeen);
 }

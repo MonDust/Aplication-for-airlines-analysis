@@ -1,238 +1,106 @@
 package pg.edu.pl.lsea.backend.services.analysis;
 
-import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
+import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
+import pg.edu.pl.lsea.backend.controllers.dto.EnrichedFlightResponse;
+import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
-import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
-import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
-import pg.edu.pl.lsea.backend.data.storage.DataStorage;
-import pg.edu.pl.lsea.backend.entities.Aircraft;
-import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Flight;
-import pg.edu.pl.lsea.backend.entities.Output;
+import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
+import pg.edu.pl.lsea.backend.repositories.FlightRepo;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static pg.edu.pl.lsea.backend.utils.Constants.*;
-import static pg.edu.pl.lsea.backend.utils.Constants.NUMBER_OF_MOST_POPULAR_MODELS;
 
 /**
  * Base class for analysis classes
  */
 public abstract class BaseAnalysis {
-    protected final DataStorage storage = DataStorage.getInstance();
+    /**
+     * handling data
+     */
+    protected final FlightRepo flightRepo;
+    protected final FlightToResponseMapper flightToResponseMapper;
 
+    protected final EnrichedFlightRepo enrichedFlightRepo;
+    protected final EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
+
+    protected final AircraftRepo aircraftRepo;
+    protected final AircraftToResponseMapper aircraftToResponseMapper;
+
+
+    // Analysis tools
     protected final SortingCalculator sortingCalculator = new SortingCalculator();
     protected final GroupingTool groupingTool = new GroupingTool();
 
     protected final PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
     protected final ParallelGroupingTool parallelGroupingTool = new ParallelGroupingTool();
 
-    /**
-     * Constructor for the class.
-     */
-    public BaseAnalysis() {}
 
     /**
-     * Function preparing flights.
-     * Removing the records with missing data and enriching the list of flights.
-     * @return list of enriched flights
+     * Constructor for BaseAnalysis class.
+     * @param flightRepo - repository; h2 database
+     * @param flightToResponseMapper - mapper; h2 database
+     * @param enrichedFlightRepo - repository; h2 database
+     * @param enrichedFlightToResponseMapper - mapper; h2 database
+     * @param aircraftRepo - repository; h2 database
+     * @param aircraftToResponseMapper - mapper; h2 database
      */
-    public List<EnrichedFlight> prepareFlights() {
-        NullRemover nullRemover = new NullRemover();
-        DataEnrichment enricher = new DataEnrichment();
+    public BaseAnalysis(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper,
+                        EnrichedFlightRepo enrichedFlightRepo, EnrichedFlightToResponseMapper enrichedFlightToResponseMapper,
+                        AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper ) {
 
-        List<Flight> flights = storage.getFlights();
-        nullRemover.TransformFlights(flights);
+        // Flights
+        this.flightRepo = flightRepo;
+        this.flightToResponseMapper = flightToResponseMapper;
 
-        return enricher.CreateEnrichedListOfFlights(flights);
-    }
+        // Enriched Flights
+        this.enrichedFlightRepo = enrichedFlightRepo;
+        this.enrichedFlightToResponseMapper = enrichedFlightToResponseMapper;
 
-    /**
-     * Function preparing aircrafts.
-     * Removing the records with missing data.
-     * @return list of aircrafts
-     */
-    public List<Aircraft> prepareAircrafts() {
-        NullRemover nullRemover = new NullRemover();
-
-        List<Aircraft> aircrafts = storage.getAircrafts();
-        nullRemover.TransformAircrafts(aircrafts);
-
-        return aircrafts;
-    }
-
-    /**
-     * This function gives percentage of flights that classify as long per each list in list of lists.
-     * The flights are grouped by models.
-     * ALL MODELS
-     * @return list of outputs; value - percentage of flight that classify as long stored in output format
-     */
-    public List<Output> getPercentageOfLongFlights_ModelGrouping() {
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(storage.getEnrichedFlights(), storage.getAircrafts(), NUMBER_OF_DEFAULT_THREADS);
-        return propertiesCalculator.givePercentageOfLongFlights(listOfLists_model);
-    }
-
-    /**
-     * This function gives percentage of flights that classify as long per each list in list of lists.
-     * The flights are grouped by operators.
-     * ALL OPERATORS
-     * @return list of outputs; value - percentage of flight that classify as long stored in output format
-     */
-    public List<Output> getPercentageOfLongFlights_OperatorGrouping() {
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByOperator(storage.getEnrichedFlights(), storage.getAircrafts(), NUMBER_OF_DEFAULT_THREADS);
-        return propertiesCalculator.givePercentageOfLongFlights(listOfLists_model);
-    }
-
-    /**
-     * Returns list of list which is containing any long flights, grouped by models.
-     * @return list of list which is containing any long flights
-     */
-    public List<List<EnrichedFlight>> findLongFlightsForEachModel() {
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByModel(storage.getEnrichedFlights(), storage.getAircrafts(), 8);
-        return groupingTool.findLongFlightsForEachModel(listOfLists_model);
-    }
-
-    /**
-     * Returns list of list which is containing any long flights, grouped by operators.
-     * @return list of list which is containing any long flights
-     */
-    public List<List<EnrichedFlight>> findLongFlightsForEachOperator() {
-        List<List<EnrichedFlight>> listOfLists_model = parallelGroupingTool.groupFlightsByOperator(storage.getEnrichedFlights(), storage.getAircrafts(), 8);
-        return groupingTool.findLongFlightsForEachModel(listOfLists_model);
-    }
-
-    /**
-     * Sorting flights by the time of flight
-     * @return list of outputs - icao24s with value - time of flight
-     */
-    public List<Output> getListSortedByTimeOfFlights() {
-        return sortingCalculator.sortByTimeOfFlights(storage.getEnrichedFlights());
-    }
-
-    /**
-     * Sorting flights by the number of flights
-     * @return list of outputs - icao24s with value - amount of flights
-     */
-    public List<Output> getListSortedByNumberOfFlights() {
-        return sortingCalculator.sortByAmountOfFlights(storage.getEnrichedFlights());
-    }
-
-    /**
-     * Calculates average time in air for list of flights.
-     * @return int - average time per input flights
-     */
-    public int calculateAverageTimeInAir() {
-        return propertiesCalculator.calculateAverageTimeInAir(storage.getEnrichedFlights());
+        // Aircrafts
+        this.aircraftRepo = aircraftRepo;
+        this.aircraftToResponseMapper = aircraftToResponseMapper;
     }
 
 
-    // Grouping and TopN //
+    // GET ALL //
+
 
     /**
-     * Get grouped by the operators - result: output with certain icaos representing the operators and number of flights.
-     * Returns a list of outputs for the top operators, each output containing an ICAO24 identifier
-     * and the number of flights for that operator.
-     * Possible to pass an argument to specify number of top operators.
-     * @return List of Output representing the number of flights for the specified number of top operators. (one of the icaos and size)
+     * Get all the flights from the flight repository.
+     * @return List of FlightResponse
      */
-    public List<Output> getGroupedTopNOperators() {
-        return getGroupedTopNOperators(NUMBER_OF_MOST_POPULAR_OPERATORS);
+    public List<FlightResponse> getAllFlights() {
+        return flightRepo.findAll()
+                .stream()
+                .map(flightToResponseMapper)
+                .toList();
     }
 
     /**
-     * Get grouped by the operators - result with a specified number of top operators.
-     * Returns a list of outputs for the top N operators, each output containing an ICAO24 identifier
-     * and the number of flights for that operator.
-     * @param topN the number of top operators to consider
-     * @return List of Output representing the number of flights for the specified number of top operators.
+     * Get all the aircrafts from the flight repository.
+     * @return List of AircraftResponse
      */
-    public List<Output> getGroupedTopNOperators(int topN) {
-        List<List<EnrichedFlight>> enrichedList = getGroupedFlightsByTopNOperator(topN);
-        List<Output> outputList = new ArrayList<>();
-
-        // get one icao representing operator and value representing number of flights
-        for (int i = 0; i < enrichedList.size(); i++) {
-            Output o = new Output(enrichedList.get(i).getFirst().getIcao24(),enrichedList.get(i).size());
-            outputList.add(o);
-        }
-        return outputList;
+    public List<AircraftResponse> getAllAircrafts() {
+        return aircraftRepo.findAll()
+                .stream()
+                .map(aircraftToResponseMapper)
+                .toList();
     }
 
     /**
-     * Get grouped by the models - result: output with certain icaos representing the models and number of flights.
-     * Returns a list of outputs for the top N aircraft models, each output containing an ICAO24 identifier
-     * and the number of flights for that model.
-     * Possible to pass an argument to specify number of top models.
-     * @return List of Output representing the number of flights for the specified number of top models. (one of the icaos and size)
+     * Get all the enrichedFlights from the flight repository.
+     * @return List of EnrichedFlightResponse
      */
-    public List<Output> getGroupedTopNModels() {
-        return getGroupedTopNModels(NUMBER_OF_MOST_POPULAR_MODELS);
+    public List<EnrichedFlightResponse> getAllEnrichedFlights() {
+        return enrichedFlightRepo.findAll()
+                .stream()
+                .map(enrichedFlightToResponseMapper)
+                .toList();
     }
-
-    /**
-     * Get grouped by the models - result with a specified number of top models.
-     * Returns a list of outputs for the top N aircraft models, each output containing an ICAO24 identifier
-     * and the number of flights for that model.
-     * @param topN the number of top models to consider
-     * @return List of Output representing the number of flights for the specified number of top models.
-     */
-    public List<Output> getGroupedTopNModels(int topN) {
-        List<List<EnrichedFlight>> enrichedList = getGroupedFlightsByTopNModel(topN);
-        List<Output> outputList = new ArrayList<>();
-
-        // get one icao representing models and value representing number of flights
-        for (List<EnrichedFlight> enrichedFlights : enrichedList) {
-            Output o = new Output(enrichedFlights.getFirst().getIcao24(), enrichedFlights.size());
-            outputList.add(o);
-        }
-        return outputList;
-    }
-
-    /**
-     * Get enriched flights grouped by the operator, defaulting to top 5 operators.
-     * Possible to pass an argument to specify number of top operators.
-     * @return List of lists of enriched flights, each representing a top operator.
-     */
-    protected List<List<EnrichedFlight>> getGroupedFlightsByTopNOperator() {
-        return getGroupedFlightsByTopNOperator(NUMBER_OF_MOST_POPULAR_OPERATORS);
-    }
-
-    /**
-     * Get enriched flights grouped by the operator, then processed for Top N Operators.
-     * @param topN The number of top operators to consider.
-     * @return List of lists of enriched flights, each representing a top operator.
-     */
-    protected List<List<EnrichedFlight>> getGroupedFlightsByTopNOperator(int topN) {
-        // Grouping flights by operator (in parallel)
-        List<List<EnrichedFlight>> groupedFlights = parallelGroupingTool.groupFlightsByOperator(storage.getEnrichedFlights(), storage.getAircrafts(), NUMBER_OF_DEFAULT_THREADS);
-
-        // Sorting and getting top N operators
-        return sortingCalculator.giveTopN_byAttribute(groupedFlights, topN);
-    }
-
-    /**
-     * Get enriched flights grouped by the model, defaulting to top 5 models.
-     * Possible to pass an argument to specify number of top models.
-     * @return List of lists of enriched flights, each representing a top model.
-     */
-    protected List<List<EnrichedFlight>> getGroupedFlightsByTopNModel() {
-        return getGroupedFlightsByTopNModel(NUMBER_OF_MOST_POPULAR_MODELS);
-    }
-
-    /**
-     * Get enriched flights grouped by the model.
-     * @param topN The number of top models to consider.
-     * @return List of lists of enriched flights, each representing a top model.
-     */
-    protected List<List<EnrichedFlight>> getGroupedFlightsByTopNModel(int topN) {
-        // Grouping flights by model (in parallel)
-        List<List<EnrichedFlight>> groupedFlights = parallelGroupingTool.groupFlightsByModel(storage.getEnrichedFlights(), storage.getAircrafts(), NUMBER_OF_DEFAULT_THREADS);
-
-        // Sorting and getting top N models
-        return sortingCalculator.giveTopN_byAttribute(groupedFlights, topN);
-    }
-
 }
