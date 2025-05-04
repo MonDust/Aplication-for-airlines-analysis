@@ -45,7 +45,7 @@ public class DataEnrichment extends DataTransform {
                 aircrafts.get(i).setOperator(null);
             }
             if (Objects.equals(aircrafts.get(i).getModel(), "")) {
-                aircrafts.get(i).setModel("EMPTY");
+                aircrafts.get(i).setModel(null);
             }
 
         }

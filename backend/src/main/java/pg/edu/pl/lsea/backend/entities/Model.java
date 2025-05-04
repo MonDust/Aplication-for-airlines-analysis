@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A class representing a tracked operator of an aircraft
+ * A class representing a tracked model of an aircraft
  */
 @Setter
 @Getter
 @Entity
 @Table(
-        name = "operators",
+        name = "models",
         uniqueConstraints = @UniqueConstraint(columnNames = {"name"})
 )
-public class Operator implements Cloneable, Comparable<Operator> {
+public class Model implements Cloneable, Comparable<Model> {
     /**
      * This value is generated automatically during object creation
      * and is added by the JPA (Java Persistence API).
@@ -30,39 +30,39 @@ public class Operator implements Cloneable, Comparable<Operator> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "operator", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "model", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Aircraft> aircrafts = new ArrayList<>();
 
     /**
-     * Creates a operator object.
+     * Creates a model object.
      */
-    public Operator(String name) {
+    public Model(String name) {
         this.name = name;
     }
 
     /**
      * Empty constructor needed for cloning
      */
-    public Operator() {
+    public Model() {
         this.name = "";
     }
 
     /**
-     * Class for comparing operators based on aircrafts size.
+     * Class for comparing models based on aircrafts size.
      */
     @Override
-    public int compareTo(Operator o) {
+    public int compareTo(Model o) {
         return o.aircrafts.size() - aircrafts.size();
     }
 
 
     /**
-     * Printing operator.
-     * @return Operator with all fields in a string format.
+     * Printing model.
+     * @return Model with all fields in a string format.
      */
     @Override
     public String toString() {
-        return "Operator{" +
+        return "Model{" +
                "name='" + name + "'" +
                ", aircrafts.size() =" + aircrafts.size() +
                "}";
@@ -71,17 +71,17 @@ public class Operator implements Cloneable, Comparable<Operator> {
 
 
     @Override
-    public Operator clone() {
-        Operator newOperator = new Operator();
-        newOperator.setId(id);
-        newOperator.setName(name);
-        newOperator.setAircrafts(aircrafts);
-        return newOperator;
+    public Model clone() {
+        Model newModel = new Model();
+        newModel.setId(id);
+        newModel.setName(name);
+        newModel.setAircrafts(aircrafts);
+        return newModel;
     }
 
     /**
-     * A method that compares operator to another object and determines if they are equal based on its name.
-     * @param o the objects to compare the operator to
+     * A method that compares model to another object and determines if they are equal based on its name.
+     * @param o the objects to compare the model to
      * @return true if the compared objects are considered equal, false if they are different
      */
     @Override
@@ -89,8 +89,8 @@ public class Operator implements Cloneable, Comparable<Operator> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Operator operator = (Operator) o;
-        return Objects.equals(name, operator.name);
+        Model model = (Model) o;
+        return Objects.equals(name, model.name);
     }
 
     @Override

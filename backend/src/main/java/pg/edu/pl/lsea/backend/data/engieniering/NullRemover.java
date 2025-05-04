@@ -2,6 +2,7 @@ package pg.edu.pl.lsea.backend.data.engieniering;
 
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.entities.Model;
 import pg.edu.pl.lsea.backend.entities.Operator;
 
 import java.util.List;
@@ -37,12 +38,23 @@ public class NullRemover extends DataTransform {
     }
 
     /**
+     * Removes models with empty fields
+     * @param models list of operators that will be cleaned
+     */
+    public void TransformModels (List<Model> models) {
+        for(int i = models.size() - 1; i >= 0; i--){
+            if(Objects.equals(models.get(i).getName(), ""))
+                models.remove(i);
+        }
+    }
+
+    /**
      * Removes entities with empty fields
      * @param aircrafts list of aircrafts that will be changed
      */
     public void TransformAircrafts (List<Aircraft> aircrafts){
         for(int i = aircrafts.size() - 1; i >= 0; i--){
-            if(aircrafts.get(i).getIcao24() == null || aircrafts.get(i).getOwner() == null || Objects.equals(aircrafts.get(i).getOperator().getName(), "") || aircrafts.get(i).getModel() == null)
+            if(aircrafts.get(i).getIcao24() == null || aircrafts.get(i).getOwner() == null || Objects.equals(aircrafts.get(i).getOperator().getName(), "") || Objects.equals(aircrafts.get(i).getModel().getName(), ""))
                 aircrafts.remove(i);
         }
 
