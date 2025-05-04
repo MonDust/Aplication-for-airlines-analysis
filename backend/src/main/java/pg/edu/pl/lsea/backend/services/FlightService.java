@@ -38,7 +38,6 @@ public class FlightService {
     private final FlightToResponseMapper flightToResponseMapper;
     private final EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
 
-
     private final DataEnrichment enrichmentTool = new DataEnrichment();
     private final NullRemover nullRemover = new NullRemover();
 
@@ -91,6 +90,17 @@ public class FlightService {
     }
 
     /**
+     * Check if flight exists.
+     * @param icao24 - ICAO
+     * @param firstSeen - FIRST SEEN
+     * @return - boolean true if exists, false if not.
+     */
+    private boolean checkIfFlightExists(String icao24, int firstSeen) {
+        Optional<Flight> existingFlight = flightRepo.findByIcao24AndFirstSeen(icao24, firstSeen);
+        return existingFlight.isPresent();
+    }
+
+    /**
      * Checks if the flight request is valid
      */
     private boolean checkRequestValidity(FlightResponse req) {
@@ -114,8 +124,13 @@ public class FlightService {
      * @return FlightResponse (=DTO) is what should be exposed via REST API endpoint.
      */
     public FlightResponse create(FlightResponse request) {
-
         if (!checkRequestValidity(request)) {
+            return null;
+        }
+
+        // Check if the flight already exists
+        if (checkIfFlightExists(request.icao24(), request.firstSeen())) {
+            // System.out.println("Flight with ICAO " + flight.getIcao24() + " and first seen " + flight.getFirstSeen() + " already exists.");
             return null;
         }
 
@@ -141,7 +156,6 @@ public class FlightService {
             arrivalAirport = existingArrivalAirport.get();
         }
 
-
         Flight flight = new Flight(
                 request.icao24(),
                 request.firstSeen(),
@@ -150,16 +164,13 @@ public class FlightService {
                 arrivalAirport
         );
 
-        // Check if the flight already exists
-        if (checkIfFlightExists(flight.getIcao24(), flight.getFirstSeen())) {
-            // System.out.println("Flight with ICAO " + flight.getIcao24() + " and first seen " + flight.getFirstSeen() + " already exists.");
-            return flightToResponseMapper.apply(flight);
-        }
-
         if((!nullRemover.CheckOneFlight(flight))) {
-
-            flightRepo.save(flight);
-            enrichedFlightRepo.save(new EnrichedFlight(flight));
+            try {
+                flightRepo.save(flight);
+                enrichedFlightRepo.save(new EnrichedFlight(flight));
+            } catch (DataIntegrityViolationException ex) {
+                System.err.println("Error saving flight: " + ex.getMessage());
+            }
         }
 
         return flightToResponseMapper.apply(flight);
@@ -172,7 +183,9 @@ public class FlightService {
      * @return List of FlightResponse (=DTO) is what should be exposed via REST API endpoint.
      */
     public List<FlightResponse> createBulk(List<FlightResponse> request) {
-        List<FlightResponse> validRequests = request.stream().filter(this::checkRequestValidity).toList();
+        List<FlightResponse> validRequests = request.stream().
+                filter(this::checkRequestValidity).
+                toList();
 
         List<Airport> existingAirports = airportRepo.findAll();
         List<Airport> newAirports = new ArrayList<>();
@@ -229,22 +242,23 @@ public class FlightService {
         NullRemover nullRemover = new NullRemover();
         nullRemover.TransformFlights(flights);
 
-        flightRepo.saveAll(flights);
-        airportRepo.saveAll(newAirports);
+        // Filter out flights that already exist
+        List<Flight> newFlights = flights.stream()
+                .filter(f -> !checkIfFlightExists(f.getIcao24(), f.getFirstSeen()))
+                .toList();
 
-        if (!newFlights.isEmpty()) {
-            try {
-                flightRepo.saveAll(newFlights);
-                enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(newFlights));
-            } catch (DataIntegrityViolationException ex) {
-                System.err.println("Error saving to Flight Repo: " + ex.getMessage());
-            }
+        try {
+            flightRepo.saveAll(newFlights);
+            enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(newFlights));
+            airportRepo.saveAll(newAirports);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving : " + ex.getMessage());
         }
 
         List<Airport> test_airports = airportRepo.findAll();
         System.out.println("TEST - airports: " + test_airports.size());
 
-        return flights.stream()
+        return newFlights.stream()
                 .map(flightToResponseMapper)
                 .toList();
     }
@@ -289,8 +303,8 @@ public class FlightService {
         Flight flight = flightRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Flight", "id", id));
 
-        Optional<Airport> existingDepartureAirport = airportRepo.findByCode(request.departureAirport());
-        Optional<Airport> existingArrivalAirport = airportRepo.findByCode(request.arrivalAirport());
+        //Optional<Airport> existingDepartureAirport = airportRepo.findByCode(request.departureAirport());
+        //Optional<Airport> existingArrivalAirport = airportRepo.findByCode(request.arrivalAirport());
 
         flight.setIcao24(request.icao24());
         flight.setFirstSeen(request.firstSeen());

@@ -9,6 +9,7 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 
 import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.Flight;
 import pg.edu.pl.lsea.backend.entities.Model;
 import pg.edu.pl.lsea.backend.entities.Operator;
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
@@ -84,6 +85,16 @@ public class AircraftService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Check if aircraft exists.
+     * @param icao24 - ICAO
+     * @return - boolean true if exists, false if not.
+     */
+    private boolean checkIfAircraftExists(String icao24) {
+        Optional<Aircraft> existingAircraft = aircraftRepo.findByIcao24(icao24);
+        return existingAircraft.isPresent();
     }
 
     /**
@@ -202,10 +213,19 @@ public class AircraftService {
 //
 //        nullRemover.TransformAircrafts(aircrafts);
 
+        // Filter out aircrafts that already exist
+        List<Aircraft> newAircrafts = aircrafts.stream()
+                .filter(a -> !checkIfAircraftExists(a.getIcao24()))
+                .toList();
+
         // More efficient than saving one-by-one
-        operatorRepo.saveAll(newOperators);
-        modelRepo.saveAll(newModels);
-        aircraftRepo.saveAll(aircrafts);
+        try {
+            operatorRepo.saveAll(newOperators);
+            modelRepo.saveAll(newModels);
+            aircraftRepo.saveAll(aircrafts);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving : " + ex.getMessage());
+        }
 
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)
