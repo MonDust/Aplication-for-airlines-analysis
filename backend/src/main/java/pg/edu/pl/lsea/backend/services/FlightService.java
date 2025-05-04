@@ -3,15 +3,15 @@ package pg.edu.pl.lsea.backend.services;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightUpdateRequest;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
-import pg.edu.pl.lsea.backend.data.storage.DataStorage;
-import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.entities.*;
+import pg.edu.pl.lsea.backend.repositories.AirportRepo;
 import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,10 +33,10 @@ public class FlightService {
     private final FlightRepo flightRepo;
     private final EnrichedFlightRepo enrichedFlightRepo;
 
+    private final AirportRepo airportRepo;
 
     private final FlightToResponseMapper flightToResponseMapper;
     private final EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
-
 
     private final DataEnrichment enrichmentTool = new DataEnrichment();
     private final NullRemover nullRemover = new NullRemover();
@@ -43,12 +44,15 @@ public class FlightService {
 
 
     public FlightService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper, EnrichedFlightRepo enrichedFlightRepo,
+                         AirportRepo airportRepo,
                          EnrichedFlightToResponseMapper enrichedFlightToResponseMapper) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
 
         this.enrichedFlightRepo = enrichedFlightRepo;
         this.enrichedFlightToResponseMapper = enrichedFlightToResponseMapper;
+
+        this.airportRepo = airportRepo;
     }
 
     /**
@@ -97,22 +101,68 @@ public class FlightService {
     }
 
     /**
+     * Checks if the flight request is valid
+     */
+    private boolean checkRequestValidity(FlightResponse req) {
+        if (Objects.equals(req.departureAirport(), "") || Objects.equals(req.arrivalAirport(), "")) {
+            return false;
+        }
+
+        if (Objects.equals(req.departureAirport(), "NULL") || Objects.equals(req.arrivalAirport(), "NULL")) {
+            return false;
+        }
+
+        if (Objects.equals(req.departureAirport(), null) || Objects.equals(req.arrivalAirport(), null)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Creates a particular flight and stores it in the database (used for POST request).
      * @return FlightResponse (=DTO) is what should be exposed via REST API endpoint.
      */
     public FlightResponse create(FlightResponse request) {
+        if (!checkRequestValidity(request)) {
+            return null;
+        }
+
+        // Check if the flight already exists
+        if (checkIfFlightExists(request.icao24(), request.firstSeen())) {
+            // System.out.println("Flight with ICAO " + flight.getIcao24() + " and first seen " + flight.getFirstSeen() + " already exists.");
+            return null;
+        }
+
+        // Find or create departure Airport
+        Optional<Airport> existingDepartureAirport = airportRepo.findByCode(request.departureAirport());
+        Airport departureAirport;
+        if (existingDepartureAirport.isEmpty()) {
+            departureAirport = new Airport(request.departureAirport());
+            airportRepo.save(departureAirport);
+        }
+        else {
+            departureAirport = existingDepartureAirport.get();
+        }
+
+        // Find or create arrival Airport
+        Optional<Airport> existingArrivalAirport = airportRepo.findByCode(request.arrivalAirport());
+        Airport arrivalAirport;
+        if (existingArrivalAirport.isEmpty()) {
+            arrivalAirport = new Airport(request.arrivalAirport());
+            airportRepo.save(arrivalAirport);
+        }
+        else {
+            arrivalAirport = existingArrivalAirport.get();
+        }
+
         Flight flight = new Flight(
                 request.icao24(),
                 request.firstSeen(),
                 request.lastSeen(),
-                request.departureAirport(),
-                request.arrivalAirport());
-
-        // Check if the flight already exists
-        if (checkIfFlightExists(flight.getIcao24(), flight.getFirstSeen())) {
-            // System.out.println("Flight with ICAO " + flight.getIcao24() + " and first seen " + flight.getFirstSeen() + " already exists.");
-            return flightToResponseMapper.apply(flight);
-        }
+                departureAirport,
+                arrivalAirport
+        );
 
         if((!nullRemover.CheckOneFlight(flight))) {
             try {
@@ -128,46 +178,120 @@ public class FlightService {
 
     /**
      * Creates a list of flights and stores them in the database (used for POST request).
+     * Also, adds all the airport objects if necessary
      * It enables client to upload all flights at once.
      * @return List of FlightResponse (=DTO) is what should be exposed via REST API endpoint.
      */
     public List<FlightResponse> createBulk(List<FlightResponse> request) {
-        List<Flight> flights = request.stream()
-                .map(r -> new Flight(
-                        r.icao24(),
-                        r.firstSeen(),
-                        r.lastSeen(),
-                        r.departureAirport(),
-                        r.arrivalAirport()))
+        List<FlightResponse> validRequests = request.stream().
+                filter(this::checkRequestValidity).
+                toList();
+
+        List<Airport> existingAirports = airportRepo.findAll();
+        List<Airport> newAirports = new ArrayList<>();
+
+        List<Flight> flights = validRequests.stream()
+                .map(r -> {
+
+                    // Find or create departure airport
+                    Optional<Airport> existingDepartureAirport = existingAirports.stream()
+                            .filter(o -> o.getCode().equals(r.departureAirport()))
+                            .findFirst();
+
+                    Airport departureAirport;
+                    if (existingDepartureAirport.isEmpty()) {
+                        departureAirport = new Airport(r.departureAirport());
+                        existingAirports.add(departureAirport);
+                        newAirports.add(departureAirport);
+                    }
+                    else {
+                        departureAirport = existingDepartureAirport.get();
+                    }
+
+                    // Find or create arrival airport
+                    Optional<Airport> existingArrivalAirport = existingAirports.stream()
+                            .filter(o -> o.getCode().equals(r.arrivalAirport()))
+                            .findFirst();
+
+                    Airport arrivalAirport;
+                    if (existingArrivalAirport.isEmpty()) {
+                        arrivalAirport = new Airport(r.arrivalAirport());
+                        existingAirports.add(arrivalAirport);
+                        newAirports.add(arrivalAirport);
+                    }
+                    else {
+                        arrivalAirport = existingArrivalAirport.get();
+                    }
+
+
+                    Flight newFlight = new Flight(
+                            r.icao24(),
+                            r.firstSeen(),
+                            r.lastSeen(),
+                            departureAirport,
+                            arrivalAirport
+                    );
+
+                    departureAirport.getDepartureFlights().add(newFlight);
+                    arrivalAirport.getArrivalFlights().add(newFlight);
+
+                    return newFlight;
+                })
                 .collect(Collectors.toCollection(ArrayList::new));
 
         NullRemover nullRemover = new NullRemover();
         nullRemover.TransformFlights(flights);
 
-        List<Flight> newFlights = new ArrayList<>();
-        for (Flight flight : flights) {
-            // Check if the flight already exists
-            if (!checkIfFlightExists(flight.getIcao24(), flight.getFirstSeen())) {
-                newFlights.add(flight);
-            } else {
-                // System.out.println("Flight with ICAO " + flight.getIcao24() + " and first seen " + flight.getFirstSeen() + " already exists.");
-            }
+        // Filter out flights that already exist
+        List<Flight> newFlights = flights.stream()
+                .filter(f -> !checkIfFlightExists(f.getIcao24(), f.getFirstSeen()))
+                .toList();
+
+        try {
+            flightRepo.saveAll(newFlights);
+            enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(newFlights));
+            airportRepo.saveAll(newAirports);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving : " + ex.getMessage());
         }
 
-        if (!newFlights.isEmpty()) {
-            try {
-                flightRepo.saveAll(newFlights);
-                enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(newFlights));
-            } catch (DataIntegrityViolationException ex) {
-                System.err.println("Error saving to Flight Repo: " + ex.getMessage());
-            }
-        }
+        List<Airport> test_airports = airportRepo.findAll();
+        System.out.println("TEST - airports: " + test_airports.size());
 
         return newFlights.stream()
                 .map(flightToResponseMapper)
                 .toList();
     }
 
+
+    private void updateAirport(Flight flight, String airportDepartureCode, String airportArrivalCode) {
+        Airport departureAirport;
+        Optional<Airport> existingDepartureAirport = airportRepo.findByCode(airportDepartureCode);
+        if (existingDepartureAirport.isPresent()) {
+            departureAirport = existingDepartureAirport.get();
+            flight.setDepartureAirport(departureAirport);
+        }
+        else {
+            departureAirport = new Airport(airportDepartureCode);
+            airportRepo.save(departureAirport);
+            flight.setDepartureAirport(departureAirport);
+        }
+
+        Airport arrivalAirport;
+        Optional<Airport> existingArrivalAirport = airportRepo.findByCode(airportArrivalCode);
+        if (existingArrivalAirport.isPresent()) {
+            arrivalAirport = existingArrivalAirport.get();
+            flight.setArrivalAirport(arrivalAirport);
+        }
+        else {
+            arrivalAirport = new Airport(airportDepartureCode);
+            airportRepo.save(arrivalAirport);
+            flight.setArrivalAirport(arrivalAirport);
+        }
+
+        departureAirport.getDepartureFlights().add(flight);
+        arrivalAirport.getArrivalFlights().add(flight);
+    }
 
     /**
      * Replaces a flight stored in the database (used for PUT request)
@@ -179,11 +303,13 @@ public class FlightService {
         Flight flight = flightRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Flight", "id", id));
 
+        //Optional<Airport> existingDepartureAirport = airportRepo.findByCode(request.departureAirport());
+        //Optional<Airport> existingArrivalAirport = airportRepo.findByCode(request.arrivalAirport());
+
         flight.setIcao24(request.icao24());
         flight.setFirstSeen(request.firstSeen());
         flight.setLastSeen(request.lastSeen());
-        flight.setDepartureAirport(request.departureAirport());
-        flight.setArrivalAirport(request.arrivalAirport());
+        updateAirport(flight, request.departureAirport(), request.arrivalAirport());
 
         try {
             flightRepo.save(flight);
@@ -193,7 +319,6 @@ public class FlightService {
 
         return flightToResponseMapper.apply(flight);
     }
-
 
     /**
      * Updates a flight stored in the database (used for PATCH request)
@@ -208,8 +333,7 @@ public class FlightService {
         if (req.icao24() != null) flight.setIcao24(req.icao24());
         if (req.firstSeen() != null) flight.setFirstSeen(req.firstSeen());
         if (req.lastSeen() != null) flight.setLastSeen(req.lastSeen());
-        if (req.departureAirport() != null) flight.setDepartureAirport(req.departureAirport());
-        if (req.arrivalAirport() != null) flight.setArrivalAirport(req.arrivalAirport());
+        updateAirport(flight, req.departureAirport(), req.arrivalAirport());
 
         try {
             flightRepo.save(flight);
