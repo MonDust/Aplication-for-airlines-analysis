@@ -1,16 +1,20 @@
 package pg.edu.pl.lsea.backend.services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
-import pg.edu.pl.lsea.backend.data.storage.DataStorage;
+
 import pg.edu.pl.lsea.backend.entities.Aircraft;
+
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -56,6 +60,16 @@ public class AircraftService {
     }
 
     /**
+     * Check if aircraft exists.
+     * @param icao24 - ICAO
+     * @return - boolean true if exists, false if not.
+     */
+    private boolean checkIfAircraftExists(String icao24) {
+        Optional<Aircraft> existingAircraft = aircraftRepo.findByIcao24(icao24);
+        return existingAircraft.isPresent();
+    }
+
+    /**
      * Creates a particular aircraft and stores it in the database (used for POST request).
      * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
      */
@@ -67,8 +81,18 @@ public class AircraftService {
                 request.owner()
         );
 
-        aircraftRepo.save(aircraft);
-        DataStorage.getInstance().addAircraft(aircraft);
+        // Check if the aircraft already exists
+        if (checkIfAircraftExists(aircraft.getIcao24())) {
+            // System.out.println("Flight with ICAO " + aircraft.getIcao24() + " already exists.");
+            return aircraftToResponseMapper.apply(aircraft);
+        }
+
+        try {
+            aircraftRepo.save(aircraft);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving aircraft: " + ex.getMessage());
+        }
+
         return aircraftToResponseMapper.apply(aircraft);
     }
 
@@ -88,12 +112,25 @@ public class AircraftService {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         NullRemover nullRemover = new NullRemover();
+        nullRemover.TransformAircrafts(aircrafts);
 
-         nullRemover.TransformAircrafts(aircrafts);
+        List<Aircraft> newAircraft = new ArrayList<>();
+        for (Aircraft aircraft : aircrafts) {
+            // Check if the flight already exists
+            if (!checkIfAircraftExists(aircraft.getIcao24())) {
+                newAircraft.add(aircraft);
+            } else {
+                // System.out.println("Flight with ICAO " + aircraft.getIcao24() + " already exists.");
+            }
+        }
 
-
-        aircraftRepo.saveAll(aircrafts); // More efficient than saving one-by-one
-        DataStorage.getInstance().bulkAddAircrafts(aircrafts);
+        if (!newAircraft.isEmpty()) {
+            try {
+                aircraftRepo.saveAll(aircrafts);
+            } catch (DataIntegrityViolationException ex) {
+                System.err.println("Error saving to the Aircraft Repo: " + ex.getMessage());
+            }
+        }
 
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)
@@ -115,7 +152,11 @@ public class AircraftService {
         aircraft.setOperator(request.operator());
         aircraft.setOwner(request.owner());
 
-        aircraftRepo.save(aircraft);
+        try {
+            aircraftRepo.save(aircraft);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving aircraft: " + ex.getMessage());
+        }
         return aircraftToResponseMapper.apply(aircraft);
     }
 
@@ -133,7 +174,11 @@ public class AircraftService {
         if (request.operator() != null) aircraft.setOperator(request.operator());
         if (request.owner() != null) aircraft.setOwner(request.owner());
 
-        aircraftRepo.save(aircraft);
+        try {
+            aircraftRepo.save(aircraft);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving aircraft: " + ex.getMessage());
+        }
         return aircraftToResponseMapper.apply(aircraft);
     }
 
