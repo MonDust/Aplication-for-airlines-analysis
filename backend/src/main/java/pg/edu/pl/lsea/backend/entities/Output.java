@@ -19,7 +19,7 @@ public class Output extends Trackable {
     /**
      * Constructs an Output object.
      * @param icao24 A string representing the 6-character hexadecimal ICAO24 code of the aircraft.
-     * @param Value An integer value representing the analysis result related to the model or operator.
+     * @param value An integer value representing the analysis result related to the model or operator.
      */
     public Output(String icao24, int value) {
         setIcao24(icao24);
