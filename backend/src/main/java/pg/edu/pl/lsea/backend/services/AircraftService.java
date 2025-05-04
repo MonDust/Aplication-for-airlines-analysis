@@ -1,11 +1,13 @@
 package pg.edu.pl.lsea.backend.services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
-import pg.edu.pl.lsea.backend.data.storage.DataStorage;
+
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.Model;
 import pg.edu.pl.lsea.backend.entities.Operator;
@@ -228,7 +230,11 @@ public class AircraftService {
         updateOperator(aircraft, request.operator());
         aircraft.setOwner(request.owner());
 
-        aircraftRepo.save(aircraft);
+        try {
+            aircraftRepo.save(aircraft);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving aircraft: " + ex.getMessage());
+        }
         return aircraftToResponseMapper.apply(aircraft);
     }
 
@@ -250,7 +256,11 @@ public class AircraftService {
         } ;
         if (request.owner() != null) aircraft.setOwner(request.owner());
 
-        aircraftRepo.save(aircraft);
+        try {
+            aircraftRepo.save(aircraft);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving aircraft: " + ex.getMessage());
+        }
         return aircraftToResponseMapper.apply(aircraft);
     }
 
