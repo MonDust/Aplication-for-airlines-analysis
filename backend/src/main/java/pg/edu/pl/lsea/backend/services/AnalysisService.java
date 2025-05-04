@@ -10,9 +10,7 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 import pg.edu.pl.lsea.backend.entities.Output;
 
-import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
-import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
-import pg.edu.pl.lsea.backend.repositories.FlightRepo;
+import pg.edu.pl.lsea.backend.repositories.*;
 
 import pg.edu.pl.lsea.backend.services.analysis.typesofanalysis.FullGroupedTopNAnalysis;
 
@@ -28,6 +26,9 @@ public class AnalysisService {
     // Analysis
     private final FullGroupedTopNAnalysis analysisFunc;
 
+    private OperatorRepo operatorRepo;
+    private ModelRepo modelRepo;
+
 
     /**
      * Constructor for AnalysisService class
@@ -40,10 +41,14 @@ public class AnalysisService {
      */
     public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper,
                            EnrichedFlightRepo enrichedFlightRepo, EnrichedFlightToResponseMapper enrichedFlightToResponseMapper,
+                           OperatorRepo operatorRepo, ModelRepo modelRepo,
                            AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper ) {
         this.analysisFunc = new FullGroupedTopNAnalysis(flightRepo, flightToResponseMapper,
                 enrichedFlightRepo, enrichedFlightToResponseMapper,
                 aircraftRepo, aircraftToResponseMapper);
+
+        this.operatorRepo = operatorRepo;
+        this.modelRepo = modelRepo;
     }
 
 
@@ -141,7 +146,7 @@ public class AnalysisService {
      * @return List of Output representing the number of flights for the specified number of top operators. (one of the icaos and size)
      */
     public List<Output> getTopNOperatorWithNumberOfFlights() {
-        return analysisFunc.getGroupedTopNOperators();
+        return analysisFunc.getGroupedTopNOperators(operatorRepo);
     }
 
     /**
@@ -152,7 +157,7 @@ public class AnalysisService {
      * @return List of Output representing the number of flights for the specified number of top operators.
      */
     public List<Output> getTopNOperatorWithNumberOfFlights(int topN) {
-        return analysisFunc.getGroupedTopNOperators(topN);
+        return analysisFunc.getGroupedTopNOperators(operatorRepo, topN);
     }
 
     // NUMBER OF FLIGHTS CONNECTED TO THE MODEL - TOP N MODEL GROUPING //
@@ -165,7 +170,7 @@ public class AnalysisService {
      * @return List of Output representing the number of flights for the specified number of top models. (one of the icaos and size)
      */
     public List<Output> getTopNModelWithNumberOfFlights() {
-        return analysisFunc.getGroupedTopNModels();
+        return analysisFunc.getGroupedTopNModels(modelRepo);
     }
 
     /**
@@ -176,7 +181,7 @@ public class AnalysisService {
      * @return List of Output representing the number of flights for the specified number of top models.
      */
     public List<Output> getTopNModelWithNumberOfFlights(int topN) {
-        return analysisFunc.getGroupedTopNModels(topN);
+        return analysisFunc.getGroupedTopNModels(modelRepo, topN);
     }
 
     // PERCENTAGE OF LONG FLIGHTS - TOP N OPERATORS GROUPING //
