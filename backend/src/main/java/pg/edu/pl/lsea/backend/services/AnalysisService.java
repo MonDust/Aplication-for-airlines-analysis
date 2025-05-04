@@ -10,11 +10,8 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 import pg.edu.pl.lsea.backend.entities.Output;
 
-import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
-import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
-import pg.edu.pl.lsea.backend.repositories.FlightRepo;
+import pg.edu.pl.lsea.backend.repositories.*;
 
-import pg.edu.pl.lsea.backend.repositories.OperatorRepo;
 import pg.edu.pl.lsea.backend.services.analysis.typesofanalysis.FullGroupedTopNAnalysis;
 
 import java.util.List;
@@ -30,6 +27,7 @@ public class AnalysisService {
     private final FullGroupedTopNAnalysis analysisFunc;
 
     private OperatorRepo operatorRepo;
+    private ModelRepo modelRepo;
 
 
     /**
@@ -43,13 +41,14 @@ public class AnalysisService {
      */
     public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper,
                            EnrichedFlightRepo enrichedFlightRepo, EnrichedFlightToResponseMapper enrichedFlightToResponseMapper,
-                           OperatorRepo operatorRepo,
+                           OperatorRepo operatorRepo, ModelRepo modelRepo,
                            AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper ) {
         this.analysisFunc = new FullGroupedTopNAnalysis(flightRepo, flightToResponseMapper,
                 enrichedFlightRepo, enrichedFlightToResponseMapper,
                 aircraftRepo, aircraftToResponseMapper);
 
         this.operatorRepo = operatorRepo;
+        this.modelRepo = modelRepo;
     }
 
 
@@ -171,7 +170,7 @@ public class AnalysisService {
      * @return List of Output representing the number of flights for the specified number of top models. (one of the icaos and size)
      */
     public List<Output> getTopNModelWithNumberOfFlights() {
-        return analysisFunc.getGroupedTopNModels();
+        return analysisFunc.getGroupedTopNModels(modelRepo);
     }
 
     /**
@@ -182,7 +181,7 @@ public class AnalysisService {
      * @return List of Output representing the number of flights for the specified number of top models.
      */
     public List<Output> getTopNModelWithNumberOfFlights(int topN) {
-        return analysisFunc.getGroupedTopNModels(topN);
+        return analysisFunc.getGroupedTopNModels(modelRepo, topN);
     }
 
     // PERCENTAGE OF LONG FLIGHTS - TOP N OPERATORS GROUPING //
