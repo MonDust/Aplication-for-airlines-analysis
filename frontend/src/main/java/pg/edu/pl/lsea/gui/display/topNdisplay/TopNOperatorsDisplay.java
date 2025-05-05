@@ -1,9 +1,7 @@
 package pg.edu.pl.lsea.gui.display.topNdisplay;
 
-import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Output;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
@@ -27,7 +25,7 @@ public class TopNOperatorsDisplay extends BaseTopN {
     public void displayTopOperators() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> sizes = dataLoader.giveTopNOperators(NUMBER_OF_MOST_POPULAR_OPERATORS);
+        List<Output> sizes = dataLoader.getTopNOperators(NUMBER_OF_MOST_POPULAR_OPERATORS);
                 //new ArrayList();
 
         //SIZE (number of flights) - value

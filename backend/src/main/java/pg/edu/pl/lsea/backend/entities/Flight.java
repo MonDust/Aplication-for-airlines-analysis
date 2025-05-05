@@ -54,9 +54,9 @@ public class Flight extends Trackable implements Cloneable {
      * Many-to-one relation: one flight can have only one aircraft
      * aircraft_id is a Foreign Key
      */
-//    @ManyToOne
-//    @JoinColumn(name = "aircraft_id", referencedColumnName = "id", nullable = false)
-//    private Aircraft aircraft;
+    @ManyToOne
+    @JoinColumn(name = "aircraft_id", referencedColumnName = "id")
+    private Aircraft aircraft;
 
     /**
      * Creates a flight object.

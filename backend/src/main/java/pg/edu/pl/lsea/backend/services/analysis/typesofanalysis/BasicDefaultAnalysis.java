@@ -4,13 +4,11 @@ package pg.edu.pl.lsea.backend.services.analysis.typesofanalysis;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
-import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Model;
-import pg.edu.pl.lsea.backend.entities.Operator;
-import pg.edu.pl.lsea.backend.entities.Output;
+import pg.edu.pl.lsea.backend.entities.*;
 import pg.edu.pl.lsea.backend.repositories.*;
 import pg.edu.pl.lsea.backend.services.analysis.BaseAnalysis;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static pg.edu.pl.lsea.backend.utils.Constants.*;
@@ -130,21 +128,36 @@ public class BasicDefaultAnalysis extends BaseAnalysis {
         return getGroupedTopNOperators(operatorRepo, NUMBER_OF_MOST_POPULAR_OPERATORS);
     }
 
+
+
     /**
      * Get grouped by the operators - result with a specified number of top operators.
      * Returns a list of outputs for the top N operators, each output containing an ICAO24 identifier
      * and the number of flights for that operator.
+     * @param operatorRepo operators stored in the database
      * @param topN the number of top operators to consider
      * @return List of Output representing the number of flights for the specified number of top operators.
      */
     public List<Output> getGroupedTopNOperators(OperatorRepo operatorRepo, int topN) {
-
         List<Operator> operators = operatorRepo.findAll();
 
-        // TODO - o.getAircrafts().size() should be replaced with summed sizes of all flights
-        List<Output> outputList = operators.stream().sorted().toList().subList(0, topN).stream().map(o -> {
-            return new Output(o.getAircrafts().stream().findFirst().get().getIcao24(), o.getAircrafts().size());
-        }).toList();
+        // Compute total flights per operator
+        List<Output> outputList = operators.stream()
+                .map(operator -> {
+                    int totalFlights = operator.getAircrafts().stream()
+                            .mapToInt(aircraft -> aircraft.getFlights().size()) // assumes Aircraft has getFlights()
+                            .sum();
+
+                    String icao24 = operator.getAircrafts().stream()
+                            .findFirst()
+                            .map(Aircraft::getIcao24)
+                            .orElse("UNKNOWN");
+
+                    return new Output(icao24, totalFlights);
+                })
+                .sorted(Comparator.comparingInt(Output::getValue).reversed()) // sort by flights descending
+                .limit(topN)
+                .toList();
 
         return outputList;
     }
@@ -168,13 +181,24 @@ public class BasicDefaultAnalysis extends BaseAnalysis {
      * @return List of Output representing the number of flights for the specified number of top models.
      */
     public List<Output> getGroupedTopNModels(ModelRepo modelRepo, int topN) {
-
         List<Model> models = modelRepo.findAll();
 
-        // TODO - o.getAircrafts().size() should be replaced with summed sizes of all flights
-        List<Output> outputList = models.stream().sorted().toList().subList(0, topN).stream().map(o -> {
-            return new Output(o.getAircrafts().stream().findFirst().get().getIcao24(), o.getAircrafts().size());
-        }).toList();
+        List<Output> outputList = models.stream()
+                .map(model -> {
+                    int totalFlights = model.getAircrafts().stream()
+                            .mapToInt(ac -> ac.getFlights().size())
+                            .sum();
+
+                    String icao24 = model.getAircrafts().stream()
+                            .findFirst()
+                            .map(Aircraft::getIcao24)
+                            .orElse("UNKNOWN");
+
+                    return new Output(icao24, totalFlights);
+                })
+                .sorted(Comparator.comparingInt(Output::getValue).reversed())
+                .limit(topN)
+                .toList();
 
         return outputList;
     }
