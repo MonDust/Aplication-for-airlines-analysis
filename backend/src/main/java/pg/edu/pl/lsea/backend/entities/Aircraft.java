@@ -17,7 +17,8 @@ import java.util.Objects;
 @Entity
 @Table(
         name = "aircrafts",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"}),
+        indexes = @Index(name = "idx_icao24", columnList = "icao24")
 )
 public class Aircraft extends Trackable implements Cloneable{
     /**
@@ -53,8 +54,8 @@ public class Aircraft extends Trackable implements Cloneable{
      * Orphan removal: If you remove a Flight from aircraft.getFlights(), it will also be
      * deleted from the database, not just disassociated.
      */
-//    @OneToMany(mappedBy = "aircraft", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-//    private List<Flight> flights = new ArrayList<>();
+    @OneToMany(mappedBy = "aircraft", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Flight> flights = new ArrayList<>();
 
     /**
      * Creates an aircraft object.

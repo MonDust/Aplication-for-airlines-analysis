@@ -40,7 +40,7 @@ public class Airport implements Cloneable, Comparable<Airport> {
     private List<Flight> arrivalFlights = new ArrayList<>();
 
     /**
-     * Creates a airport object.
+     * Creates an airport object.
      */
     public Airport(String code) {
         this.code = code;

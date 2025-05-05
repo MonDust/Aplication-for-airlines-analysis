@@ -318,8 +318,8 @@ public class DataLoader {
      * Retrieves the top N operators by number of flights.
      * @return List of Output objects representing top operators.
      */
-    public List<Output> giveTopNOperators() {
-        return fetchOutputList("http://localhost:8080/api/analysis/giveTopNOperators");
+    public List<Output> getTopNOperators() {
+        return fetchOutputList("http://localhost:8080/api/analysis/getTopNOperators");
     }
 
     /**
@@ -327,16 +327,16 @@ public class DataLoader {
      * @param howMuch Number of top operators to retrieve.
      * @return List of Output objects representing top operators.
      */
-    public List<Output> giveTopNOperators(int howMuch) {
-        return fetchOutputList("http://localhost:8080/api/analysis/giveTopNOperators/" + howMuch);
+    public List<Output> getTopNOperators(int howMuch) {
+        return fetchOutputList("http://localhost:8080/api/analysis/getTopNOperators/" + howMuch);
     }
 
     /**
      * Retrieves the top N aircraft models by number of flights.
      * @return List of Output objects representing top models.
      */
-    public List<Output> giveTopNModels() {
-        return fetchOutputList("http://localhost:8080/api/analysis/giveTopNModels");
+    public List<Output> getTopNModels() {
+        return fetchOutputList("http://localhost:8080/api/analysis/getTopNModels");
     }
 
     /**
@@ -344,8 +344,8 @@ public class DataLoader {
      * @param howMuch Number of top models to retrieve.
      * @return List of Output objects representing top models.
      */
-    public List<Output> giveTopNModels(int howMuch) {
-        return fetchOutputList("http://localhost:8080/api/analysis/giveTopNModels/" + howMuch);
+    public List<Output> getTopNModels (int howMuch) {
+        return fetchOutputList("http://localhost:8080/api/analysis/getTopNModels/" + howMuch);
     }
 
     /**

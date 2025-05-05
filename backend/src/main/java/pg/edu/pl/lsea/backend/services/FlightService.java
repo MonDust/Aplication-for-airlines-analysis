@@ -3,7 +3,6 @@ package pg.edu.pl.lsea.backend.services;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightUpdateRequest;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
@@ -11,16 +10,15 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.backend.entities.*;
+import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
 import pg.edu.pl.lsea.backend.repositories.AirportRepo;
 import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
 import pg.edu.pl.lsea.backend.repositories.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
-import java.util.ArrayList;
+
+import java.util.*;
 
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +32,7 @@ public class FlightService {
     private final EnrichedFlightRepo enrichedFlightRepo;
 
     private final AirportRepo airportRepo;
+    private final AircraftRepo aircraftRepo;
 
     private final FlightToResponseMapper flightToResponseMapper;
     private final EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
@@ -42,10 +41,9 @@ public class FlightService {
     private final NullRemover nullRemover = new NullRemover();
 
 
-
     public FlightService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper, EnrichedFlightRepo enrichedFlightRepo,
                          AirportRepo airportRepo,
-                         EnrichedFlightToResponseMapper enrichedFlightToResponseMapper) {
+                         EnrichedFlightToResponseMapper enrichedFlightToResponseMapper, AircraftRepo aircraftRepo) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
 
@@ -53,6 +51,7 @@ public class FlightService {
         this.enrichedFlightToResponseMapper = enrichedFlightToResponseMapper;
 
         this.airportRepo = airportRepo;
+        this.aircraftRepo = aircraftRepo;
     }
 
     /**
@@ -156,6 +155,9 @@ public class FlightService {
             arrivalAirport = existingArrivalAirport.get();
         }
 
+        // Handle an aircraft for the flight
+        Optional<Aircraft> existingAircraft = aircraftRepo.findByIcao24(request.icao24());
+
         Flight flight = new Flight(
                 request.icao24(),
                 request.firstSeen(),
@@ -163,6 +165,7 @@ public class FlightService {
                 departureAirport,
                 arrivalAirport
         );
+        existingAircraft.ifPresent(flight::setAircraft);
 
         if((!nullRemover.CheckOneFlight(flight))) {
             try {
@@ -189,6 +192,18 @@ public class FlightService {
 
         List<Airport> existingAirports = airportRepo.findAll();
         List<Airport> newAirports = new ArrayList<>();
+
+        // Extract all unique ICAO24 values from the requests
+        Set<String> icao24Set = validRequests.stream()
+                .map(FlightResponse::icao24)
+                .collect(Collectors.toSet());
+
+        // Load all matching Aircraft from DB in one query
+        List<Aircraft> aircraftList = aircraftRepo.findByIcao24In(icao24Set);
+
+        // Map for fast lookup
+        Map<String, Aircraft> aircraftMap = aircraftList.stream()
+                .collect(Collectors.toMap(Aircraft::getIcao24, a -> a));
 
         List<Flight> flights = validRequests.stream()
                 .map(r -> {
@@ -223,7 +238,6 @@ public class FlightService {
                         arrivalAirport = existingArrivalAirport.get();
                     }
 
-
                     Flight newFlight = new Flight(
                             r.icao24(),
                             r.firstSeen(),
@@ -231,6 +245,12 @@ public class FlightService {
                             departureAirport,
                             arrivalAirport
                     );
+
+                    // Assign aircraft if it exists
+                    Aircraft aircraft = aircraftMap.get(r.icao24());
+                    if (aircraft != null) {
+                        newFlight.setAircraft(aircraft);
+                    }
 
                     departureAirport.getDepartureFlights().add(newFlight);
                     arrivalAirport.getArrivalFlights().add(newFlight);
@@ -248,9 +268,9 @@ public class FlightService {
                 .toList();
 
         try {
+            airportRepo.saveAll(newAirports);
             flightRepo.saveAll(newFlights);
             enrichedFlightRepo.saveAll(enrichmentTool.CreateEnrichedListOfFlights(newFlights));
-            airportRepo.saveAll(newAirports);
         } catch (DataIntegrityViolationException ex) {
             System.err.println("Error saving : " + ex.getMessage());
         }

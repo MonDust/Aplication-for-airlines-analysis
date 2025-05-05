@@ -28,6 +28,7 @@ public class AnalysisService {
 
     private OperatorRepo operatorRepo;
     private ModelRepo modelRepo;
+    private EnrichedFlightRepo enrichedFlightRepo;
 
 
     /**
@@ -49,6 +50,7 @@ public class AnalysisService {
 
         this.operatorRepo = operatorRepo;
         this.modelRepo = modelRepo;
+        this.enrichedFlightRepo = enrichedFlightRepo;
     }
 
 
@@ -223,5 +225,4 @@ public class AnalysisService {
     public List<Output> getTopNAverageTime_GroupedByOperator(int topN) {
         return analysisFunc.getAverageTimesForOperators(topN);
     }
-
 }
