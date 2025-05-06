@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,22 +16,41 @@ import java.util.Objects;
 @Getter
 @Entity
 @Table(
-        name = "aircrafts"
-//        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"})
+        name = "aircrafts",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"})
 )
 public class Aircraft extends Trackable implements Cloneable{
+    /**
+     * This value is generated automatically during object creation
+     * and is added by the JPA (Java Persistence API).
+     */
     @Id
     @GeneratedValue
     private Long id;
-
+    /**
+     * Model of the aircraft.
+     */
     @Column(name = "model")
     private String model;
-
+    /**
+     * Operator of the aircraft.
+     */
     @Column(name = "operator")
     private String operator;
-
+    /**
+     * Owner of the aircraft.
+     */
     @Column(name = "owner")
     private String owner;
+
+    /**
+     * One-to-many relation with flights: One aircraft can have many flights
+     * Uses Cascade deletion: Deleting the Aircraft will also delete all associated Flights.
+     * Orphan removal: If you remove a Flight from aircraft.getFlights(), it will also be
+     * deleted from the database, not just disassociated.
+     */
+//    @OneToMany(mappedBy = "aircraft", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//    private List<Flight> flights = new ArrayList<>();
 
     /**
      * Creates an aircraft object.

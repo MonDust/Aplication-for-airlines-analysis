@@ -9,30 +9,47 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
 
-before_script:
-  - cd Airline_Analyzer
+# YAML anchor for Maven job template
+.maven_template: &maven_template
+  before_script:
+    - cd $PROJECT_DIR
+  artifacts:
+    paths:
+      - $PROJECT_DIR/target
+    expire_in: 3 hours
 
-validate-project:
+validate:
   stage: validate
+  parallel:
+    matrix:
+      - PROJECT_DIR: backend
+      - PROJECT_DIR: frontend
+  <<: *maven_template
   script:
-    - 'mvn $MAVEN_CLI_OPTS compile'
-  artifacts:
-    paths:
-      - Airline_Analyzer/target
-    expire_in: 30 minutes
+    - mvn $MAVEN_CLI_OPTS compile
 
-run-unit-tests:
+test:
   stage: test
+  parallel:
+    matrix:
+      - PROJECT_DIR: backend
+      - PROJECT_DIR: frontend
+  <<: *maven_template
   script:
-    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true test'
+    - mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true test
 
-build-dist:
+package:
   stage: package
+  parallel:
+    matrix:
+      - PROJECT_DIR: backend
+      - PROJECT_DIR: frontend
+  <<: *maven_template
   script:
-    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
+    - mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package
   artifacts:
     paths:
-      - Airline_Analyzer/target/*.jar
+      - $PROJECT_DIR/target/*.jar
 
 deploy-to-test-server:
   stage: deploy

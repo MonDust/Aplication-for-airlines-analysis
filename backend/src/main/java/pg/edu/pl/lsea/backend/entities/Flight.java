@@ -14,14 +14,17 @@ import java.util.Objects;
 @Getter
 @Entity
 @Table(
-        name = "flights"
-//        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
+        name = "flights",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24", "first_seen"})
 )
 public class Flight extends Trackable implements Cloneable {
+    /**
+     * This value is generated automatically during object creation
+     * and is added by the JPA (Java Persistence API).
+     */
     @Id
     @GeneratedValue
     private Long id;
-
     /**
      * Unix timestamp of the first record of the aircraft of the flight in seconds.
      */
@@ -42,6 +45,14 @@ public class Flight extends Trackable implements Cloneable {
      */
     @Column(name = "arrival_airport")
     private String arrivalAirport;
+
+    /**
+     * Many-to-one relation: one flight can have only one aircraft
+     * aircraft_id is a Foreign Key
+     */
+//    @ManyToOne
+//    @JoinColumn(name = "aircraft_id", referencedColumnName = "id", nullable = false)
+//    private Aircraft aircraft;
 
     /**
      * Creates a flight object.

@@ -4,7 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pg.edu.pl.lsea.backend.entities.Flight;
 
-@Repository
-public interface FlightRepo extends JpaRepository<Flight, String> {
+import java.util.List;
 
+@Repository
+public interface FlightRepo extends JpaRepository<Flight, Long> {
+    List<Flight> findAllByIcao24(String icao24);
+
+    // Find flights within a time window
+    List<Flight> findByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(int start, int end);
+
+    void deleteByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(int start, int end);
 }

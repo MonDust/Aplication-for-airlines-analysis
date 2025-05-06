@@ -26,15 +26,17 @@ public class TopNOperatorsPercentageDisplay extends BaseTopN {
     public void displayTopOperatorsPercentage() {
         // TODO - Make it receive results of corresponding analysis and display them accordingly
 
-        List<Output> percentages = new ArrayList();
+        List<Output> percentages = dataLoader.getTopNPercentageOfLongFlights();
+                //new ArrayList();
 
-        Output o = new Output("PlaceholderIcao", 0);
-        percentages.add(o);
+        //Output o = new Output("PlaceholderIcao", 0);
+        //percentages.add(o);
 
         log("Top " + percentages.size() + " Operators:");
         for (int i = 0; i < percentages.size(); i++) {
             // get it with Aircraft and Output
-            String Operator = "PlaceholderOperator";
+            String Operator = dataLoader.getAircraftIcao(percentages.get(i).getIcao24()).getOperator();
+                    //"PlaceholderOperator";
 
             log("Operator " + Operator + ": " + percentages.get(i).getValue() + " %");
         }
