@@ -59,7 +59,7 @@ public class UdpClient {
         listenerThread = new Thread(() -> {
             try {
                 DatagramSocket socket = new DatagramSocket(CLIENT_PORT);
-                byte[] buffer = new byte[8];
+                byte[] buffer = new byte[1024];
 
                 System.out.println("Listening to port: " + CLIENT_PORT);
                 requestDataTransfer();
@@ -67,7 +67,12 @@ public class UdpClient {
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     socket.receive(packet);
 
-                    ByteBuffer byteBuffer = ByteBuffer.wrap(packet.getData());
+                    int length = packet.getLength();
+                    if (length < 8) {
+                        System.err.println("Received packet too short: " + length + " bytes");
+                        return;
+                    }
+                    ByteBuffer byteBuffer = ByteBuffer.wrap(packet.getData(), 0, length);
                     int processed = byteBuffer.getInt();
                     int total = byteBuffer.getInt();
 

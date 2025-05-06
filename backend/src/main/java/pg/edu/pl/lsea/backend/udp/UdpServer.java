@@ -59,9 +59,12 @@ public class UdpServer {
             try {
 
                 while (running) {
-                    byte[] buffer = new byte[8];
+                    byte[] buffer = new byte[1024];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     socket.receive(packet);
+
+                    int packetLength = packet.getLength();
+
                     byte code = buffer[0];
                     InetAddress address = packet.getAddress();
                     switch (code) {
