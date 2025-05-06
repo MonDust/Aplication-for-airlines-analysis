@@ -1,16 +1,25 @@
 package pg.edu.pl.lsea.backend.services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
-import pg.edu.pl.lsea.backend.data.storage.DataStorage;
+
 import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.entities.Model;
+import pg.edu.pl.lsea.backend.entities.Operator;
 import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.ModelRepo;
+import pg.edu.pl.lsea.backend.repositories.OperatorRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -21,6 +30,8 @@ import java.util.ArrayList;
 @Service
 @Transactional
 public class AircraftService {
+    private final OperatorRepo operatorRepo;
+    private final ModelRepo modelRepo;
     private final AircraftRepo aircraftRepo;
     private final AircraftToResponseMapper aircraftToResponseMapper;
 
@@ -28,10 +39,13 @@ public class AircraftService {
      * Constructor of the class.
      * @param aircraftRepo - aircraft repository
      * @param aircraftToResponseMapper - mapper
+     * @param operatorRepo - operators repository
      */
-    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper) {
+    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper, OperatorRepo operatorRepo, ModelRepo modelRepo) {
         this.aircraftRepo = aircraftRepo;
         this.aircraftToResponseMapper = aircraftToResponseMapper;
+        this.operatorRepo = operatorRepo;
+        this.modelRepo = modelRepo;
     }
 
     /**
@@ -56,19 +70,73 @@ public class AircraftService {
     }
 
     /**
+     * Checks if the aircraft request is valid
+     */
+    private boolean checkRequestValidity(AircraftResponse req) {
+        if (Objects.equals(req.operator(), "") || Objects.equals(req.model(), "") || Objects.equals(req.owner(), "")) {
+            return false;
+        }
+
+        if (Objects.equals(req.operator(), "NULL") || Objects.equals(req.model(), "NULL") || Objects.equals(req.owner(), "NULL")) {
+            return false;
+        }
+
+        if (Objects.equals(req.operator(), null) || Objects.equals(req.model(), null) || Objects.equals(req.owner(), null)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if aircraft exists.
+     * @param icao24 - ICAO
+     * @return - boolean true if exists, false if not.
+     */
+    private boolean checkIfAircraftExists(String icao24) {
+        Optional<Aircraft> existingAircraft = aircraftRepo.findByIcao24(icao24);
+        return existingAircraft.isPresent();
+    }
+
+    /**
      * Creates a particular aircraft and stores it in the database (used for POST request).
      * @return AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
      */
     public AircraftResponse create(AircraftResponse request) {
+
+        if (!checkRequestValidity(request)) {
+            return null;
+        }
+
+        // Find or create Operator
+        Optional<Operator> existingOperator = operatorRepo.findByName(request.operator());
+        Operator operator;
+        if (existingOperator.isEmpty()) {
+            operator = new Operator(request.operator());
+            operatorRepo.save(operator);
+        }
+        else {
+            operator = existingOperator.get();
+        }
+
+        // Find or create Model
+        Optional<Model> existingModel = modelRepo.findByName(request.model());
+        Model model;
+        if (existingModel.isEmpty()) {
+            model = new Model(request.model());
+            modelRepo.save(model);
+        }
+        else {
+            model = existingModel.get();
+        }
+
         Aircraft aircraft = new Aircraft(
                 request.icao24(),
-                request.model(),
-                request.operator(),
+                model,
+                operator,
                 request.owner()
         );
 
         aircraftRepo.save(aircraft);
-        DataStorage.getInstance().addAircraft(aircraft);
         return aircraftToResponseMapper.apply(aircraft);
     }
 
@@ -78,22 +146,86 @@ public class AircraftService {
      * @return List of AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
      */
     public List<AircraftResponse> createBulk(List<AircraftResponse> request) {
-        List<Aircraft> aircrafts = request.stream()
-                .map(a -> new Aircraft(
-                        a.icao24(),
-                        a.model(),
-                        a.operator(),
-                        a.owner()
-                ))
+
+        List<AircraftResponse> validRequests = request.stream().filter(this::checkRequestValidity).toList();
+
+        List<Operator> existingOperators = operatorRepo.findAll();
+        List<Operator> newOperators = new ArrayList<>();
+
+        List<Model> existingModels = modelRepo.findAll();
+        List<Model> newModels = new ArrayList<>();
+
+
+        List<Aircraft> aircrafts = validRequests.stream()
+                .map(a -> {
+
+                    // TODO - we should filter out empty operators here instead of removing them later - takes a lot of time
+
+                    Optional<Operator> existingOperator = existingOperators.stream()
+                            .filter(o -> o.getName().equals(a.operator()))
+                            .findFirst();
+
+                    Operator operator;
+                    if (existingOperator.isEmpty()) {
+                        operator = new Operator(a.operator());
+                        existingOperators.add(operator);
+                        newOperators.add(operator);
+                    }
+                    else {
+                        operator = existingOperator.get();
+                    }
+
+                    // Find or create Model
+                    Optional<Model> existingModel = existingModels.stream()
+                            .filter(o -> o.getName().equals(a.model()))
+                            .findFirst();
+
+                    Model model;
+                    if (existingModel.isEmpty()) {
+                        model = new Model(a.model());
+                        existingModels.add(model);
+                        newModels.add(model);
+                    }
+                    else {
+                        model = existingModel.get();
+                    }
+
+                    Aircraft newAircraft = new Aircraft(
+                            a.icao24(),
+                            model,
+                            operator,
+                            a.owner()
+                    );
+                    operator.getAircrafts().add(newAircraft);
+                    model.getAircrafts().add(newAircraft);
+
+                    return newAircraft;
+
+                })
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        NullRemover nullRemover = new NullRemover();
+        // TODO - Verify if null remover is crucial here - takes a lot of time for already filtered aircrafts (and so models and operators)
+//        NullRemover nullRemover = new NullRemover();
 
-         nullRemover.TransformAircrafts(aircrafts);
 
+//        nullRemover.TransformOperators(newOperators);
+//        nullRemover.TransformModels(newModels);
+//
+//        nullRemover.TransformAircrafts(aircrafts);
 
-        aircraftRepo.saveAll(aircrafts); // More efficient than saving one-by-one
-        DataStorage.getInstance().bulkAddAircrafts(aircrafts);
+        // Filter out aircrafts that already exist
+        List<Aircraft> newAircrafts = aircrafts.stream()
+                .filter(a -> !checkIfAircraftExists(a.getIcao24()))
+                .toList();
+
+        // More efficient than saving one-by-one
+        try {
+            operatorRepo.saveAll(newOperators);
+            modelRepo.saveAll(newModels);
+            aircraftRepo.saveAll(aircrafts);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving : " + ex.getMessage());
+        }
 
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)
@@ -111,11 +243,18 @@ public class AircraftService {
         Aircraft aircraft = aircraftRepo.findByIcao24(icao24)
                 .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao24));
 
-        aircraft.setModel(request.model());
-        aircraft.setOperator(request.operator());
+        // TODO - Verify correctness of method:
+        // Fix model and operator update - remove new Operator(request.operator()) and same for model
+
+        updateModel(aircraft, request.model());
+        updateOperator(aircraft, request.operator());
         aircraft.setOwner(request.owner());
 
-        aircraftRepo.save(aircraft);
+        try {
+            aircraftRepo.save(aircraft);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving aircraft: " + ex.getMessage());
+        }
         return aircraftToResponseMapper.apply(aircraft);
     }
 
@@ -129,12 +268,52 @@ public class AircraftService {
         Aircraft aircraft = aircraftRepo.findByIcao24(icao24)
                 .orElseThrow(() -> new ResourceNotFoundException("Aircraft", "icao24", icao24));
 
-        if (request.model() != null) aircraft.setModel(request.model());
-        if (request.operator() != null) aircraft.setOperator(request.operator());
+        if (request.model() != null) {
+            updateModel(aircraft, request.model());
+        }
+        if (request.operator() != null) {
+            updateOperator(aircraft, request.operator());
+        } ;
         if (request.owner() != null) aircraft.setOwner(request.owner());
 
-        aircraftRepo.save(aircraft);
+        try {
+            aircraftRepo.save(aircraft);
+        } catch (DataIntegrityViolationException ex) {
+            System.err.println("Error saving aircraft: " + ex.getMessage());
+        }
         return aircraftToResponseMapper.apply(aircraft);
+    }
+
+    private void updateModel(Aircraft aircraft, String modelName) {
+        Model model;
+        Optional<Model> existingModel = modelRepo.findByName(modelName);
+        if (existingModel.isPresent()) {
+            model = existingModel.get();
+            aircraft.setModel(model);
+            model.getAircrafts().add(aircraft);
+        }
+        else {
+            model = new Model(modelName);
+            model.getAircrafts().add(aircraft);
+            modelRepo.save(model);
+            aircraft.setModel(model);
+        }
+    }
+
+    private void updateOperator(Aircraft aircraft, String operatorName) {
+        Operator operator;
+        Optional<Operator> existingOperator = operatorRepo.findByName(operatorName);
+        if (existingOperator.isPresent()) {
+            operator = existingOperator.get();
+            aircraft.setOperator(operator);
+            operator.getAircrafts().add(aircraft);
+        }
+        else {
+            operator = new Operator(operatorName);
+            operatorRepo.save(operator);
+            aircraft.setOperator(operator);
+            operator.getAircrafts().add(aircraft);
+        }
     }
 
     /**

@@ -35,24 +35,28 @@ public class Flight extends Trackable implements Cloneable {
      */
     @Column(name = "last_seen")
     private int lastSeen;
+
     /**
-     * IATA code of the airport from which the aircraft is taking off on this flight.
+     * Airport of departure
      */
-    @Column(name = "departure_airport")
-    private String departureAirport;
+    @ManyToOne()
+    @JoinColumn(name = "departureAirport_id", referencedColumnName = "id")
+    private Airport departureAirport;
+
     /**
-     * IATA code of the airport where the aircraft lands during this flight.
+     * Airport of arrival
      */
-    @Column(name = "arrival_airport")
-    private String arrivalAirport;
+    @ManyToOne()
+    @JoinColumn(name = "arrivalAirport_id", referencedColumnName = "id")
+    private Airport arrivalAirport;
 
     /**
      * Many-to-one relation: one flight can have only one aircraft
      * aircraft_id is a Foreign Key
      */
-//    @ManyToOne
-//    @JoinColumn(name = "aircraft_id", referencedColumnName = "id", nullable = false)
-//    private Aircraft aircraft;
+    @ManyToOne
+    @JoinColumn(name = "aircraft_id", referencedColumnName = "id")
+    private Aircraft aircraft;
 
     /**
      * Creates a flight object.
@@ -62,7 +66,7 @@ public class Flight extends Trackable implements Cloneable {
      * @param departureAirport A string representing the IATA code of the airport from which the aircraft is taking off on this flight
      * @param arrivalAirport A string representing the IATA code of the airport where the aircraft lands during this flight
      */
-    public Flight(String icao24, int firstSeen, int lastSeen, String departureAirport, String arrivalAirport) {
+    public Flight(String icao24, int firstSeen, int lastSeen, Airport departureAirport, Airport arrivalAirport) {
         setIcao24(icao24);
         this.firstSeen = firstSeen;
         this.lastSeen = lastSeen;
@@ -77,8 +81,8 @@ public class Flight extends Trackable implements Cloneable {
         setIcao24("");
         firstSeen = 0;
         lastSeen = 0;
-        arrivalAirport = "";
-        departureAirport = "";
+        arrivalAirport = null;
+        departureAirport = null;
     }
 
    /**

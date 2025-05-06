@@ -1,9 +1,6 @@
 package pg.edu.pl.lsea.gui.maincomponents;
 
-import pg.edu.pl.lsea.gui.buttons.InformationButton;
-import pg.edu.pl.lsea.gui.buttons.LoadAnalysisButton;
-import pg.edu.pl.lsea.gui.buttons.BaseDataButton;
-import pg.edu.pl.lsea.gui.buttons.LoadChoiceButton;
+import pg.edu.pl.lsea.gui.buttons.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +19,8 @@ public class MainPanel extends JPanel {
     final private BaseDataButton analyzeDataButton;
     // Data Button for showing information about records already loaded
     final private BaseDataButton showInformationButton;
+    // Data Button for updating/deleting information about records already loaded
+    final private BaseDataButton updateDataButton;
     // Panel where analysis of the data is shown
     final private DisplayPanel displayPanel;
     // Last directory that file was gotten from.
@@ -46,6 +45,9 @@ public class MainPanel extends JPanel {
 
         showInformationButton = new InformationButton(this);
         add(showInformationButton);
+
+        updateDataButton = new UpdateButton(this);
+        add(updateDataButton);
     }
 
     /**
@@ -69,6 +71,8 @@ public class MainPanel extends JPanel {
     }
 
     public void showInformation(int informationType) { displayPanel.showInformation(informationType); }
+
+    public void makeUpdate(int selectedType) { displayPanel.makeUpdate(selectedType);}
 
 
 }

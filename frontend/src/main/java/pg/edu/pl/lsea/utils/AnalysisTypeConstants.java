@@ -21,13 +21,14 @@ public class AnalysisTypeConstants {
 
     // Number of most popular operators to be shown at the end of analysis.
     public static final int NUMBER_OF_MOST_POPULAR_OPERATORS = 5;
+    public static final int NUMBER_OF_MOST_POPULAR_MODELS = 5;
 
     static {
         // Initialize the NAME_TO_ID map with strings mapped to the constants
         NAME_TO_ID = new LinkedHashMap<>();
         NAME_TO_ID.put("Perform all of types of analysis", PERFORM_ALL_TYPES);
         NAME_TO_ID.put("Show " + NUMBER_OF_MOST_POPULAR_OPERATORS + " most popular operators", MOST_POPULAR_OPERATORS);
-        NAME_TO_ID.put("Show " + NUMBER_OF_MOST_POPULAR_OPERATORS + " most popular models", MOST_POPULAR_MODELS);
+        NAME_TO_ID.put("Show " + NUMBER_OF_MOST_POPULAR_MODELS + " most popular models", MOST_POPULAR_MODELS);
         NAME_TO_ID.put("Plot average time", PLOT_AVERAGE_TIME);
         NAME_TO_ID.put("Long flight percentage in top " + NUMBER_OF_MOST_POPULAR_OPERATORS + " operators" , PERCENTAGE_OF_THE_LONG_FLIGHTS);
 

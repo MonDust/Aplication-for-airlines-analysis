@@ -23,7 +23,7 @@ public abstract class BaseGroupingAnalyzer {
 
         // get list of unique models that are in records
         for (Aircraft aircraft : aircrafts) {
-            String model = aircraft.getModel();
+            String model = aircraft.getModel().getName();
             if (model != null && seenModels.add(model)) {
                 models.add(model);
             }
@@ -42,7 +42,7 @@ public abstract class BaseGroupingAnalyzer {
 
         // get list of unique operators that are in records
         for (Aircraft aircraft : aircrafts) {
-            String operator = aircraft.getOperator();
+            String operator = aircraft.getOperator().getName();
             if (operator != null && seenOperators.add(operator)) {
                 operators.add(operator);
             }

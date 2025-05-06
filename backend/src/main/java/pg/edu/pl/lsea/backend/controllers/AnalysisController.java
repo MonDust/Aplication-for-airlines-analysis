@@ -63,29 +63,27 @@ public class AnalysisController {
         return analysisService.findLongFlightsForEachModel();
     }
 
-    // needed for frontend
-
-    @GetMapping("/giveTopNOperators")
+    @GetMapping("/getTopNOperators")
     @ResponseStatus(HttpStatus.OK)
-    public List<Output> giveTopNOperators() {
+    public List<Output> getTopNOperators() {
         return analysisService.getTopNOperatorWithNumberOfFlights();
     }
 
-    @GetMapping("/giveTopNOperators/{howMuchOperators}")
+    @GetMapping("/getTopNOperators/{howMuchOperators}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Output> giveTopNOperators(@PathVariable int howMuchOperators) {
+    public List<Output> getTopNOperators(@PathVariable int howMuchOperators) {
         return analysisService.getTopNOperatorWithNumberOfFlights(howMuchOperators);
     }
 
-    @GetMapping("/giveTopNModels")
+    @GetMapping("/getTopNModels")
     @ResponseStatus(HttpStatus.OK)
-    public List<Output> giveTopNModels() {
+    public List<Output> getTopNModels() {
         return analysisService.getTopNModelWithNumberOfFlights();
     }
 
-    @GetMapping("/giveTopNModels/{howMuchOperators}")
+    @GetMapping("/getTopNModels/{howMuchOperators}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Output> giveTopNModels(@PathVariable int howMuchOperators) {
+    public List<Output> getTopNModels(@PathVariable int howMuchOperators) {
         return analysisService.getTopNModelWithNumberOfFlights(howMuchOperators);
     }
 
@@ -106,4 +104,11 @@ public class AnalysisController {
     public List<Output> getTopNAverageTime() {
         return analysisService.getTopNAverageTime_GroupedByOperator();
     }
+
+    @GetMapping("/getTopNAverageTime/{howMuchOperators}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNAverageTime(@PathVariable int howMuchOperators) {
+        return analysisService.getTopNAverageTime_GroupedByOperator(howMuchOperators);
+    }
+
 }

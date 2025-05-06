@@ -17,7 +17,8 @@ import java.util.Objects;
 @Entity
 @Table(
         name = "aircrafts",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"icao24"}),
+        indexes = @Index(name = "idx_icao24", columnList = "icao24")
 )
 public class Aircraft extends Trackable implements Cloneable{
     /**
@@ -27,21 +28,25 @@ public class Aircraft extends Trackable implements Cloneable{
     @Id
     @GeneratedValue
     private Long id;
-    /**
-     * Model of the aircraft.
-     */
-    @Column(name = "model")
-    private String model;
+
+    @ManyToOne()
+    @JoinColumn(name = "model_id", referencedColumnName = "id")
+    private Model model;
     /**
      * Operator of the aircraft.
      */
-    @Column(name = "operator")
-    private String operator;
+//    @Column(name = "operator")
+//    private String operator;
+    @ManyToOne()
+    @JoinColumn(name = "operator_id", referencedColumnName = "id")
+    private Operator operator;
     /**
      * Owner of the aircraft.
      */
     @Column(name = "owner")
     private String owner;
+
+
 
     /**
      * One-to-many relation with flights: One aircraft can have many flights
@@ -49,8 +54,8 @@ public class Aircraft extends Trackable implements Cloneable{
      * Orphan removal: If you remove a Flight from aircraft.getFlights(), it will also be
      * deleted from the database, not just disassociated.
      */
-//    @OneToMany(mappedBy = "aircraft", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-//    private List<Flight> flights = new ArrayList<>();
+    @OneToMany(mappedBy = "aircraft", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Flight> flights = new ArrayList<>();
 
     /**
      * Creates an aircraft object.
@@ -59,7 +64,7 @@ public class Aircraft extends Trackable implements Cloneable{
      * @param operator A string representing the operator of the aircraft (for example an airline company)
      * @param owner A string representing the owner of the aircraft
      */
-    public Aircraft(String icao24, String model, String operator, String owner) {
+    public Aircraft(String icao24, Model model, Operator operator, String owner) {
         setIcao24(icao24);
         this.model = model;
         this.operator = operator;
@@ -71,8 +76,8 @@ public class Aircraft extends Trackable implements Cloneable{
      */
     public Aircraft() {
         setIcao24("");
-        this.model = "";
-        this.operator = "";
+        this.model = null;
+        this.operator = null;
         this.owner = "";
     }
 
@@ -97,10 +102,10 @@ public class Aircraft extends Trackable implements Cloneable{
             int ownerCompare = a.owner.compareTo(b.owner);
 
             return (modelCompare == 0)
-                ? (operatorCompare == 0)
+                    ? (operatorCompare == 0)
                     ? ownerCompare
                     : operatorCompare
-                : modelCompare;
+                    : modelCompare;
         }
     }
 
@@ -111,11 +116,11 @@ public class Aircraft extends Trackable implements Cloneable{
     @Override
     public String toString() {
         return "Aircraft{" +
-               "icao24='" + getIcao24() + "'" +
-               ", model='" + model + "'" +
-               ", operator='" + operator + "'" +
-               ", owner='" + owner + "'" +
-               "}";
+                "icao24='" + getIcao24() + "'" +
+                ", model='" + model + "'" +
+                ", operator='" + operator + "'" +
+                ", owner='" + owner + "'" +
+                "}";
     }
     @Override
     public Aircraft clone() {
