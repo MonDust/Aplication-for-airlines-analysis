@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A class representing a tracked operator of an aircraft
@@ -33,6 +31,9 @@ public class Operator implements Cloneable, Comparable<Operator> {
     @OneToMany(mappedBy = "operator", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Aircraft> aircrafts = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "operators")
+    private Set<Route> routes = new HashSet<>();
+
     /**
      * Creates a operator object.
      */
@@ -45,6 +46,22 @@ public class Operator implements Cloneable, Comparable<Operator> {
      */
     public Operator() {
         this.name = "";
+    }
+
+    public void addRoute(Route route) {
+        routes.add(route);
+    }
+
+    public void bulkAddRoutes(List<Route> routes) {
+        routes.forEach(route -> addRoute(route));
+    }
+
+    public void deleteRoute(Route route) {
+        routes.remove(route);
+    }
+
+    public void bulkDeleteRoutes(List<Route> routes) {
+        routes.forEach(route -> deleteRoute(route));
     }
 
     /**

@@ -39,6 +39,22 @@ public class Airport implements Cloneable, Comparable<Airport> {
     @OneToMany(mappedBy = "arrivalAirport", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Flight> arrivalFlights = new ArrayList<>();
 
+    public void addArrivalFlight(Flight flight) {
+        arrivalFlights.add(flight);
+    }
+
+    public void addDepartureFlight(Flight flight) {
+        departureFlights.add(flight);
+    }
+
+    public void bulkAddDepartureFlights(List<Flight> flights) {
+        departureFlights.addAll(flights);
+    }
+
+    public void bulkAddArrivalFlights(List<Flight> flights) {
+        arrivalFlights.addAll(flights);
+    }
+
     /**
      * Creates an airport object.
      */

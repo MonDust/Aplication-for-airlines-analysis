@@ -4,6 +4,7 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 import pg.edu.pl.lsea.api.DataLoader;
+import pg.edu.pl.lsea.api.DataUpdateDelete;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.gui.ProgressBarUDP;
@@ -33,6 +34,7 @@ public class DisplayPanel extends JPanel {
     private final CardLayout cardLayout;
     private final Map<String, JPanel> analysisViews = new HashMap<>();
     DataLoader dataLoader = new DataLoader();
+    DataUpdateDelete dataUpdateDelete = new DataUpdateDelete();
 
     /**
      * Constructor for the class.
@@ -268,7 +270,7 @@ public class DisplayPanel extends JPanel {
         switch (updateType) {
             case UPDATE_A -> display = showUpdateAircraftPanel();
             case UPDATE_F -> display = showUpdateFlightPanel();
-            case DELETE_A -> display = showUpdateFlightPanel();
+            case DELETE_A -> display = showDeleteAircraftPanel();
             case DELETE_F -> display = showDeleteFlightsByDatePanel();
             default -> {
                 showDisplay("welcome");
@@ -297,6 +299,7 @@ public class DisplayPanel extends JPanel {
 
         JTextField departureAirportField = new JTextField();
         JTextField arrivalAirportField = new JTextField();
+        JTextField fromDateText = new JTextField();
 
         JButton updateBtn = new JButton("Update Flight");
 
@@ -306,22 +309,32 @@ public class DisplayPanel extends JPanel {
                 String departure = departureAirportField.getText().trim();
                 String arrival = arrivalAirportField.getText().trim();
 
-                Date fromDate = (Date) fromDatePicker.getModel().getValue();
+                int from;
+                try {
+                    from = Integer.parseInt(fromDateText.getText().trim());
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(panel, "Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Date fromDate = (Date) fromDatePicker.getModel().getValue();
                 Date toDate = (Date) toDatePicker.getModel().getValue();
 
-                if (fromDate == null || toDate == null) {
+                if (toDate == null) {
                     JOptionPane.showMessageDialog(panel, "Please select both dates.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 // convert milliseconds to seconds
-                int firstSeen = (int) fromDate.getTime() / 1000;
-                int lastSeen = (int) toDate.getTime() / 1000;
+                int firstSeen = from;
+                // int firstSeen = (int) (fromDate.getTime() / 1000);
+                int lastSeen = (int) (toDate.getTime() / 1000);
 
                 Flight flight = new Flight(icao, firstSeen, lastSeen, departure, arrival);
 
                 // TODO
-                // sendFlightUpdate(flight);
+                System.out.println("Info: " + flight.getFirstSeen() + " " + flight.getIcao24());
+
+                dataUpdateDelete.patchFlightByIcao24AndFirstSeen(flight.getIcao24(),flight.getFirstSeen(), flight);
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(panel, "Timestamps must be valid integers (Unix seconds).", "Input Error", JOptionPane.ERROR_MESSAGE);
@@ -331,7 +344,7 @@ public class DisplayPanel extends JPanel {
         panel.add(new JLabel("Flight ICAO24:"));
         panel.add(icaoField);
         panel.add(new JLabel("First Seen (Unix Time):"));
-        panel.add(fromDatePicker);
+        panel.add(fromDateText);
         panel.add(new JLabel("Last Seen (Unix Time):"));
         panel.add(toDatePicker);
         panel.add(new JLabel("Departure Airport (IATA):"));
@@ -362,7 +375,7 @@ public class DisplayPanel extends JPanel {
             Aircraft aircraft = new Aircraft(icao, model, operator, owner);
 
             // TODO
-            // sendAircraftUpdate(aircraft);
+            dataUpdateDelete.patchAircraft(aircraft.getIcao24(), aircraft);
         });
 
         panel.add(new JLabel("Aircraft ICAO24:"));
@@ -392,10 +405,21 @@ public class DisplayPanel extends JPanel {
         JDatePickerImpl fromDatePicker = new JDatePickerImpl(fromDatePanel, new DateLabelFormatter());
         JDatePickerImpl toDatePicker = new JDatePickerImpl(toDatePanel, new DateLabelFormatter());
 
+        JTextField fromDateText = new JTextField();
+
         JButton deleteBtn = new JButton("Delete Flights");
 
         deleteBtn.addActionListener(e -> {
             Date fromDate = (Date) fromDatePicker.getModel().getValue();
+//            int from;
+//            try {
+//                from = Integer.parseInt(fromDateText.getText().trim());
+//            } catch (NumberFormatException ex) {
+//                JOptionPane.showMessageDialog(panel, "Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+
+
             Date toDate = (Date) toDatePicker.getModel().getValue();
 
             if (fromDate == null || toDate == null) {
@@ -404,14 +428,17 @@ public class DisplayPanel extends JPanel {
             }
 
             // convert milliseconds to seconds
-            int from = (int) fromDate.getTime() / 1000;
-            int to = (int) toDate.getTime() / 1000;
+            int from = (int) (fromDate.getTime() / 1000);
+            int to = (int) (toDate.getTime() / 1000);
+
+            System.out.println("Info: " + from + " " + to);
 
             // TODO
-            // deleteFlightsBetween(from, to);
+            dataUpdateDelete.deleteFlightsByDateRange(from, to);
         });
 
         panel.add(new JLabel("From Date:"));
+        //panel.add(fromDateText);
         panel.add(fromDatePicker);
         panel.add(new JLabel("To Date:"));
         panel.add(toDatePicker);
@@ -429,7 +456,7 @@ public class DisplayPanel extends JPanel {
 
         deleteBtn.addActionListener(e -> {
             String icao = icaoField.getText().trim();
-            // deleteAircraftById(icao);
+            dataUpdateDelete.deleteAircraft(icao);
         });
 
         panel.add(new JLabel("Aircraft ICAO24:"));

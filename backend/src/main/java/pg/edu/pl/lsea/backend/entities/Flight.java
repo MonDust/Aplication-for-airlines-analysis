@@ -58,6 +58,10 @@ public class Flight extends Trackable implements Cloneable {
     @JoinColumn(name = "aircraft_id", referencedColumnName = "id")
     private Aircraft aircraft;
 
+    @ManyToOne
+    @JoinColumn(name = "route_id")
+    private Route route;
+
     /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.
