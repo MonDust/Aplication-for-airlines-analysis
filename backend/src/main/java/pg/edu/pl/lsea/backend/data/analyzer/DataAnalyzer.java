@@ -10,7 +10,7 @@ import java.util.List;
  */
 public abstract class DataAnalyzer {
     /**
-     * One function that provied data for dashbord
+     * One function that provided data for dashbord
      * @param aircrafts list of aircraft meant to be analyzed
      * @param flights list of flights meant to be analyzed
      */

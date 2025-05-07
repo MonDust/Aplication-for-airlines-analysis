@@ -30,6 +30,14 @@ public class UdpClient {
         return sumProcessed.get();
     }
 
+    public static void setSumProcessed(int sum) {
+        sumProcessed.set(sum);
+    }
+
+    public static void setTotalProcessed(int total) {
+        totalProcessed.set(total);
+    }
+
     /**
      * Returns the total amount of data to be processed during the analysis, from the server.
      * @return total amount of rows of data to be processed
@@ -51,7 +59,7 @@ public class UdpClient {
         listenerThread = new Thread(() -> {
             try {
                 DatagramSocket socket = new DatagramSocket(CLIENT_PORT);
-                byte[] buffer = new byte[8];
+                byte[] buffer = new byte[1024];
 
                 System.out.println("Listening to port: " + CLIENT_PORT);
                 requestDataTransfer();
@@ -59,7 +67,12 @@ public class UdpClient {
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     socket.receive(packet);
 
-                    ByteBuffer byteBuffer = ByteBuffer.wrap(packet.getData());
+                    int length = packet.getLength();
+                    if (length < 8) {
+                        System.err.println("Received packet too short: " + length + " bytes");
+                        return;
+                    }
+                    ByteBuffer byteBuffer = ByteBuffer.wrap(packet.getData(), 0, length);
                     int processed = byteBuffer.getInt();
                     int total = byteBuffer.getInt();
 
@@ -111,16 +124,16 @@ public class UdpClient {
      * Informs the server about client disconnecting.
      */
     private static void sendDisconnect() {
-    try {
-        DatagramSocket socket = new DatagramSocket();
-        byte[] buffer = new byte[8];
-        buffer[0] = 2;
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(serverIP), SERVER_PORT);
-        socket.send(packet);
-        socket.close();
-        System.out.println("Sent disconnect to server");
-    } catch (Exception e) {
-        e.printStackTrace();
+        try {
+            DatagramSocket socket = new DatagramSocket();
+            byte[] buffer = new byte[8];
+            buffer[0] = 2;
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(serverIP), SERVER_PORT);
+            socket.send(packet);
+            socket.close();
+            System.out.println("Sent disconnect to server");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-}
 }

@@ -35,24 +35,18 @@ public class AnalysisController {
         return analysisService.sortByTimeOfFlights();
     }
 
-    @GetMapping("/giveTopNOperators/{howMuchOperators}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<List<EnrichedFlight>> printAircraftList(@PathVariable int howMuchOperators) {
-        return analysisService.giveTopNOperators(howMuchOperators);
-    }
-
     @GetMapping("/givePercentageOfLongFlights")
     @ResponseStatus(HttpStatus.OK)
     public List<Output> givePercentageOfLongFlights() {
 
-        return analysisService.givePercentageOfLongFlights();
+        return analysisService.givePercentageOfLongFlights_ModelGrouping();
     }
 
     @GetMapping("/printAllAverages")
     @ResponseStatus(HttpStatus.OK)
     public List<Output> printAllAverages() {
 
-        return analysisService.printAllAverages();
+        return analysisService.giveAllAverages_groupedByModel();
     }
 
     @GetMapping("/calculateAverageTimeInAir")
@@ -68,4 +62,53 @@ public class AnalysisController {
 
         return analysisService.findLongFlightsForEachModel();
     }
+
+    @GetMapping("/getTopNOperators")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNOperators() {
+        return analysisService.getTopNOperatorWithNumberOfFlights();
+    }
+
+    @GetMapping("/getTopNOperators/{howMuchOperators}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNOperators(@PathVariable int howMuchOperators) {
+        return analysisService.getTopNOperatorWithNumberOfFlights(howMuchOperators);
+    }
+
+    @GetMapping("/getTopNModels")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNModels() {
+        return analysisService.getTopNModelWithNumberOfFlights();
+    }
+
+    @GetMapping("/getTopNModels/{howMuchOperators}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNModels(@PathVariable int howMuchOperators) {
+        return analysisService.getTopNModelWithNumberOfFlights(howMuchOperators);
+    }
+
+    @GetMapping("/getTopNPercentageOfLongFlights")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNPercentageOfLongFlights() {
+        return analysisService.getTopNPercentageOfLongFlights_GroupedByOperator();
+    }
+
+    @GetMapping("/getTopNPercentageOfLongFlights/{howMuchOperators}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNPercentageOfLongFlights(@PathVariable int howMuchOperators) {
+        return analysisService.getTopNPercentageOfLongFlights_GroupedByOperator(howMuchOperators);
+    }
+
+    @GetMapping("/getTopNAverageTime")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNAverageTime() {
+        return analysisService.getTopNAverageTime_GroupedByOperator();
+    }
+
+    @GetMapping("/getTopNAverageTime/{howMuchOperators}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Output> getTopNAverageTime(@PathVariable int howMuchOperators) {
+        return analysisService.getTopNAverageTime_GroupedByOperator(howMuchOperators);
+    }
+
 }
