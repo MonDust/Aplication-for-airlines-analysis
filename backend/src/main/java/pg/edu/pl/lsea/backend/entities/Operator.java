@@ -31,7 +31,12 @@ public class Operator implements Cloneable, Comparable<Operator> {
     @OneToMany(mappedBy = "operator", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Aircraft> aircrafts = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "operators")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "operators_routes",
+            joinColumns = @JoinColumn(name = "operator_id"),
+            inverseJoinColumns = @JoinColumn(name = "route_id")
+    )
     private Set<Route> routes = new HashSet<>();
 
     /**

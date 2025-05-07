@@ -37,6 +37,7 @@ public class Aircraft extends Trackable implements Cloneable{
      */
 //    @Column(name = "operator")
 //    private String operator;
+
     @ManyToOne()
     @JoinColumn(name = "operator_id", referencedColumnName = "id")
     private Operator operator;

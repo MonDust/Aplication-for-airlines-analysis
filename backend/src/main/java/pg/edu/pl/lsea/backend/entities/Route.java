@@ -31,10 +31,10 @@ public class Route implements Cloneable, Comparable<Route>{
     @JoinColumn(name = "destination_id", referencedColumnName = "id", nullable = false)
     private Airport destination;
 
-    @OneToMany(mappedBy = "route")
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Flight> flights = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "route_operators",
             joinColumns = @JoinColumn(name = "route_id"),
