@@ -20,8 +20,8 @@ public class FlightToResponseMapper implements Function<Flight, FlightResponse> 
                 flight.getIcao24(),
                 flight.getFirstSeen(),
                 flight.getLastSeen(),
-                flight.getDepartureAirport().getCode(),
-                flight.getArrivalAirport().getCode()
+                flight.getRoute().getOrigin().getCode(),
+                flight.getRoute().getDestination().getCode()
         );
     }
 }

@@ -77,12 +77,12 @@ public class NullRemover extends DataTransform {
      * @return true if there is no nulls in
      */
     public boolean CheckOneFlight (Flight flight) {
-        if (flight.getIcao24() == null || flight.getDepartureAirport() == null || flight.getArrivalAirport() == null || flight.getFirstSeen() == -1 || flight.getLastSeen() == -1){
+        if (flight.getIcao24() == null || flight.getRoute() == null || flight.getFirstSeen() == -1 || flight.getLastSeen() == -1){
             return false;
         }
-        if (Objects.equals(flight.getIcao24(), "") || Objects.equals(flight.getDepartureAirport(), "") || Objects.equals(flight.getArrivalAirport(), "")){
+        if (Objects.equals(flight.getIcao24(), "") || Objects.equals(flight.getRoute(), "")){
             return false;
         }
-        return !Objects.equals(flight.getIcao24(), "NULL") && !Objects.equals(flight.getDepartureAirport(), "NULL") && !Objects.equals(flight.getArrivalAirport(), "NULL");
+        return !Objects.equals(flight.getIcao24(), "NULL") && !Objects.equals(flight.getRoute(), "NULL");
     }
 }

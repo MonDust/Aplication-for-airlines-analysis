@@ -36,19 +36,19 @@ public class Flight extends Trackable implements Cloneable {
     @Column(name = "last_seen")
     private int lastSeen;
 
-    /**
-     * Airport of departure
-     */
-    @ManyToOne()
-    @JoinColumn(name = "departureAirport_id", referencedColumnName = "id")
-    private Airport departureAirport;
-
-    /**
-     * Airport of arrival
-     */
-    @ManyToOne()
-    @JoinColumn(name = "arrivalAirport_id", referencedColumnName = "id")
-    private Airport arrivalAirport;
+//    /**
+//     * Airport of departure
+//     */
+//    @ManyToOne()
+//    @JoinColumn(name = "departureAirport_id", referencedColumnName = "id")
+//    private Airport departureAirport;
+//
+//    /**
+//     * Airport of arrival
+//     */
+//    @ManyToOne()
+//    @JoinColumn(name = "arrivalAirport_id", referencedColumnName = "id")
+//    private Airport arrivalAirport;
 
     /**
      * Many-to-one relation: one flight can have only one aircraft
@@ -58,20 +58,21 @@ public class Flight extends Trackable implements Cloneable {
     @JoinColumn(name = "aircraft_id", referencedColumnName = "id")
     private Aircraft aircraft;
 
+    @ManyToOne
+    @JoinColumn(name = "route_id")
+    private Route route;
+
     /**
      * Creates a flight object.
      * @param icao24 A string representing the 6-character hexadecimal icao24 code of the trackable entity.
      * @param firstSeen An integer representing the unix timestamp of the first record of the aircraft of the flight in seconds.
      * @param lastSeen An integer representing the unix timestamp of the last record of the aircraft of the flight in seconds.
-     * @param departureAirport A string representing the IATA code of the airport from which the aircraft is taking off on this flight
-     * @param arrivalAirport A string representing the IATA code of the airport where the aircraft lands during this flight
      */
-    public Flight(String icao24, int firstSeen, int lastSeen, Airport departureAirport, Airport arrivalAirport) {
+    public Flight(String icao24, int firstSeen, int lastSeen) {
         setIcao24(icao24);
         this.firstSeen = firstSeen;
         this.lastSeen = lastSeen;
-        this.departureAirport = departureAirport;
-        this.arrivalAirport = arrivalAirport;
+        this.route = null;
     }
 
     /**
@@ -81,8 +82,7 @@ public class Flight extends Trackable implements Cloneable {
         setIcao24("");
         firstSeen = 0;
         lastSeen = 0;
-        arrivalAirport = null;
-        departureAirport = null;
+        route = null;
     }
 
    /**
@@ -103,7 +103,7 @@ public class Flight extends Trackable implements Cloneable {
         public int compare(Flight a, Flight b) {
             int firstSeenCompare = a.firstSeen -b.firstSeen;
             int lastSeenCompare = a.lastSeen -b.lastSeen;
-            int departureAirportCompare = a.departureAirport.compareTo(b.departureAirport);
+            int departureAirportCompare = a.route.compareTo(b.route);
 
             return (firstSeenCompare == 0)
                 ? (lastSeenCompare == 0)
@@ -124,8 +124,7 @@ public class Flight extends Trackable implements Cloneable {
                "icao24='" + getIcao24() + "'" +
                ", firstseen=" + firstSeen +
                ", lastseen=" + lastSeen +
-               ", departureairport='" + departureAirport + "'" +
-               ", arrivalairport='" + arrivalAirport + "'" +
+               ", departureairport='" + route + "'" +
                "}";
     }
 
@@ -137,8 +136,7 @@ public class Flight extends Trackable implements Cloneable {
         newFlight.setIcao24(getIcao24());
         newFlight.setFirstSeen(firstSeen);
         newFlight.setLastSeen(lastSeen);
-        newFlight.setDepartureAirport(departureAirport);
-        newFlight.setArrivalAirport(arrivalAirport);
+        newFlight.setRoute(route);
         return newFlight;
     }
 
