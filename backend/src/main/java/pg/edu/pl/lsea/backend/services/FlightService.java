@@ -173,9 +173,7 @@ public class FlightService {
         Flight flight = new Flight(
                 request.icao24(),
                 request.firstSeen(),
-                request.lastSeen(),
-                departureAirport,
-                arrivalAirport
+                request.lastSeen()
         );
         if (existingAircraft.isPresent()) {
             flight.setAircraft(existingAircraft.get());
@@ -184,8 +182,6 @@ public class FlightService {
 
         route.addFlight(flight);
         flight.setRoute(route);
-        arrivalAirport.addArrivalFlight(flight);
-        departureAirport.addDepartureFlight(flight);
 
         if((!nullRemover.CheckOneFlight(flight))) {
             try {
@@ -271,9 +267,7 @@ public class FlightService {
             Flight flight = new Flight(
                     r.icao24(),
                     r.firstSeen(),
-                    r.lastSeen(),
-                    dep,
-                    arr
+                    r.lastSeen()
             );
 
             Aircraft aircraft = aircraftMap.get(r.icao24());
@@ -285,8 +279,6 @@ public class FlightService {
 
             route.addFlight(flight);
             flight.setRoute(route);
-            dep.getDepartureFlights().add(flight);
-            arr.getArrivalFlights().add(flight);
 
             flights.add(flight);
         }
@@ -314,28 +306,21 @@ public class FlightService {
         Optional<Airport> existingDepartureAirport = airportRepo.findByCode(airportDepartureCode);
         if (existingDepartureAirport.isPresent()) {
             departureAirport = existingDepartureAirport.get();
-            flight.setDepartureAirport(departureAirport);
         }
         else {
             departureAirport = new Airport(airportDepartureCode);
             airportRepo.save(departureAirport);
-            flight.setDepartureAirport(departureAirport);
         }
 
         Airport arrivalAirport;
         Optional<Airport> existingArrivalAirport = airportRepo.findByCode(airportArrivalCode);
         if (existingArrivalAirport.isPresent()) {
             arrivalAirport = existingArrivalAirport.get();
-            flight.setArrivalAirport(arrivalAirport);
         }
         else {
             arrivalAirport = new Airport(airportDepartureCode);
             airportRepo.save(arrivalAirport);
-            flight.setArrivalAirport(arrivalAirport);
         }
-
-        departureAirport.getDepartureFlights().add(flight);
-        arrivalAirport.getArrivalFlights().add(flight);
     }
 
 
