@@ -1,18 +1,17 @@
-package pg.edu.pl.lsea.backend.data.analyzer.multithreading;
+package pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading;
 
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.BaseGroupingAnalyzer;
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * Class designed to be run in parallel (as it implements Runnable interface)
  * Its goal is to save all flights for a given model to a shared (across threads) list
  */
-public class GetAllFlightsForModelTask implements Runnable {
+public class GetAllFlightsForModelTask extends BaseGroupingAnalyzer implements Runnable {
     private final List<EnrichedFlight> flights;
     private final List<Aircraft> aircrafts;
     private final String model;
@@ -42,31 +41,13 @@ public class GetAllFlightsForModelTask implements Runnable {
     }
 
     /**
-     * This method is run in parallel and contains the main class functionality
-     * It contains a critical section that is wrapped with synchronized block
+     * This method is run in parallel and contains the main class functionality.
+     * It contains a critical section that is wrapped with synchronized block.
      */
     @Override
     public void run() {
         try {
-            List<EnrichedFlight> result = new ArrayList<>();
-
-            List<String> icaoList = new ArrayList<>();
-
-            for (Aircraft aircraft : aircrafts) {
-                if (Objects.equals(aircraft.getModel(), model)) {
-                    icaoList.add(aircraft.getIcao24());
-                }
-            }
-
-            for (EnrichedFlight flight : flights) {
-                for (String icao : icaoList) {
-                    if (Objects.equals(flight.getIcao24(), icao)) {
-                        result.add(flight);
-
-                    }
-                }
-            }
-
+            List<EnrichedFlight> result = getAllFlightsForModel(flights,aircrafts,model);
             synchronized (sharedResult) {
                 sharedResult.add(result);
             }

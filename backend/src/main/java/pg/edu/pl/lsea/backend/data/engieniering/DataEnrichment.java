@@ -13,28 +13,22 @@ import java.util.Objects;
  */
 public class DataEnrichment extends DataTransform {
 
-    /**list of list which is containing only long flights
+    /**
+     * List of list which is containing only long flights
      * Fills empty fields with "EMPTY" value
-     *
      * @param flights list of flights that will be changed
      */
     public void TransformFlights(List<Flight> flights) {
         for (int i = flights.size() - 1; i >= 0; i--) {
-            if (Objects.equals(flights.get(i).getArrivalAirport(), "")) {
-                flights.get(i).setArrivalAirport("EMPTY");
+            if (Objects.equals(flights.get(i).getRoute(), "")) {
+                flights.get(i).setRoute(null);
             }
-            if (Objects.equals(flights.get(i).getDepartureAirport(), "")) {
-                flights.get(i).setDepartureAirport("EMPTY");
-            }
-
-
         }
 
     }
 
     /**
      * Fills empty fields with "EMPTY" value
-     *
      * @param aircrafts list of aircrafts that will be changed
      */
     public void TransformAircrafts(List<Aircraft> aircrafts) {
@@ -43,10 +37,10 @@ public class DataEnrichment extends DataTransform {
                 aircrafts.get(i).setOwner("EMPTY");
             }
             if (Objects.equals(aircrafts.get(i).getOperator(), "")) {
-                aircrafts.get(i).setOperator("EMPTY");
+                aircrafts.get(i).setOperator(null);
             }
             if (Objects.equals(aircrafts.get(i).getModel(), "")) {
-                aircrafts.get(i).setModel("EMPTY");
+                aircrafts.get(i).setModel(null);
             }
 
         }

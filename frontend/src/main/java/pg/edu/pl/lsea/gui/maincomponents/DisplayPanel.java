@@ -1,23 +1,30 @@
 package pg.edu.pl.lsea.gui.maincomponents;
 
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+import pg.edu.pl.lsea.api.DataLoader;
+import pg.edu.pl.lsea.api.DataUpdateDelete;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
+import pg.edu.pl.lsea.gui.ProgressBarUDP;
 import pg.edu.pl.lsea.gui.display.datadisplay.tables.TableDisplay;
 import pg.edu.pl.lsea.gui.display.graphdisplay.PlotAverageTimePerOperatorDisplay;
 import pg.edu.pl.lsea.gui.display.topNdisplay.TopNModelsDisplay;
 import pg.edu.pl.lsea.gui.display.topNdisplay.TopNOperatorsDisplay;
 import pg.edu.pl.lsea.gui.display.topNdisplay.TopNOperatorsPercentageDisplay;
+import pg.edu.pl.lsea.utils.DateLabelFormatter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.List;
 
 import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.*;
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
 import static pg.edu.pl.lsea.utils.InformationTypeConstants.*;
+import static pg.edu.pl.lsea.utils.UpdateTypeConstants.*;
 
 /**
  * Class for displaying information (adding displays) with cardLayout.
@@ -26,6 +33,8 @@ import static pg.edu.pl.lsea.utils.InformationTypeConstants.*;
 public class DisplayPanel extends JPanel {
     private final CardLayout cardLayout;
     private final Map<String, JPanel> analysisViews = new HashMap<>();
+    DataLoader dataLoader = new DataLoader();
+    DataUpdateDelete dataUpdateDelete = new DataUpdateDelete();
 
     /**
      * Constructor for the class.
@@ -129,14 +138,11 @@ public class DisplayPanel extends JPanel {
     public void displayAnalysis(int analysisType) {
         String key = "analysis_" + analysisType;
 
-//        if (analysisViews.containsKey(key)) {
-//            showDisplay(key);
-//            return;
-//        }
-
         JPanel display;
         // List<Aircraft> aircraftList = reader.readAircrafts(new File("C:\\Users\\maria\\Desktop\\PG\\SEM_VI\\Large-scale_enterprise_application\\Project\\Main_test_files\\aircraft-database-complete-2022-09.csv"));
         // List<Flight> flightList = reader.readFlights(new File("C:\\Users\\maria\\Desktop\\PG\\SEM_VI\\Large-scale_enterprise_application\\Project\\Main_test_files\\flight_sample_2022-09-01.csv"));
+        new Thread(ProgressBarUDP::new).start();
+        System.out.println("here 1");
 
         switch (analysisType) {
             case PERFORM_ALL_TYPES -> {
@@ -188,7 +194,10 @@ public class DisplayPanel extends JPanel {
      * @return JPanle with the plot.
      */
     private JPanel createPlotAverageTimeDisplay() {
-        return new PlotAverageTimePerOperatorDisplay();
+
+        PlotAverageTimePerOperatorDisplay averageTimePerOperatorDisplay = new PlotAverageTimePerOperatorDisplay();
+        return averageTimePerOperatorDisplay.
+                plotAverageTime();
     }
 
     /**
@@ -210,11 +219,6 @@ public class DisplayPanel extends JPanel {
     public void showInformation(int informationType) {
         String key = "information_" + informationType;
 
-        if (analysisViews.containsKey(key)) {
-            showDisplay(key);
-            return;
-        }
-
         JPanel display;
 
         switch (informationType) {
@@ -235,9 +239,8 @@ public class DisplayPanel extends JPanel {
      * @return JPanel with the list of flights.
      */
     public JPanel showFlightsInformation() {
-        // TODO - get info by API
-        List<Flight> flightList = new ArrayList();
-        return new TableDisplay(flightList);
+        List<Flight> flightList = dataLoader.getAllFlights();
+        return new TableDisplay<>(flightList);
     }
 
     /**
@@ -245,9 +248,8 @@ public class DisplayPanel extends JPanel {
      * @return JPanel with the list of aircrafts.
      */
     public JPanel showAircraftsInformation() {
-        // TODO - get info by API
-        List<Aircraft> aircraftList = new ArrayList();
-        return new TableDisplay(aircraftList);
+        List<Aircraft> aircraftList = dataLoader.getAllAircrafts();
+        return new TableDisplay<>(aircraftList);
     }
 
     /**
@@ -255,10 +257,212 @@ public class DisplayPanel extends JPanel {
      * @return JPanel with information.
      */
     public JPanel showRecordsSizeInformation() {
-        // TODO - get info by API
-        List<Aircraft> aircraftList = new ArrayList();
-        List<Flight> flightList = new ArrayList();
+        List<Aircraft> aircraftList = dataLoader.getAllAircrafts();
+        List<Flight> flightList = dataLoader.getAllFlights();
         return createPlaceholderPanel("Size information: Flights: " + flightList.size() + " | " + "Aircrafts: " + aircraftList.size() );
     }
 
+    public void makeUpdate(int updateType) {
+        String key = "update_" + updateType;
+
+        JPanel display;
+
+        switch (updateType) {
+            case UPDATE_A -> display = showUpdateAircraftPanel();
+            case UPDATE_F -> display = showUpdateFlightPanel();
+            case DELETE_A -> display = showDeleteAircraftPanel();
+            case DELETE_F -> display = showDeleteFlightsByDatePanel();
+            default -> {
+                showDisplay("welcome");
+                return;
+            }
+        }
+        addAnalysisDisplay(key, display);
+        showDisplay(key);
+    }
+
+    public JPanel showUpdateFlightPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
+
+        JTextField icaoField = new JTextField();
+
+        UtilDateModel fromDateModel = new UtilDateModel();
+        UtilDateModel toDateModel = new UtilDateModel();
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+        JDatePanelImpl fromDatePanel = new JDatePanelImpl(fromDateModel, p);
+        JDatePanelImpl toDatePanel = new JDatePanelImpl(toDateModel, p);
+        JDatePickerImpl fromDatePicker = new JDatePickerImpl(fromDatePanel, new DateLabelFormatter());
+        JDatePickerImpl toDatePicker = new JDatePickerImpl(toDatePanel, new DateLabelFormatter());
+
+        JTextField departureAirportField = new JTextField();
+        JTextField arrivalAirportField = new JTextField();
+        JTextField fromDateText = new JTextField();
+
+        JButton updateBtn = new JButton("Update Flight");
+
+        updateBtn.addActionListener(e -> {
+            try {
+                String icao = icaoField.getText().trim();
+                String departure = departureAirportField.getText().trim();
+                String arrival = arrivalAirportField.getText().trim();
+
+                int from;
+                try {
+                    from = Integer.parseInt(fromDateText.getText().trim());
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(panel, "Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Date fromDate = (Date) fromDatePicker.getModel().getValue();
+                Date toDate = (Date) toDatePicker.getModel().getValue();
+
+                if (toDate == null) {
+                    JOptionPane.showMessageDialog(panel, "Please select both dates.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // convert milliseconds to seconds
+                int firstSeen = from;
+                // int firstSeen = (int) (fromDate.getTime() / 1000);
+                int lastSeen = (int) (toDate.getTime() / 1000);
+
+                Flight flight = new Flight(icao, firstSeen, lastSeen, departure, arrival);
+
+                // TODO
+                System.out.println("Info: " + flight.getFirstSeen() + " " + flight.getIcao24());
+
+                dataUpdateDelete.patchFlightByIcao24AndFirstSeen(flight.getIcao24(),flight.getFirstSeen(), flight);
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(panel, "Timestamps must be valid integers (Unix seconds).", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        panel.add(new JLabel("Flight ICAO24:"));
+        panel.add(icaoField);
+        panel.add(new JLabel("First Seen (Unix Time):"));
+        panel.add(fromDateText);
+        panel.add(new JLabel("Last Seen (Unix Time):"));
+        panel.add(toDatePicker);
+        panel.add(new JLabel("Departure Airport (IATA):"));
+        panel.add(departureAirportField);
+        panel.add(new JLabel("Arrival Airport (IATA):"));
+        panel.add(arrivalAirportField);
+        panel.add(updateBtn);
+
+        return panel;
+    }
+
+    public JPanel showUpdateAircraftPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
+
+        JTextField icaoField = new JTextField();
+        JTextField modelField = new JTextField();
+        JTextField operatorField = new JTextField();
+        JTextField ownerField = new JTextField();
+
+        JButton updateBtn = new JButton("Update Aircraft");
+
+        updateBtn.addActionListener(e -> {
+            String icao = icaoField.getText().trim();
+            String model = modelField.getText().trim();
+            String operator = operatorField.getText().trim();
+            String owner = ownerField.getText().trim();
+
+            Aircraft aircraft = new Aircraft(icao, model, operator, owner);
+
+            // TODO
+            dataUpdateDelete.patchAircraft(aircraft.getIcao24(), aircraft);
+        });
+
+        panel.add(new JLabel("Aircraft ICAO24:"));
+        panel.add(icaoField);
+        panel.add(new JLabel("Model:"));
+        panel.add(modelField);
+        panel.add(new JLabel("Operator:"));
+        panel.add(operatorField);
+        panel.add(new JLabel("Owner:"));
+        panel.add(ownerField);
+        panel.add(updateBtn);
+
+        return panel;
+    }
+
+    public JPanel showDeleteFlightsByDatePanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
+
+        UtilDateModel fromDateModel = new UtilDateModel();
+        UtilDateModel toDateModel = new UtilDateModel();
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+        JDatePanelImpl fromDatePanel = new JDatePanelImpl(fromDateModel, p);
+        JDatePanelImpl toDatePanel = new JDatePanelImpl(toDateModel, p);
+        JDatePickerImpl fromDatePicker = new JDatePickerImpl(fromDatePanel, new DateLabelFormatter());
+        JDatePickerImpl toDatePicker = new JDatePickerImpl(toDatePanel, new DateLabelFormatter());
+
+        JTextField fromDateText = new JTextField();
+
+        JButton deleteBtn = new JButton("Delete Flights");
+
+        deleteBtn.addActionListener(e -> {
+            Date fromDate = (Date) fromDatePicker.getModel().getValue();
+//            int from;
+//            try {
+//                from = Integer.parseInt(fromDateText.getText().trim());
+//            } catch (NumberFormatException ex) {
+//                JOptionPane.showMessageDialog(panel, "Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+
+
+            Date toDate = (Date) toDatePicker.getModel().getValue();
+
+            if (fromDate == null || toDate == null) {
+                JOptionPane.showMessageDialog(panel, "Please select both dates.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // convert milliseconds to seconds
+            int from = (int) (fromDate.getTime() / 1000);
+            int to = (int) (toDate.getTime() / 1000);
+
+            System.out.println("Info: " + from + " " + to);
+
+            // TODO
+            dataUpdateDelete.deleteFlightsByDateRange(from, to);
+        });
+
+        panel.add(new JLabel("From Date:"));
+        //panel.add(fromDateText);
+        panel.add(fromDatePicker);
+        panel.add(new JLabel("To Date:"));
+        panel.add(toDatePicker);
+        panel.add(deleteBtn);
+
+        return panel;
+    }
+
+    public JPanel showDeleteAircraftPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
+
+        JTextField icaoField = new JTextField();
+
+        JButton deleteBtn = new JButton("Delete Aircraft");
+
+        deleteBtn.addActionListener(e -> {
+            String icao = icaoField.getText().trim();
+            dataUpdateDelete.deleteAircraft(icao);
+        });
+
+        panel.add(new JLabel("Aircraft ICAO24:"));
+        panel.add(icaoField);
+        panel.add(deleteBtn);
+
+        return panel;
+    }
 }
