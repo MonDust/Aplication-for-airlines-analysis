@@ -33,11 +33,33 @@ public class Airport implements Cloneable, Comparable<Airport> {
     @Column(name = "code", nullable = false)
     private String code;
 
-    @OneToMany(mappedBy = "departureAirport", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Flight> departureFlights = new ArrayList<>();
+    @OneToMany(mappedBy = "origin", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Route> originRouteList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "arrivalAirport", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Flight> arrivalFlights = new ArrayList<>();
+    @OneToMany(mappedBy = "destination", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Route> destinationRouteList = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "departureAirport", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//    private List<Flight> departureFlights = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "arrivalAirport", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//    private List<Flight> arrivalFlights = new ArrayList<>();
+
+//    public void addArrivalFlight(Flight flight) {
+//        arrivalFlights.add(flight);
+//    }
+//
+//    public void addDepartureFlight(Flight flight) {
+//        departureFlights.add(flight);
+//    }
+//
+//    public void bulkAddDepartureFlights(List<Flight> flights) {
+//        departureFlights.addAll(flights);
+//    }
+//
+//    public void bulkAddArrivalFlights(List<Flight> flights) {
+//        arrivalFlights.addAll(flights);
+//    }
 
     /**
      * Creates an airport object.
@@ -58,7 +80,7 @@ public class Airport implements Cloneable, Comparable<Airport> {
      */
     @Override
     public int compareTo(Airport o) {
-        return o.arrivalFlights.size() + o.departureFlights.size() - arrivalFlights.size() - departureFlights.size();
+        return o.originRouteList.size() + o.destinationRouteList.size() - originRouteList.size() - destinationRouteList.size();
     }
 
 
@@ -70,8 +92,8 @@ public class Airport implements Cloneable, Comparable<Airport> {
     public String toString() {
         return "Model{" +
                 "code='" + code + "'" +
-                ", departureFlights.size() =" + departureFlights.size() +
-                ", arrivalFlights.size() =" + arrivalFlights.size() +
+                ", departureFlights.size() =" + originRouteList.size() +
+                ", arrivalFlights.size() =" + destinationRouteList.size() +
                 "}";
     }
 
@@ -82,8 +104,8 @@ public class Airport implements Cloneable, Comparable<Airport> {
         Airport newAirport = new Airport();
         newAirport.setId(id);
         newAirport.setCode(code);
-        newAirport.setDepartureFlights(departureFlights);
-        newAirport.setArrivalFlights(arrivalFlights);
+        newAirport.setDestinationRouteList(destinationRouteList);
+        newAirport.setOriginRouteList(originRouteList);
         return newAirport;
     }
 

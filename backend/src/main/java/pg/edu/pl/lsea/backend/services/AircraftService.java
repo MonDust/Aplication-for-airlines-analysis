@@ -8,20 +8,12 @@ import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 
-import pg.edu.pl.lsea.backend.entities.Aircraft;
-import pg.edu.pl.lsea.backend.entities.Flight;
-import pg.edu.pl.lsea.backend.entities.Model;
-import pg.edu.pl.lsea.backend.entities.Operator;
-import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
-import pg.edu.pl.lsea.backend.repositories.ModelRepo;
-import pg.edu.pl.lsea.backend.repositories.OperatorRepo;
+import pg.edu.pl.lsea.backend.entities.*;
+import pg.edu.pl.lsea.backend.repositories.*;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 /**
  * Class responsible for aircraft REST API business logic (part of MVC architecture)
@@ -34,6 +26,8 @@ public class AircraftService {
     private final ModelRepo modelRepo;
     private final AircraftRepo aircraftRepo;
     private final AircraftToResponseMapper aircraftToResponseMapper;
+    private final FlightRepo flightRepo;
+    private final RouteRepo routeRepo;
 
     /**
      * Constructor of the class.
@@ -41,11 +35,13 @@ public class AircraftService {
      * @param aircraftToResponseMapper - mapper
      * @param operatorRepo - operators repository
      */
-    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper, OperatorRepo operatorRepo, ModelRepo modelRepo) {
+    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper, OperatorRepo operatorRepo, ModelRepo modelRepo, FlightRepo flightRepo, RouteRepo routeRepo) {
         this.aircraftRepo = aircraftRepo;
         this.aircraftToResponseMapper = aircraftToResponseMapper;
         this.operatorRepo = operatorRepo;
         this.modelRepo = modelRepo;
+        this.flightRepo = flightRepo;
+        this.routeRepo = routeRepo;
     }
 
     /**
@@ -146,91 +142,81 @@ public class AircraftService {
      * @return List of AircraftResponse (=DTO) is what should be exposed via REST API endpoint. It can be ignored.
      */
     public List<AircraftResponse> createBulk(List<AircraftResponse> request) {
-
-        List<AircraftResponse> validRequests = request.stream().filter(this::checkRequestValidity).toList();
-
-        List<Operator> existingOperators = operatorRepo.findAll();
-        List<Operator> newOperators = new ArrayList<>();
-
-        List<Model> existingModels = modelRepo.findAll();
-        List<Model> newModels = new ArrayList<>();
-
-
-        List<Aircraft> aircrafts = validRequests.stream()
-                .map(a -> {
-
-                    // TODO - we should filter out empty operators here instead of removing them later - takes a lot of time
-
-                    Optional<Operator> existingOperator = existingOperators.stream()
-                            .filter(o -> o.getName().equals(a.operator()))
-                            .findFirst();
-
-                    Operator operator;
-                    if (existingOperator.isEmpty()) {
-                        operator = new Operator(a.operator());
-                        existingOperators.add(operator);
-                        newOperators.add(operator);
-                    }
-                    else {
-                        operator = existingOperator.get();
-                    }
-
-                    // Find or create Model
-                    Optional<Model> existingModel = existingModels.stream()
-                            .filter(o -> o.getName().equals(a.model()))
-                            .findFirst();
-
-                    Model model;
-                    if (existingModel.isEmpty()) {
-                        model = new Model(a.model());
-                        existingModels.add(model);
-                        newModels.add(model);
-                    }
-                    else {
-                        model = existingModel.get();
-                    }
-
-                    Aircraft newAircraft = new Aircraft(
-                            a.icao24(),
-                            model,
-                            operator,
-                            a.owner()
-                    );
-                    operator.getAircrafts().add(newAircraft);
-                    model.getAircrafts().add(newAircraft);
-
-                    return newAircraft;
-
-                })
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        // TODO - Verify if null remover is crucial here - takes a lot of time for already filtered aircrafts (and so models and operators)
-//        NullRemover nullRemover = new NullRemover();
-
-
-//        nullRemover.TransformOperators(newOperators);
-//        nullRemover.TransformModels(newModels);
-//
-//        nullRemover.TransformAircrafts(aircrafts);
-
-        // Filter out aircrafts that already exist
-        List<Aircraft> newAircrafts = aircrafts.stream()
-                .filter(a -> !checkIfAircraftExists(a.getIcao24()))
+        List<AircraftResponse> validRequests = request.stream()
+                .filter(this::checkRequestValidity)
                 .toList();
 
-        // More efficient than saving one-by-one
+        // Lookups
+        Map<String, Operator> operatorMap = operatorRepo.findAll().stream()
+                .collect(Collectors.toMap(Operator::getName, o -> o));
+
+        Map<String, Model> modelMap = modelRepo.findAll().stream()
+                .collect(Collectors.toMap(Model::getName, m -> m));
+
+        List<Operator> newOperators = new ArrayList<>();
+        List<Model> newModels = new ArrayList<>();
+
+        List<Aircraft> aircrafts = new ArrayList<>();
+        for (AircraftResponse a : validRequests) {
+            if (a.operator() == null || a.model() == null) continue;
+
+            Operator operator = operatorMap.get(a.operator());
+            if (operator == null) {
+                operator = new Operator(a.operator());
+                operatorMap.put(a.operator(), operator);
+                newOperators.add(operator);
+            }
+
+            Model model = modelMap.get(a.model());
+            if (model == null) {
+                model = new Model(a.model());
+                modelMap.put(a.model(), model);
+                newModels.add(model);
+            }
+
+            Aircraft newAircraft = new Aircraft(a.icao24(), model, operator, a.owner());
+            aircrafts.add(newAircraft);
+        }
+
+        Set<String> allIcao24s = aircraftRepo.findAllIcao24();
+        List<Aircraft> newAircrafts = aircrafts.stream()
+                .filter(a -> !allIcao24s.contains(a.getIcao24()))
+                .toList();
+
         try {
             operatorRepo.saveAll(newOperators);
             modelRepo.saveAll(newModels);
-            aircraftRepo.saveAll(aircrafts);
+            aircraftRepo.saveAll(newAircrafts);
         } catch (DataIntegrityViolationException ex) {
             System.err.println("Error saving : " + ex.getMessage());
         }
+
+        Set<String> icaoSet = newAircrafts.stream()
+                .map(Aircraft::getIcao24)
+                .collect(Collectors.toSet());
+
+        List<Flight> relatedFlights = flightRepo.findAllByIcao24In(icaoSet); // Custom method
+        Map<String, List<Flight>> flightsByIcao = relatedFlights.stream()
+                .collect(Collectors.groupingBy(Flight::getIcao24));
+
+        for (Aircraft aircraft : newAircrafts) {
+            List<Flight> related = flightsByIcao.get(aircraft.getIcao24());
+            if (related != null) {
+                for (Flight flight : related) {
+                    aircraft.getFlights().add(flight);
+                    flight.setAircraft(aircraft);
+                }
+            }
+        }
+
+        // Save updated flights with aircraft references
+        flightRepo.saveAll(relatedFlights);
 
         return aircrafts.stream()
                 .map(aircraftToResponseMapper)
                 .toList();
     }
+
 
 
     /**

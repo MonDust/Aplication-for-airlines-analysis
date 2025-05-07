@@ -69,6 +69,17 @@ public class FlightController {
         return flightService.patch(id, request);
     }
 
+    @PatchMapping("/{icao24}/{firstSeen}")
+    @ResponseStatus(HttpStatus.OK)
+    public FlightResponse patchFlightByIcaoAndFirstSeen(
+            @PathVariable String icao24,
+            @PathVariable int firstSeen,
+            @RequestBody FlightUpdateRequest request) {
+        System.out.println(icao24 + " " + firstSeen);
+        System.out.println(request.toString());
+        return flightService.patchByIcao24AndFirstSeen(icao24, firstSeen, request);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFlight(@PathVariable("id") Long id) {

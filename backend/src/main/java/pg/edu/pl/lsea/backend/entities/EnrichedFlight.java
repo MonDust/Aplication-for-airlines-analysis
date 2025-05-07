@@ -95,8 +95,8 @@ public class EnrichedFlight extends Trackable implements Cloneable {
         setIcao24(copiedFlight.getIcao24());
         this.firstSeen = copiedFlight.getFirstSeen();
         this.lastSeen = copiedFlight.getLastSeen();
-        this.departureAirport = copiedFlight.getDepartureAirport().getCode();
-        this.arrivalAirport = copiedFlight.getArrivalAirport().getCode();
+        this.departureAirport = copiedFlight.getRoute().getOrigin().getCode();
+        this.arrivalAirport = copiedFlight.getRoute().getDestination().getCode();
         this.timeInAir =0;
 
         updateTimeInAir(copiedFlight.getLastSeen(), copiedFlight.getFirstSeen());
