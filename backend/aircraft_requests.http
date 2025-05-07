@@ -1,0 +1,57 @@
+### Create a new aircraft
+POST /api/aircrafts
+Content-Type: application/json
+
+{
+  "icao24": "abc123",
+  "model": "Boeing 737",
+  "operator": "Delta Airlines",
+  "owner": "Leased Inc."
+}
+
+### Create a bunch of aircrafts
+POST /api/aircrafts/bulk
+Content-Type: application/json
+
+[
+  {
+    "icao24": "abc123",
+    "model": "Boeing 737",
+    "operator": "Delta",
+    "owner": "Owner A"
+  },
+  {
+    "icao24": "def456",
+    "model": "Airbus A320",
+    "operator": "United",
+    "owner": "Owner B"
+  }
+]
+
+### Get all aircrafts
+GET http://localhost:8080/api/aircrafts
+
+### Get an aircraft by icao24
+GET http://localhost:8080/api/aircrafts/abc123
+
+### Replace an aircraft
+PUT /api/aircrafts/abc123
+Content-Type: application/json
+
+{
+  "icao24": "abc123",
+  "model": "Boeing 747",
+  "operator": "American Airlines",
+  "owner": "New Owner Inc."
+}
+
+### Update an aircraft
+PATCH /api/aircrafts/abc123
+Content-Type: application/json
+
+{
+  "owner": "Private Owner"
+}
+
+### Delete an aircraft
+DELETE http://localhost:8080/api/aircrafts/abc123

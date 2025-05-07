@@ -1,91 +1,64 @@
 image: maven:3.9-eclipse-temurin-21
 
 stages:
-  - backend-validate
-  - backend-test
-  - backend-package
-  - backend-deploy
-  - frontend-validate
-  - frontend-test
-  - frontend-package
-  - frontend-deploy
+  - validate
+  - test
+  - package
+  - deploy
 
 variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
 
-
-backend-validate-project:
-  stage: backend-validate
-  script:
-    - 'cd backend'
-    - 'mvn $MAVEN_CLI_OPTS compile'
+# YAML anchor for Maven job template
+.maven_template: &maven_template
+  before_script:
+    - cd $PROJECT_DIR
   artifacts:
     paths:
-      - backend/target
-    expire_in: 30 minutes
+      - $PROJECT_DIR/target
+    expire_in: 3 hours
 
-backend-run-unit-tests:
-  stage: backend-test
+validate:
+  stage: validate
+  parallel:
+    matrix:
+      - PROJECT_DIR: backend
+      - PROJECT_DIR: frontend
+  <<: *maven_template
   script:
-    - 'cd backend'
-    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true test'
+    - mvn $MAVEN_CLI_OPTS compile
 
-backend-build-dist:
-  stage: backend-package
+test:
+  stage: test
+  parallel:
+    matrix:
+      - PROJECT_DIR: backend
+      - PROJECT_DIR: frontend
+  <<: *maven_template
   script:
-    - 'cd backend'
-    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
+    - mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true test
+
+package:
+  stage: package
+  parallel:
+    matrix:
+      - PROJECT_DIR: backend
+      - PROJECT_DIR: frontend
+  <<: *maven_template
+  script:
+    - mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package
   artifacts:
     paths:
-      - backend/target/*.jar
+      - $PROJECT_DIR/target/*.jar
 
-backend-deploy-to-test-server:
-  stage: backend-deploy
+deploy-to-test-server:
+  stage: deploy
   script:
     - 'true'
 
-backend-deploy-to-production:
-  stage: backend-deploy
+deploy-to-production:
+  stage: deploy
   script:
-    - 'cd backend'
-    - 'true'
-  only:
-    - master
-
-frontend-validate-project:
-  stage: frontend-validate
-  script:
-    - 'cd frontend'
-    - 'mvn $MAVEN_CLI_OPTS compile'
-  artifacts:
-    paths:
-      - frontend/target
-    expire_in: 30 minutes
-
-frontend-run-unit-tests:
-  stage: frontend-test
-  script:
-    - 'cd frontend'
-    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true test'
-
-frontend-build-dist:
-  stage: frontend-package
-  script:
-    - 'cd frontend'
-    - 'mvn $MAVEN_CLI_OPTS -Dmaven.main.skip=true -Dmaven.test.skip=true package'
-  artifacts:
-    paths:
-      - frontend/target/*.jar
-
-frontend-deploy-to-test-server:
-  stage: frontend-deploy
-  script:
-    - 'true'
-
-frontend-deploy-to-production:
-  stage: frontend-deploy
-  script:
-    - 'cd frontend'
     - 'true'
   only:
     - master

@@ -1,10 +1,16 @@
-package pg.edu.pl.lsea.backend.analysis.typesofanalysis;
+package pg.edu.pl.lsea.backend.services.analysis.typesofanalysis.threads;
 
-import pg.edu.pl.lsea.backend.analysis.BaseAnalysis;
-import pg.edu.pl.lsea.backend.data.analyzer.GroupingTool;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
+import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
+import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
+import pg.edu.pl.lsea.backend.repositories.FlightRepo;
+import pg.edu.pl.lsea.backend.services.analysis.BaseAnalysis;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.backend.data.analyzer.multithreading.ParallelGroupingTool;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.backend.entities.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 
@@ -20,7 +26,14 @@ public class MultiThreadAnalysis extends BaseAnalysis {
     /**
      * Constructor of the class.
      */
-    public MultiThreadAnalysis() {}
+    public MultiThreadAnalysis(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper,
+                               EnrichedFlightRepo enrichedFlightRepo, EnrichedFlightToResponseMapper enrichedFlightToResponseMapper,
+                               AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper ) {
+
+        super(flightRepo, flightToResponseMapper,
+                enrichedFlightRepo, enrichedFlightToResponseMapper,
+                aircraftRepo, aircraftToResponseMapper);
+    }
 
     /**
      * This function performs analysis without writing anything to output.
@@ -36,7 +49,7 @@ public class MultiThreadAnalysis extends BaseAnalysis {
 
         // Sorting and analyzing
         SortingCalculator sortingCalculator = new SortingCalculator();
-        sortingCalculator.giveTopNOperators(groupedByOperator, 10);
+        sortingCalculator.giveTopN_byAttribute(groupedByOperator, 10);
         sortingCalculator.sortByAmountOfFlights(enrichedFlights);
         sortingCalculator.sortByTimeOfFlights(enrichedFlights);
 
@@ -45,7 +58,7 @@ public class MultiThreadAnalysis extends BaseAnalysis {
         groupingTool.findLongFlightsForEachModel(groupedByModel);
 
         PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
-        propertiesCalculator.printAllAverages(groupedByModel);
+        propertiesCalculator.giveAllAverages(groupedByModel);
         propertiesCalculator.givePercentageOfLongFlights(groupedByModel);
     }
 
@@ -60,8 +73,8 @@ public class MultiThreadAnalysis extends BaseAnalysis {
         log("Starting analysis...");
         log(parallel ? "Parallel analysis selected." : "Sequential (single-threaded) analysis selected.");
 
-        List<EnrichedFlight> enrichedFlights = prepareFlights();
-        List<Aircraft> aircrafts = prepareAircrafts();
+        List<EnrichedFlight> enrichedFlights = enrichedFlightRepo.findAll();
+        List<Aircraft> aircrafts = aircraftRepo.findAll();
 
         long pre_analysis_end = System.currentTimeMillis();
         long pre_analysis_duration = pre_analysis_end - pre_analysis_start;
@@ -138,7 +151,7 @@ public class MultiThreadAnalysis extends BaseAnalysis {
     private void analyzeGroupedData(List<List<EnrichedFlight>> groupedFlights, String groupingType) {
         log("Analyzing properties for " + groupingType + "...");
         PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
-        propertiesCalculator.printAllAverages(groupedFlights);
+        propertiesCalculator.giveAllAverages(groupedFlights);
         log("Finished analyzing " + groupingType + ".");
     }
 
