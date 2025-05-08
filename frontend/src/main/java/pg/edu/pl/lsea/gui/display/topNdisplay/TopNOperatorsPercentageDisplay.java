@@ -1,13 +1,10 @@
 package pg.edu.pl.lsea.gui.display.topNdisplay;
 
-import pg.edu.pl.lsea.entities.Aircraft;
-import pg.edu.pl.lsea.entities.EnrichedFlight;
 import pg.edu.pl.lsea.entities.Output;
-import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 import java.util.*;
 
-import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
+import static pg.edu.pl.lsea.utils.guispecific.optionmapping.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
 
 /**
  * Class responsible for returning percentage of long flights for Top N Operators - showing a windows with an appropriate message.

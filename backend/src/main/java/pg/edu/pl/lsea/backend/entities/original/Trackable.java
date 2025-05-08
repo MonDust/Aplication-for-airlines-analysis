@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.backend.entities;
+package pg.edu.pl.lsea.backend.entities.original;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

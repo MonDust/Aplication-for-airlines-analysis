@@ -1,12 +1,9 @@
 package pg.edu.pl.lsea.gui.choicewindows;
 
-import pg.edu.pl.lsea.utils.AnalysisTypeConstants;
+import pg.edu.pl.lsea.utils.guispecific.optionmapping.AnalysisTypeConstants;
 import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
 
 import javax.swing.*;
-
-import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.*;
-import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.NUMBER_OF_DEFAULT_THREADS;
 
 /**
  * Choosing Analysis Window which lets choose analysis type to perform

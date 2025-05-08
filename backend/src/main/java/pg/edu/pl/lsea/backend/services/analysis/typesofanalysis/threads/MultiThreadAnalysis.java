@@ -3,15 +3,15 @@ package pg.edu.pl.lsea.backend.services.analysis.typesofanalysis.threads;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
-import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.original.AircraftRepo;
 import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
-import pg.edu.pl.lsea.backend.repositories.FlightRepo;
+import pg.edu.pl.lsea.backend.repositories.original.FlightRepo;
 import pg.edu.pl.lsea.backend.services.analysis.BaseAnalysis;
 import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
-import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 
 import java.util.List;

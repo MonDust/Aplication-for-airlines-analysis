@@ -1,6 +1,6 @@
 package pg.edu.pl.lsea.gui.display;
 
-import pg.edu.pl.lsea.api.DataLoader;
+import pg.edu.pl.lsea.api.getanalysis.DataLoader;
 
 import javax.swing.*;
 

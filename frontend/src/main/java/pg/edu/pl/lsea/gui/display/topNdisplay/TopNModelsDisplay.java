@@ -4,7 +4,7 @@ import pg.edu.pl.lsea.entities.Output;
 
 import java.util.List;
 
-import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_MODELS;
+import static pg.edu.pl.lsea.utils.guispecific.optionmapping.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_MODELS;
 
 /**
  * Class responsible for returning Top N Models - showing a windows with an appropriate message.

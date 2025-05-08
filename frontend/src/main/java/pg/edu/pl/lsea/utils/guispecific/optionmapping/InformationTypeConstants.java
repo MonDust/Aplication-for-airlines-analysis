@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.utils;
+package pg.edu.pl.lsea.utils.guispecific.optionmapping;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

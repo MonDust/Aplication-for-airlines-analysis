@@ -1,6 +1,6 @@
 
 
-package pg.edu.pl.lsea.gui;
+package pg.edu.pl.lsea.gui.udp;
 
 import pg.edu.pl.lsea.udp.UdpClient;
 

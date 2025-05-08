@@ -1,8 +1,8 @@
 package pg.edu.pl.lsea.backend.data.engieniering;
 
-import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.entities.original.Flight;
 
 import java.util.ArrayList;
 import java.util.List;

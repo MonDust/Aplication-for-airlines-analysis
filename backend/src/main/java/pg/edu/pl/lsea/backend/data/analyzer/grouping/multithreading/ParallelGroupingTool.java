@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading;
 
 import pg.edu.pl.lsea.backend.data.analyzer.grouping.BaseGroupingAnalyzer;
-import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
 import pg.edu.pl.lsea.backend.udp.UdpServer;
 

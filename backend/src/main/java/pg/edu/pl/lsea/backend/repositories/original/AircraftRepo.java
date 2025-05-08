@@ -1,9 +1,9 @@
-package pg.edu.pl.lsea.backend.repositories;
+package pg.edu.pl.lsea.backend.repositories.original;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
 
 import java.util.Collection;
 import java.util.List;
