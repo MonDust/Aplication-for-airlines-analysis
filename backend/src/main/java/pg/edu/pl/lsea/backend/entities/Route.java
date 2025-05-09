@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.Id;
+import pg.edu.pl.lsea.backend.entities.original.Flight;
 
 import java.util.HashSet;
 import java.util.List;

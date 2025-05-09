@@ -2,9 +2,7 @@ package pg.edu.pl.lsea.backend.controllers.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import pg.edu.pl.lsea.backend.controllers.dto.EnrichedFlightResponse;
-import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Flight;
 
 import java.util.function.Function;
 
