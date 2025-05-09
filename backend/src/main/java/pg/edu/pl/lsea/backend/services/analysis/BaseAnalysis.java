@@ -1,20 +1,14 @@
 package pg.edu.pl.lsea.backend.services.analysis;
 
-import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
-import pg.edu.pl.lsea.backend.controllers.dto.EnrichedFlightResponse;
-import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
 import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
-import pg.edu.pl.lsea.backend.data.analyzer.grouping.GroupingTool;
 import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
-import pg.edu.pl.lsea.backend.repositories.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.original.AircraftRepo;
 import pg.edu.pl.lsea.backend.repositories.EnrichedFlightRepo;
-import pg.edu.pl.lsea.backend.repositories.FlightRepo;
-
-import java.util.List;
+import pg.edu.pl.lsea.backend.repositories.original.FlightRepo;
 
 /**
  * Base class for analysis classes
@@ -35,7 +29,6 @@ public abstract class BaseAnalysis {
 
     // Analysis tools
     protected final SortingCalculator sortingCalculator = new SortingCalculator();
-    protected final GroupingTool groupingTool = new GroupingTool();
 
     protected final PropertiesCalculator propertiesCalculator = new PropertiesCalculator();
     protected final ParallelGroupingTool parallelGroupingTool = new ParallelGroupingTool();
@@ -71,36 +64,4 @@ public abstract class BaseAnalysis {
     // GET ALL //
 
 
-    /**
-     * Get all the flights from the flight repository.
-     * @return List of FlightResponse
-     */
-    public List<FlightResponse> getAllFlights() {
-        return flightRepo.findAll()
-                .stream()
-                .map(flightToResponseMapper)
-                .toList();
-    }
-
-    /**
-     * Get all the aircrafts from the flight repository.
-     * @return List of AircraftResponse
-     */
-    public List<AircraftResponse> getAllAircrafts() {
-        return aircraftRepo.findAll()
-                .stream()
-                .map(aircraftToResponseMapper)
-                .toList();
-    }
-
-    /**
-     * Get all the enrichedFlights from the flight repository.
-     * @return List of EnrichedFlightResponse
-     */
-    public List<EnrichedFlightResponse> getAllEnrichedFlights() {
-        return enrichedFlightRepo.findAll()
-                .stream()
-                .map(enrichedFlightToResponseMapper)
-                .toList();
-    }
 }

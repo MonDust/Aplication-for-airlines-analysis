@@ -1,8 +1,8 @@
 package pg.edu.pl.lsea.backend.data.analyzer;
 
-import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Output;
+import pg.edu.pl.lsea.backend.entities.analysis.Output;
 
 import java.util.*;
 

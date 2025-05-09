@@ -3,6 +3,7 @@ package pg.edu.pl.lsea.backend.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
 
 import java.util.*;
 

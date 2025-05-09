@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea.backend.data.storage;
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Flight;
-import pg.edu.pl.lsea.backend.entities.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Flight;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
 
 import java.util.ArrayList;
 import java.util.HashSet;

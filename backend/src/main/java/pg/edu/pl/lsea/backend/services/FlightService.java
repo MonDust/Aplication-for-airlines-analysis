@@ -1,20 +1,22 @@
 package pg.edu.pl.lsea.backend.services;
 
 import jakarta.transaction.Transactional;
-import org.hibernate.StaleObjectStateException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.FlightUpdateRequest;
-import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 import pg.edu.pl.lsea.backend.data.engieniering.DataEnrichment;
 import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 import pg.edu.pl.lsea.backend.entities.*;
+import pg.edu.pl.lsea.backend.entities.Airport;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Flight;
 import pg.edu.pl.lsea.backend.repositories.*;
+import pg.edu.pl.lsea.backend.repositories.original.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.original.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 
@@ -37,7 +39,6 @@ public class FlightService {
     private final RouteRepo routeRepo;
 
     private final FlightToResponseMapper flightToResponseMapper;
-    private final EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
 
     private final DataEnrichment enrichmentTool = new DataEnrichment();
     private final NullRemover nullRemover = new NullRemover();
@@ -45,12 +46,11 @@ public class FlightService {
 
     public FlightService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper, EnrichedFlightRepo enrichedFlightRepo,
                          AirportRepo airportRepo,
-                         EnrichedFlightToResponseMapper enrichedFlightToResponseMapper, AircraftRepo aircraftRepo, RouteRepo routeRepo) {
+                         AircraftRepo aircraftRepo, RouteRepo routeRepo) {
         this.flightRepo = flightRepo;
         this.flightToResponseMapper = flightToResponseMapper;
 
         this.enrichedFlightRepo = enrichedFlightRepo;
-        this.enrichedFlightToResponseMapper = enrichedFlightToResponseMapper;
 
         this.airportRepo = airportRepo;
         this.aircraftRepo = aircraftRepo;
@@ -114,11 +114,7 @@ public class FlightService {
             return false;
         }
 
-        if (Objects.equals(req.departureAirport(), null) || Objects.equals(req.arrivalAirport(), null)) {
-            return false;
-        }
-
-        return true;
+        return !Objects.equals(req.departureAirport(), null) && !Objects.equals(req.arrivalAirport(), null);
     }
 
     /**
@@ -301,7 +297,9 @@ public class FlightService {
                 .toList();
     }
 
-    private void updateAirport(Flight flight, String airportDepartureCode, String airportArrivalCode) {
+    ///  UPDATE IS BAD
+
+    private void updateAirport(String airportDepartureCode, String airportArrivalCode) {
         Airport departureAirport;
         Optional<Airport> existingDepartureAirport = airportRepo.findByCode(airportDepartureCode);
         if (existingDepartureAirport.isPresent()) {
@@ -335,13 +333,10 @@ public class FlightService {
         Flight flight = flightRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Flight", "id", id));
 
-        //Optional<Airport> existingDepartureAirport = airportRepo.findByCode(request.departureAirport());
-        //Optional<Airport> existingArrivalAirport = airportRepo.findByCode(request.arrivalAirport());
-
         flight.setIcao24(request.icao24());
         flight.setFirstSeen(request.firstSeen());
         flight.setLastSeen(request.lastSeen());
-        updateAirport(flight, request.departureAirport(), request.arrivalAirport());
+        updateAirport(request.departureAirport(), request.arrivalAirport());
 
         try {
             flightRepo.save(flight);
@@ -365,7 +360,7 @@ public class FlightService {
         if (req.icao24() != null) flight.setIcao24(req.icao24());
         if (req.firstSeen() != null) flight.setFirstSeen(req.firstSeen());
         if (req.lastSeen() != null) flight.setLastSeen(req.lastSeen());
-        updateAirport(flight, req.departureAirport(), req.arrivalAirport());
+        updateAirport(req.departureAirport(), req.arrivalAirport());
 
         try {
             flightRepo.save(flight);
@@ -390,7 +385,7 @@ public class FlightService {
         if (req.icao24() != null) flight.setIcao24(req.icao24());
         if (req.firstSeen() != null) flight.setFirstSeen(req.firstSeen());
         if (req.lastSeen() != null) flight.setLastSeen(req.lastSeen());
-        updateAirport(flight, req.departureAirport(), req.arrivalAirport());
+        updateAirport(req.departureAirport(), req.arrivalAirport());
 
         try {
             flightRepo.save(flight);

@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea.backend.data.engieniering;
 
-import pg.edu.pl.lsea.backend.entities.Aircraft;
-import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Flight;
 import pg.edu.pl.lsea.backend.entities.Model;
 import pg.edu.pl.lsea.backend.entities.Operator;
 
