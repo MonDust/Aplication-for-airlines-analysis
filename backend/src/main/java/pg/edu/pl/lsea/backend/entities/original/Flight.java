@@ -125,7 +125,7 @@ public class Flight extends Trackable implements Cloneable {
                "icao24='" + getIcao24() + "'" +
                ", firstseen=" + firstSeen +
                ", lastseen=" + lastSeen +
-               ", departureairport='" + route + "'" +
+               ", route='" + route + "'" +
                "}";
     }
 

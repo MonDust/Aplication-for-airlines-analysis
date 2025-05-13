@@ -34,6 +34,11 @@ public class DataUploader {
         this.mapper = new ObjectMapper();
     }
 
+    public DataUploader(HttpClient client, ObjectMapper mapper) {
+        this.client = client;
+        this.mapper = mapper;
+    }
+
     /**
      * Sends a list of Flight objects to the flight upload API endpoint.
      * @param flights the list of flights to send
