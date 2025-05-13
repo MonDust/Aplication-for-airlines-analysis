@@ -1,5 +1,6 @@
 package pg.edu.pl.lsea.backend.services.analysis.typesofanalysis;
 
+import org.springframework.stereotype.Component;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
@@ -29,6 +30,7 @@ import static pg.edu.pl.lsea.backend.utils.Constants.NUMBER_OF_DEFAULT_THREADS;
  *  Class for analyzing flight data, it is used to determine the most popular aircraft models and operators.
  *  Additionally, it provides functionality to find percentages of long flights for top n operators.
  */
+@Component
 public class FullGroupedTopNAnalysis extends BaseAnalysis {
 
     /**

@@ -61,7 +61,4 @@ public abstract class BaseAnalysis {
     }
 
 
-    // GET ALL //
-
-
 }
