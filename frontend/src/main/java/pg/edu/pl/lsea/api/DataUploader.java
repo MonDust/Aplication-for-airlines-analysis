@@ -34,11 +34,6 @@ public class DataUploader {
         this.mapper = new ObjectMapper();
     }
 
-    public DataUploader(HttpClient client, ObjectMapper mapper) {
-        this.client = client;
-        this.mapper = mapper;
-    }
-
     /**
      * Second constructor for testing.
      */
