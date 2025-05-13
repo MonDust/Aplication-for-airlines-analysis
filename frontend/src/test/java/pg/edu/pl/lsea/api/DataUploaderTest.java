@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pg.edu.pl.lsea.entities.Aircraft;
+import pg.edu.pl.lsea.entities.Flight;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -113,5 +114,78 @@ class DataUploaderTest {
         verifyNoInteractions(mockResponse);
     }
 
+    @Test
+    void sendFlightsTest_CorrectData() throws Exception {
+        // Arrange
+        Flight flight = new Flight();
+        flight.setIcao24("abc123");
+        flight.setFirstSeen(123456);
+        List<Flight> flights = List.of(flight);
 
+        String json = "[{\"icao24\":\"abc123\",\"firstSeen\":123456}]";
+        when(mockMapper.writeValueAsString(flights)).thenReturn(json);
+        when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(mockResponse);
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        // Act
+        dataUploader.sendFlights(flights);
+
+        // Assert
+        verify(mockMapper).writeValueAsString(flights);
+        verify(mockClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        verify(mockResponse).statusCode();
+        assertEquals(200, mockResponse.statusCode());
+    }
+
+    @Test
+    void sendFlightsTest_Empty() throws Exception {
+        // Arrange
+        List<Flight> flights = Collections.emptyList();
+
+        // Act
+        dataUploader.sendFlights(flights);
+
+        // Assert
+        verify(mockMapper).writeValueAsString(flights);
+        verifyNoInteractions(mockClient);
+    }
+
+    @Test
+    void sendFlightsTest_SerializationError() throws Exception {
+        // Arrange
+        Flight flight = new Flight();
+        flight.setIcao24("abc123");
+        flight.setFirstSeen(123456);
+        List<Flight> flights = List.of(flight);
+
+        when(mockMapper.writeValueAsString(flights))
+                .thenThrow(new JsonProcessingException("Serialization Failed") {
+                });
+
+        // Act & Assert
+        assertDoesNotThrow(() -> dataUploader.sendFlights(flights));
+
+        verify(mockMapper).writeValueAsString(flights);
+        verifyNoInteractions(mockClient);
+    }
+
+    @Test
+    void sendFlightsTest_HttpRequestError() throws Exception {
+        // Arrange
+        Flight flight = new Flight();
+        flight.setIcao24("abc123");
+        flight.setFirstSeen(123456);
+        List<Flight> flights = List.of(flight);
+
+        when(mockMapper.writeValueAsString(flights)).thenReturn("[]");
+        when(mockClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
+                .thenThrow(new RuntimeException("Request failed"));
+
+        // Act & Assert
+        assertDoesNotThrow(() -> dataUploader.sendFlights(flights));
+
+        verify(mockMapper).writeValueAsString(flights);
+        verify(mockClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        verifyNoInteractions(mockResponse);
+    }
 }
