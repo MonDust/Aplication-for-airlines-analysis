@@ -2,6 +2,7 @@ package pg.edu.pl.lsea.files;
 
 import org.junit.jupiter.api.Test;
 import pg.edu.pl.lsea.entities.Aircraft;
+import pg.edu.pl.lsea.entities.Flight;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -83,4 +84,94 @@ class CsvDataReaderTest {
         assertEquals(0, result.size());
         tempFileHeader.delete();
     }
+
+    @Test
+    void readFlightsTest_CorrectData() throws Exception {
+        // Arrange
+        String testFileContent = "\"0004fc\",16226599,16226632,\"\",EDDM,EGVN,\"\",\"\",\"\"";
+        File tempFile = File.createTempFile("tempFileCorrect_Flights", ".csv");
+        Files.writeString(tempFile.toPath(), testFileContent);
+
+        // Act
+        CsvDataReader reader = new CsvDataReader();
+        List<Flight> result = reader.readFlights(tempFile);
+
+        // Assert
+        assertEquals(1, result.size());
+        Flight flight = result.getFirst();
+        assertEquals("0004fc", flight.getIcao24());
+        assertEquals(16226599, flight.getFirstSeen());
+        assertEquals(16226632, flight.getLastSeen());
+        assertEquals("EDDM", flight.getDepartureAirport());
+        assertEquals("EGVN", flight.getArrivalAirport());
+        tempFile.delete();
+    }
+
+    @Test
+    void readFlightsTest_HeaderOnly() throws Exception {
+        // Arrange
+        String testFileContent = "\"icao24\",\"firstSeen\",\"lastSeen\",\"callsign\",\"estDepartureAirport\",\"estArrivalAirport\",\"estDepartureAirportHorizDistance\",\"estDepartureAirportVertDistance\",\"estArrivalAirportHorizDistance\"";
+        File tempFile = File.createTempFile("tempFileHeader_Flights", ".csv");
+        Files.writeString(tempFile.toPath(), testFileContent);
+
+        // Act
+        CsvDataReader reader = new CsvDataReader();
+        List<Flight> result = reader.readFlights(tempFile);
+
+        // Assert
+        assertEquals(0, result.size());
+        tempFile.delete();
+    }
+
+    @Test
+    void readFlightsTest_IncorrectData() throws Exception {
+        // Arrange
+        String testFileContent = "Invalid,Data,Not,Enough,Columns";
+        File tempFile = File.createTempFile("tempFileIncorrect_Flights", ".csv");
+        Files.writeString(tempFile.toPath(), testFileContent);
+
+        // Act
+        CsvDataReader reader = new CsvDataReader();
+        List<Flight> result = reader.readFlights(tempFile);
+
+        // Assert
+        assertEquals(0, result.size());
+        tempFile.delete();
+    }
+
+    @Test
+    void readFlightsTest_EmptyFile() throws Exception {
+        // Arrange
+        String testFileContent = "";
+        File tempFile = File.createTempFile("tempFileEmpty_Flights", ".csv");
+        Files.writeString(tempFile.toPath(), testFileContent);
+
+        // Act
+        CsvDataReader reader = new CsvDataReader();
+        List<Flight> result = reader.readFlights(tempFile);
+
+        // Assert
+        assertEquals(0, result.size());
+        tempFile.delete();
+    }
+
+    @Test
+    void readFlightsTest_MissingTimes() throws Exception {
+        // Arrange
+        String testFileContent = "\"0004fc\",\"\",\"\",\"\",EDDM,EGVN,\"\",\"\",\"\"";
+        File tempFile = File.createTempFile("tempFileMissingTimes_Flights", ".csv");
+        Files.writeString(tempFile.toPath(), testFileContent);
+
+        // Act
+        CsvDataReader reader = new CsvDataReader();
+        List<Flight> result = reader.readFlights(tempFile);
+
+        // Assert
+        assertEquals(1, result.size());
+        Flight flight = result.getFirst();
+        assertEquals(0, flight.getFirstSeen());
+        assertEquals(0, flight.getLastSeen());
+        tempFile.delete();
+    }
+
 }
