@@ -1,14 +1,13 @@
 package pg.edu.pl.lsea.backend.services;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
-import pg.edu.pl.lsea.backend.controllers.dto.mapper.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pg.edu.pl.lsea.backend.entities.analysis.Output;
-import pg.edu.pl.lsea.backend.repositories.*;
-import pg.edu.pl.lsea.backend.repositories.original.*;
+import pg.edu.pl.lsea.backend.repositories.ModelRepo;
+import pg.edu.pl.lsea.backend.repositories.OperatorRepo;
 import pg.edu.pl.lsea.backend.services.analysis.typesofanalysis.FullGroupedTopNAnalysis;
 
 import java.util.List;
@@ -19,57 +18,97 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AnalysisServiceTest {
 
-    @Mock private FlightRepo flightRepo;
-    @Mock private FlightToResponseMapper flightToResponseMapper;
-    @Mock private EnrichedFlightRepo enrichedFlightRepo;
-    @Mock private EnrichedFlightToResponseMapper enrichedFlightToResponseMapper;
-    @Mock private AircraftRepo aircraftRepo;
-    @Mock private AircraftToResponseMapper aircraftToResponseMapper;
+    @Mock
+    private FullGroupedTopNAnalysis analysisFunc;
 
-    @Mock private OperatorRepo operatorRepo;
-    @Mock private ModelRepo modelRepo;
+    @Mock
+    private OperatorRepo operatorRepo;
+
+    @Mock
+    private ModelRepo modelRepo;
 
     @InjectMocks
     private AnalysisService analysisService;
 
-    private FullGroupedTopNAnalysis mockAnalysis;
-
-    @BeforeEach
-    void setUp() {
-        analysisService = new AnalysisService(
-                flightRepo, flightToResponseMapper,
-                enrichedFlightRepo, enrichedFlightToResponseMapper,
-                operatorRepo, modelRepo,
-                aircraftRepo, aircraftToResponseMapper
+    @Test
+    void getTopNOperatorWithNumberOfFlights_shouldReturnCorrectResults() {
+        // Arrange
+        int topN = 3;
+        List<Output> expectedOutput = List.of(
+                new Output("icao1", 100),
+                new Output("icao2", 80)
         );
+        when(analysisFunc.getGroupedTopNOperators(operatorRepo, topN)).thenReturn(expectedOutput);
 
-        mockAnalysis = spy(new FullGroupedTopNAnalysis(
-                flightRepo, flightToResponseMapper,
-                enrichedFlightRepo, enrichedFlightToResponseMapper,
-                aircraftRepo, aircraftToResponseMapper
-        ));
+        // Act
+        List<Output> result = analysisService.getTopNOperatorWithNumberOfFlights(topN);
 
-        // inject the spy to replace the real one
-        var analysisField = AnalysisService.class.getDeclaredFields()[0];
-        analysisField.setAccessible(true);
-        try {
-            analysisField.set(analysisService, mockAnalysis);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        // Assert
+        assertEquals(expectedOutput, result);
+        verify(analysisFunc).getGroupedTopNOperators(operatorRepo, topN);
     }
 
     @Test
-    void shouldReturnTopNOperatorsFromAnalysisFunction() {
+    void getTopNModelWithNumberOfFlights_shouldReturnCorrectResults() {
         // Arrange
-        List<Output> mockedResult = List.of(new Output("ICAO24", 123));
-        when(mockAnalysis.getGroupedTopNOperators(operatorRepo, 1)).thenReturn(mockedResult);
+        int topN = 2;
+        List<Output> expectedOutput = List.of(
+                new Output("icaoM1", 120),
+                new Output("icaoM2", 90)
+        );
+        when(analysisFunc.getGroupedTopNModels(modelRepo, topN)).thenReturn(expectedOutput);
 
         // Act
-        List<Output> result = analysisService.getTopNOperatorWithNumberOfFlights(1);
+        List<Output> result = analysisService.getTopNModelWithNumberOfFlights(topN);
 
         // Assert
-        assertEquals(mockedResult, result);
-        verify(mockAnalysis).getGroupedTopNOperators(operatorRepo, 1);
+        assertEquals(expectedOutput, result);
+        verify(analysisFunc).getGroupedTopNModels(modelRepo, topN);
+    }
+
+    @Test
+    void getTopNPercentageOfLongFlights_shouldReturnCorrectResults() {
+        // Arrange
+        int topN = 5;
+        List<Output> expectedOutput = List.of(new Output("icaoX", 45));
+        when(analysisFunc.getTopNOperatorsPercentages(topN)).thenReturn(expectedOutput);
+
+        // Act
+        List<Output> result = analysisService.getTopNPercentageOfLongFlights_GroupedByOperator(topN);
+
+        // Assert
+        assertEquals(expectedOutput, result);
+        verify(analysisFunc).getTopNOperatorsPercentages(topN);
+    }
+
+    @Test
+    void getTopNAverageTimeGroupedByOperator_shouldReturnCorrectResults() {
+        // Arrange
+        int topN = 4;
+        List<Output> expectedOutput = List.of(
+                new Output("icaoY", 60)
+        );
+        when(analysisFunc.getAverageTimesForOperators(topN)).thenReturn(expectedOutput);
+
+        // Act
+        List<Output> result = analysisService.getTopNAverageTime_GroupedByOperator(topN);
+
+        // Assert
+        assertEquals(expectedOutput, result);
+        verify(analysisFunc).getAverageTimesForOperators(topN);
+    }
+
+    @Test
+    void getTopNOperatorWithNumberOfFlights_shouldHandleEmptyResultGracefully() {
+        // Arrange
+        int topN = 0;
+        when(analysisFunc.getGroupedTopNOperators(operatorRepo, topN)).thenReturn(List.of());
+
+        // Act
+        List<Output> result = analysisService.getTopNOperatorWithNumberOfFlights(topN);
+
+        // Assert
+        assertEquals(0, result.size());
+        verify(analysisFunc).getGroupedTopNOperators(operatorRepo, topN);
     }
 }
