@@ -20,7 +20,7 @@ public  class CsvDataReader extends FileDataReader {
      */
     private boolean validateAircraftLine(String[] splitLine) {
 
-        if (splitLine.length != 15) {
+        if (splitLine.length < 14) {
             return false;
         }
 
