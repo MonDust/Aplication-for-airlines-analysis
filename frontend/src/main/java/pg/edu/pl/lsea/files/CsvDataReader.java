@@ -20,7 +20,7 @@ public  class CsvDataReader extends FileDataReader {
      */
     private boolean validateAircraftLine(String[] splitLine) {
 
-        if (splitLine.length != 15) {
+        if (splitLine.length < 14) {
             return false;
         }
 
@@ -117,13 +117,21 @@ public  class CsvDataReader extends FileDataReader {
         String firstSeenString = splitLine[1].trim();
         int firstSeen = 0;
         if (!firstSeenString.isEmpty()) {
-            firstSeen = Math.round(Float.parseFloat(firstSeenString));
+            try {
+                firstSeen = Math.round(Float.parseFloat(firstSeenString));
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid flight number: " + firstSeen);
+            }
         }
 
         String lastSeenString = splitLine[2].trim();
         int lastSeen = 0;
         if (!lastSeenString.isEmpty()) {
-            lastSeen = Math.round(Float.parseFloat(lastSeenString));
+            try {
+                lastSeen = Math.round(Float.parseFloat(lastSeenString));
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid flight number: " + lastSeenString);
+            }
         }
 
         String airportDeparture = splitLine[4].trim();
