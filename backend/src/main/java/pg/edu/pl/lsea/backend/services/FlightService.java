@@ -297,8 +297,6 @@ public class FlightService {
                 .toList();
     }
 
-    ///  UPDATE IS BAD
-
     private void updateAirport(String airportDepartureCode, String airportArrivalCode) {
         Airport departureAirport;
         Optional<Airport> existingDepartureAirport = airportRepo.findByCode(airportDepartureCode);
