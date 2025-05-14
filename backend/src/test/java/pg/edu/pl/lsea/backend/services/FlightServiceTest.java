@@ -163,6 +163,26 @@ public class FlightServiceTest {
         assertEquals(mockFlightResponse, result.get(0));
     }
 
+    @Test
+    void deleteFlight() {
+        when(flightRepo.existsById(1L)).thenReturn(Boolean.TRUE);
 
+        flightService.delete(1L);
+    }
+
+    @Test
+    void deleteFlight_NotExists() {
+        when(flightRepo.existsById(1L)).thenReturn(Boolean.FALSE);
+
+        assertThrows(ResourceNotFoundException.class, () -> flightService.delete(1L));
+    }
+
+    @Test
+    void deleteByTimeRange() {
+        when(flightRepo.deleteByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(100,200)).thenReturn(Boolean.TRUE);
+        boolean result = flightService.deleteByTimeRange(100, 200);
+
+        assertTrue(result);
+    }
 
 }
