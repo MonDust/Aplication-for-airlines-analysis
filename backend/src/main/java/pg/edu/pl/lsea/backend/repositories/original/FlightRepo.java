@@ -15,7 +15,7 @@ public interface FlightRepo extends JpaRepository<Flight, Long> {
     // Find flights within a time window
     List<Flight> findByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(int start, int end);
 
-    void deleteByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(int start, int end);
+    boolean deleteByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(int start, int end);
 
     Optional<Flight> findByIcao24AndFirstSeen(String icao24, int firstSeen);
 

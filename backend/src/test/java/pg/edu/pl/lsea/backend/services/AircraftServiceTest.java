@@ -134,6 +134,17 @@ public class AircraftServiceTest {
         assertEquals(mockAircraftResponse, result.get(0));
     }
 
+    @Test
+    void deleteAircraft() {
+        when(aircraftRepo.findByIcao24("ICAO24")).thenReturn(Optional.of(mockAircraft));
 
+        aircraftService.deleteAircraft("ICAO24");
+    }
 
+    @Test
+    void deleteFlight_NotExists() {
+        when(aircraftRepo.findByIcao24("ICAO24")).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> aircraftService.deleteAircraft("ICAO24"));
+    }
 }
