@@ -7,6 +7,9 @@ import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.EnrichedFlightToResponseMapper;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.FlightToResponseMapper;
 
+import pg.edu.pl.lsea.backend.data.analyzer.PropertiesCalculator;
+import pg.edu.pl.lsea.backend.data.analyzer.SortingCalculator;
+import pg.edu.pl.lsea.backend.data.analyzer.grouping.multithreading.ParallelGroupingTool;
 import pg.edu.pl.lsea.backend.entities.analysis.Output;
 
 import pg.edu.pl.lsea.backend.repositories.*;
@@ -33,21 +36,9 @@ public class AnalysisService {
 
     /**
      * Constructor for AnalysisService class
-     * @param flightRepo - repository; h2 database
-     * @param flightToResponseMapper - mapper; h2 database
-     * @param enrichedFlightRepo - repository; h2 database
-     * @param enrichedFlightToResponseMapper - mapper; h2 database
-     * @param aircraftRepo - repository; h2 database
-     * @param aircraftToResponseMapper - mapper; h2 database
-     */
-    public AnalysisService(FlightRepo flightRepo, FlightToResponseMapper flightToResponseMapper,
-                           EnrichedFlightRepo enrichedFlightRepo, EnrichedFlightToResponseMapper enrichedFlightToResponseMapper,
-                           OperatorRepo operatorRepo, ModelRepo modelRepo,
-                           AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper ) {
-        this.analysisFunc = new FullGroupedTopNAnalysis(flightRepo, flightToResponseMapper,
-                enrichedFlightRepo, enrichedFlightToResponseMapper,
-                aircraftRepo, aircraftToResponseMapper);
-
+    */
+    public AnalysisService(FullGroupedTopNAnalysis analysisFunc, OperatorRepo operatorRepo, ModelRepo modelRepo) {
+        this.analysisFunc = analysisFunc;
         this.operatorRepo = operatorRepo;
         this.modelRepo = modelRepo;
     }

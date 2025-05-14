@@ -179,7 +179,7 @@ public class FlightService {
         route.addFlight(flight);
         flight.setRoute(route);
 
-        if((!nullRemover.CheckOneFlight(flight))) {
+        if(nullRemover.CheckOneFlight(flight)) {
             try {
                 flightRepo.save(flight);
                 enrichedFlightRepo.save(new EnrichedFlight(flight));
@@ -187,6 +187,9 @@ public class FlightService {
                 System.err.println("Error saving flight: " + ex.getMessage());
             }
         }
+
+        System.out.println(flight);
+        System.out.println(flightToResponseMapper.apply(flight));
 
         return flightToResponseMapper.apply(flight);
     }

@@ -101,6 +101,11 @@ public class AircraftService {
             return null;
         }
 
+        // Check if the aircraft already exists
+        if (checkIfAircraftExists(request.icao24())) {
+            return null;
+        }
+
         // Find or create Operator
         Optional<Operator> existingOperator = operatorRepo.findByName(request.operator());
         Operator operator;
