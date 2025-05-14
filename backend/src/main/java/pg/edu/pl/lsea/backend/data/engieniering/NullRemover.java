@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea.backend.data.engieniering;
 
-import pg.edu.pl.lsea.backend.entities.Aircraft;
-import pg.edu.pl.lsea.backend.entities.Flight;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Flight;
 import pg.edu.pl.lsea.backend.entities.Model;
 import pg.edu.pl.lsea.backend.entities.Operator;
 
@@ -80,9 +80,9 @@ public class NullRemover extends DataTransform {
         if (flight.getIcao24() == null || flight.getRoute() == null || flight.getFirstSeen() == -1 || flight.getLastSeen() == -1){
             return false;
         }
-        if (Objects.equals(flight.getIcao24(), "") || Objects.equals(flight.getRoute(), "")){
+        if (Objects.equals(flight.getIcao24(), "") || Objects.equals(flight.getRoute().getOrigin().getCode(), "") || Objects.equals(flight.getRoute().getDestination().getCode(), "")){
             return false;
         }
-        return !Objects.equals(flight.getIcao24(), "NULL") && !Objects.equals(flight.getRoute(), "NULL");
+        return !Objects.equals(flight.getIcao24(), "NULL") && !Objects.equals(flight.getRoute().getOrigin().getCode(), "NULL") && !Objects.equals(flight.getRoute().getDestination().getCode(), "NULL");
     }
 }

@@ -4,7 +4,7 @@ import pg.edu.pl.lsea.entities.Output;
 
 import java.util.List;
 
-import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
+import static pg.edu.pl.lsea.utils.guispecific.optionmapping.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
 
 /**
  * Class responsible for returning Top N Operators - showing a windows with an appropriate message.

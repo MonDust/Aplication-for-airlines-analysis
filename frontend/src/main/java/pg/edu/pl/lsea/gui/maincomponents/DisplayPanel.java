@@ -3,28 +3,27 @@ package pg.edu.pl.lsea.gui.maincomponents;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-import pg.edu.pl.lsea.api.DataLoader;
+import pg.edu.pl.lsea.api.getanalysis.DataLoader;
 import pg.edu.pl.lsea.api.DataUpdateDelete;
 import pg.edu.pl.lsea.entities.Aircraft;
 import pg.edu.pl.lsea.entities.Flight;
-import pg.edu.pl.lsea.gui.ProgressBarUDP;
+import pg.edu.pl.lsea.gui.udp.ProgressBarUDP;
 import pg.edu.pl.lsea.gui.display.datadisplay.tables.TableDisplay;
 import pg.edu.pl.lsea.gui.display.graphdisplay.PlotAverageTimePerOperatorDisplay;
 import pg.edu.pl.lsea.gui.display.topNdisplay.TopNModelsDisplay;
 import pg.edu.pl.lsea.gui.display.topNdisplay.TopNOperatorsDisplay;
 import pg.edu.pl.lsea.gui.display.topNdisplay.TopNOperatorsPercentageDisplay;
-import pg.edu.pl.lsea.utils.DateLabelFormatter;
+import pg.edu.pl.lsea.utils.guispecific.DateLabelFormatter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
-import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.*;
+import static pg.edu.pl.lsea.utils.guispecific.optionmapping.AnalysisTypeConstants.*;
 import static pg.edu.pl.lsea.utils.Constants.DisplayLayout.*;
-import static pg.edu.pl.lsea.utils.InformationTypeConstants.*;
-import static pg.edu.pl.lsea.utils.UpdateTypeConstants.*;
+import static pg.edu.pl.lsea.utils.guispecific.optionmapping.InformationTypeConstants.*;
+import static pg.edu.pl.lsea.utils.guispecific.optionmapping.UpdateTypeConstants.*;
 
 /**
  * Class for displaying information (adding displays) with cardLayout.

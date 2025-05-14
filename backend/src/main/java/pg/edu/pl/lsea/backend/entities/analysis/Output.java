@@ -1,7 +1,8 @@
-package pg.edu.pl.lsea.backend.entities;
+package pg.edu.pl.lsea.backend.entities.analysis;
 
 import lombok.Getter;
 import lombok.Setter;
+import pg.edu.pl.lsea.backend.entities.original.Trackable;
 
 /**
  * Class dedicated to storing output of function that analyze data

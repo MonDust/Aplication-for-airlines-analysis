@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea.gui.choicewindows;
 
 import pg.edu.pl.lsea.gui.maincomponents.MainPanel;
-import pg.edu.pl.lsea.utils.InformationTypeConstants;
+import pg.edu.pl.lsea.utils.guispecific.optionmapping.InformationTypeConstants;
 
 import javax.swing.*;
 

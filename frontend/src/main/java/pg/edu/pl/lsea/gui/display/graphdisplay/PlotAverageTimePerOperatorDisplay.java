@@ -9,10 +9,9 @@ import pg.edu.pl.lsea.gui.display.BaseAnalysisDisplay;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
-import static pg.edu.pl.lsea.utils.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
+import static pg.edu.pl.lsea.utils.guispecific.optionmapping.AnalysisTypeConstants.NUMBER_OF_MOST_POPULAR_OPERATORS;
 
 /**
  * Class displaying plots for average times.

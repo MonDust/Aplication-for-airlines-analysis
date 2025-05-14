@@ -1,7 +1,7 @@
 package pg.edu.pl.lsea.backend.data.analyzer;
 
 import pg.edu.pl.lsea.backend.entities.EnrichedFlight;
-import pg.edu.pl.lsea.backend.entities.Output;
+import pg.edu.pl.lsea.backend.entities.analysis.Output;
 import pg.edu.pl.lsea.backend.udp.UdpServer;
 
 import java.util.ArrayList;
