@@ -403,8 +403,8 @@ public class FlightService {
      * @param startDate date from which flights should be deleted
      * @param endDate date to which flights should be deleted
      */
-    public void deleteByTimeRange(int startDate, int endDate) {
-        flightRepo.deleteByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(startDate, endDate);
+    public boolean deleteByTimeRange(int startDate, int endDate) {
+        return flightRepo.deleteByFirstSeenGreaterThanEqualAndLastSeenLessThanEqual(startDate, endDate);
     }
 
     /**
