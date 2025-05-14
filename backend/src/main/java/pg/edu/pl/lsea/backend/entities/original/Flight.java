@@ -1,8 +1,9 @@
-package pg.edu.pl.lsea.backend.entities;
+package pg.edu.pl.lsea.backend.entities.original;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pg.edu.pl.lsea.backend.entities.Route;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -124,7 +125,7 @@ public class Flight extends Trackable implements Cloneable {
                "icao24='" + getIcao24() + "'" +
                ", firstseen=" + firstSeen +
                ", lastseen=" + lastSeen +
-               ", departureairport='" + route + "'" +
+               ", route='" + route + "'" +
                "}";
     }
 

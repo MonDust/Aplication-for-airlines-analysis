@@ -27,7 +27,7 @@ public class FlightController {
     @ResponseStatus(HttpStatus.OK)
     public List<FlightResponse> getFlights() {
         return flightService.getAll();
-    };
+    }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

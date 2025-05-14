@@ -35,6 +35,14 @@ public class DataUploader {
     }
 
     /**
+     * Second constructor for testing.
+     */
+    public DataUploader(HttpClient client, ObjectMapper mapper) {
+        this.client = client;
+        this.mapper = mapper;
+    }
+
+    /**
      * Sends a list of Flight objects to the flight upload API endpoint.
      * @param flights the list of flights to send
      */

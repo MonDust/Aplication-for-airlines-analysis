@@ -2,7 +2,6 @@ package pg.edu.pl.lsea.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import pg.edu.pl.lsea.backend.udp.UdpServer;
 
 /**
  * BackendApplication - running the backend of the analyzer.

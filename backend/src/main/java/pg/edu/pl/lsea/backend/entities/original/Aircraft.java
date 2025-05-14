@@ -1,8 +1,10 @@
-package pg.edu.pl.lsea.backend.entities;
+package pg.edu.pl.lsea.backend.entities.original;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pg.edu.pl.lsea.backend.entities.Model;
+import pg.edu.pl.lsea.backend.entities.Operator;
 
 import java.util.ArrayList;
 import java.util.Comparator;

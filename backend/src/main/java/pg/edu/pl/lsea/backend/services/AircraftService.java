@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 
 import pg.edu.pl.lsea.backend.controllers.dto.AircraftResponse;
 import pg.edu.pl.lsea.backend.controllers.dto.mapper.AircraftToResponseMapper;
-import pg.edu.pl.lsea.backend.data.engieniering.NullRemover;
 
 import pg.edu.pl.lsea.backend.entities.*;
+import pg.edu.pl.lsea.backend.entities.original.Aircraft;
+import pg.edu.pl.lsea.backend.entities.original.Flight;
 import pg.edu.pl.lsea.backend.repositories.*;
+import pg.edu.pl.lsea.backend.repositories.original.AircraftRepo;
+import pg.edu.pl.lsea.backend.repositories.original.FlightRepo;
 import pg.edu.pl.lsea.backend.utils.ResourceNotFoundException;
 
 import java.util.*;
@@ -27,7 +30,6 @@ public class AircraftService {
     private final AircraftRepo aircraftRepo;
     private final AircraftToResponseMapper aircraftToResponseMapper;
     private final FlightRepo flightRepo;
-    private final RouteRepo routeRepo;
 
     /**
      * Constructor of the class.
@@ -35,13 +37,12 @@ public class AircraftService {
      * @param aircraftToResponseMapper - mapper
      * @param operatorRepo - operators repository
      */
-    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper, OperatorRepo operatorRepo, ModelRepo modelRepo, FlightRepo flightRepo, RouteRepo routeRepo) {
+    public AircraftService(AircraftRepo aircraftRepo, AircraftToResponseMapper aircraftToResponseMapper, OperatorRepo operatorRepo, ModelRepo modelRepo, FlightRepo flightRepo) {
         this.aircraftRepo = aircraftRepo;
         this.aircraftToResponseMapper = aircraftToResponseMapper;
         this.operatorRepo = operatorRepo;
         this.modelRepo = modelRepo;
         this.flightRepo = flightRepo;
-        this.routeRepo = routeRepo;
     }
 
     /**
@@ -77,10 +78,7 @@ public class AircraftService {
             return false;
         }
 
-        if (Objects.equals(req.operator(), null) || Objects.equals(req.model(), null) || Objects.equals(req.owner(), null)) {
-            return false;
-        }
-        return true;
+        return !Objects.equals(req.operator(), null) && !Objects.equals(req.model(), null) && !Objects.equals(req.owner(), null);
     }
 
     /**
@@ -100,6 +98,11 @@ public class AircraftService {
     public AircraftResponse create(AircraftResponse request) {
 
         if (!checkRequestValidity(request)) {
+            return null;
+        }
+
+        // Check if the aircraft already exists
+        if (checkIfAircraftExists(request.icao24())) {
             return null;
         }
 
@@ -259,7 +262,7 @@ public class AircraftService {
         }
         if (request.operator() != null) {
             updateOperator(aircraft, request.operator());
-        } ;
+        }
         if (request.owner() != null) aircraft.setOwner(request.owner());
 
         try {
@@ -291,15 +294,13 @@ public class AircraftService {
         Optional<Operator> existingOperator = operatorRepo.findByName(operatorName);
         if (existingOperator.isPresent()) {
             operator = existingOperator.get();
-            aircraft.setOperator(operator);
-            operator.getAircrafts().add(aircraft);
         }
         else {
             operator = new Operator(operatorName);
             operatorRepo.save(operator);
-            aircraft.setOperator(operator);
-            operator.getAircrafts().add(aircraft);
         }
+        aircraft.setOperator(operator);
+        operator.getAircrafts().add(aircraft);
     }
 
     /**

@@ -1,20 +1,10 @@
 package pg.edu.pl.lsea;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import pg.edu.pl.lsea.api.DataLoader;
 import pg.edu.pl.lsea.api.DataUploader;
-import pg.edu.pl.lsea.api.dto.FlightResponse;
-import pg.edu.pl.lsea.entities.Flight;
 import pg.edu.pl.lsea.files.CsvDataReader;
 import pg.edu.pl.lsea.udp.UdpClient;
 
 import java.io.File;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main method for testing
@@ -47,7 +37,7 @@ public class TestMain {
         long beforeUsedMemory = beforeTotalMemory - beforeFreeMemory;
         long MaxMemory = runtime.maxMemory();
 
-        File fileAircrafts1 = new File("resources/aircraft-database-complete-2022-09.csv");
+        File fileAircrafts1 = new File("/aircraft-database-complete-2022-09.csv");
         //File fileFlights1 = new File("resources/flight_sample_2022-09-26.csv");
         //File fileFlights2 = new File("resources/flight_sample_2022-09-02.csv");
         //File fileFlights3 = new File("resources/flight_sample_2022-09-03.csv");
@@ -58,7 +48,7 @@ public class TestMain {
         //File fileFlights2 = new File("resources/flight_sample_2022-09-25.csv");
         //File fileFlights3 = new File("resources/flight_sample_2022-09-03_1.csv");
         //File fileFlights4 = new File("resources/flight_sample_2022-09-03_2.csv");
-        File fileFlights5 = new File("resources/flight_sample_2022-09-03_3.csv");
+        File fileFlights5 = new File("/flight_sample_2022-09-03_3.csv");
 
         // Could be used for debugging if file loading doesn't work
 //        List<Flight> flights = new ArrayList<>();

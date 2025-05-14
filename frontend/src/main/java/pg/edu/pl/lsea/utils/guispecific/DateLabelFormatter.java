@@ -1,4 +1,4 @@
-package pg.edu.pl.lsea.utils;
+package pg.edu.pl.lsea.utils.guispecific;
 
 import javax.swing.*;
 import java.text.ParseException;
