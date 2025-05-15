@@ -18,12 +18,8 @@ This project is licensed under the terms of the GNU AFFERO GENERAL PUBLIC LICENS
 Whole license is available in the LICENSE file.
 
 ## Authors
-(StaPink)[https://github.com/StaPink]
-
-(Pawcharz)[https://github.com/Pawcharz]
-
-(polemaster)[https://github.com/polemaster]
-
-(Pikilex)[https://github.com/pikilex]
-
-(MonDust)[https://github.com/MonDust]
+[StaPink](https://github.com/StaPink)
+[Pawcharz](https://github.com/Pawcharz)
+[polemaster](https://github.com/polemaster)
+[Pikilex](https://github.com/pikilex)
+[MonDust](https://github.com/MonDust)
